@@ -1,0 +1,16 @@
+<svg width="30" height="150" viewBox="0 0 30 150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bambooGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#84cc16;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#65a30d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4d7c0f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="0" width="14" height="40" fill="url(#bambooGradient)" rx="7"/>
+  <rect x="8" y="45" width="14" height="35" fill="url(#bambooGradient)" rx="7"/>
+  <rect x="8" y="85" width="14" height="30" fill="url(#bambooGradient)" rx="7"/>
+  <rect x="8" y="120" width="14" height="30" fill="url(#bambooGradient)" rx="7"/>
+  <line x1="5" y1="40" x2="25" y2="40" stroke="#4d7c0f" stroke-width="2"/>
+  <line x1="5" y1="80" x2="25" y2="80" stroke="#4d7c0f" stroke-width="2"/>
+  <line x1="5" y1="115" x2="25" y2="115" stroke="#4d7c0f" stroke-width="2"/>
+</svg>

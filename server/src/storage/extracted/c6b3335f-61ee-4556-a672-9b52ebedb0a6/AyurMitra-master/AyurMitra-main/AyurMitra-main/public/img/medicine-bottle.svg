@@ -1,0 +1,20 @@
+<svg width="80" height="120" viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bottleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:0.9" />
+    </linearGradient>
+  </defs>
+  <!-- Bottle body -->
+  <rect x="20" y="30" width="40" height="70" fill="url(#bottleGradient)" rx="8"/>
+  <!-- Bottle neck -->
+  <rect x="30" y="15" width="20" height="20" fill="url(#bottleGradient)" rx="3"/>
+  <!-- Cap -->
+  <rect x="28" y="10" width="24" height="8" fill="#8b5a3c" rx="4"/>
+  <!-- Label -->
+  <rect x="25" y="45" width="30" height="20" fill="#f0fdf4" opacity="0.8" rx="2"/>
+  <!-- Herbs inside -->
+  <circle cx="35" cy="70" r="3" fill="#22c55e" opacity="0.6"/>
+  <circle cx="45" cy="75" r="2" fill="#16a34a" opacity="0.6"/>
+  <circle cx="40" cy="85" r="2.5" fill="#15803d" opacity="0.6"/>
+</svg>

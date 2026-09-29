@@ -1,0 +1,14 @@
+<svg width="70" height="90" viewBox="0 0 70 90" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tulsiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16a34a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M35 10 C42 12, 50 18, 55 28 C60 38, 58 48, 55 58 C52 68, 47 78, 35 85 C23 78, 18 68, 15 58 C12 48, 10 38, 15 28 C20 18, 28 12, 35 10 Z" fill="url(#tulsiGradient)"/>
+  <path d="M35 12 L35 82" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M35 20 C42 25, 45 30, 43 38" stroke="#16a34a" stroke-width="1" fill="none"/>
+  <path d="M35 30 C28 35, 25 40, 27 48" stroke="#16a34a" stroke-width="1" fill="none"/>
+  <path d="M35 45 C42 50, 45 55, 43 63" stroke="#16a34a" stroke-width="1" fill="none"/>
+  <path d="M35 60 C28 65, 25 70, 27 75" stroke="#16a34a" stroke-width="1" fill="none"/>
+</svg>

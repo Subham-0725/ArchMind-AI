@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV to JSON Converter</title>
+</head>
+<body>
+    <h2>Convert panchakarma_doctor.csv to JSON</h2>
+    <input type="file" id="csvFile" accept=".csv">
+    <button onclick="convertCSV()">Convert to JSON</button>
+    <br><br>
+    <textarea id="jsonOutput" rows="20" cols="80" placeholder="JSON output will appear here..."></textarea>
+    <br>
+    <button onclick="downloadJSON()">Download JSON File</button>
+
+    <script>
+        let jsonData = '';
+        
+        function convertCSV() {
+            const file = document.getElementById('csvFile').files[0];
+            if (!file) {
+                alert('Please select a CSV file');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csv = e.target.result;
+                const lines = csv.trim().split('\n');
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                
+                const doctors = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                    const doctor = {
+                        id: i,
+                        name: '',
+                        specialization: '',
+                        symptoms_alerted: [],
+                        description: '',
+                        rating: 4.0 + Math.random(),
+                        address: 'Mumbai, Maharashtra'
+                    };
+                    
+                    headers.forEach((header, index) => {
+                        const value = values[index] || '';
+                        const h = header.toLowerCase();
+                        
+                        if (h.includes('name')) doctor.name = value;
+                        else if (h.includes('special')) doctor.specialization = value;
+                        else if (h.includes('symptom') || h.includes('condition')) {
+                            doctor.symptoms_alerted = value.split(/[;|,]/).map(s => s.trim().toLowerCase()).filter(s => s);
+                        }
+                        else if (h.includes('desc')) doctor.description = value;
+                        else if (h.includes('rating')) doctor.rating = parseFloat(value) || doctor.rating;
+                        else if (h.includes('address') || h.includes('city')) doctor.address = value || doctor.address;
+                    });
+                    
+                    if (doctor.name && doctor.specialization) {
+                        if (doctor.symptoms_alerted.length === 0) {
+                            doctor.symptoms_alerted = [doctor.specialization.toLowerCase()];
+                        }
+                        doctors.push(doctor);
+                    }
+                }
+                
+                jsonData = JSON.stringify(doctors, null, 2);
+                document.getElementById('jsonOutput').value = jsonData;
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function downloadJSON() {
+            if (!jsonData) {
+                alert('Please convert CSV first');
+                return;
+            }
+            
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'panchakarma_doctor.json';
+            a.click();
+        }
+    </script>
+</body>
+</html>

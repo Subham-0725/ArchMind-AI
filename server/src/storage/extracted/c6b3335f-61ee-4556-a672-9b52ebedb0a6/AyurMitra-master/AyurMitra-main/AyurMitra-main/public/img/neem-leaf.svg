@@ -1,0 +1,14 @@
+<svg width="80" height="120" viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="neemGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M40 10 C50 15, 60 25, 65 40 C70 55, 65 70, 60 85 C55 100, 45 110, 40 115 C35 110, 25 100, 20 85 C15 70, 10 55, 15 40 C20 25, 30 15, 40 10 Z" fill="url(#neemGradient)"/>
+  <path d="M40 15 L40 110" stroke="#15803d" stroke-width="1.5"/>
+  <path d="M40 25 C48 30, 52 35, 50 45" stroke="#15803d" stroke-width="1" fill="none"/>
+  <path d="M40 35 C32 40, 28 45, 30 55" stroke="#15803d" stroke-width="1" fill="none"/>
+  <path d="M40 50 C48 55, 52 60, 50 70" stroke="#15803d" stroke-width="1" fill="none"/>
+  <path d="M40 65 C32 70, 28 75, 30 85" stroke="#15803d" stroke-width="1" fill="none"/>
+</svg>

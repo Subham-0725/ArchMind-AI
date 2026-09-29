@@ -1,5 +1,5 @@
-import React, { useState, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, memo } from "react";
+import { motion } from "framer-motion";
 
 const cardData = [
   {
