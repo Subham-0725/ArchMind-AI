@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import { useState, memo } from "react";
 import { motion } from "framer-motion";
 
 /* ─── Step 01: Ingestion & Extraction Widget ───────────────────────────── */

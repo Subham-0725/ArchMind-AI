@@ -1,0 +1,465 @@
+symptoms,dosha
+"anger, stress, irritability, poor sleep, indigestion",vata-pitta
+"anxiety, insomnia, stress, indigestion, heat intolerance",vata-pitta
+"poor sleep, indigestion, stress, anger",vata-pitta
+"diarrhea, heartburn, indigestion, ulcers",pitta
+"gas, bloating, joint pain",vata
+"asthma, water retention, sluggishness",kapha
+"insomnia, ulcers, thirst, burning sensation, skin rashes",pitta
+"dizziness, joint pain, insomnia",vata
+"insomnia, irritability, anxiety, indigestion",vata-pitta
+"acidity, thirst, excessive hunger, diarrhea",pitta
+"cold, sinus congestion, water retention",kapha
+"ulcers, anger, excessive hunger",pitta
+"migraines, insomnia, anger",pitta
+"thirst, burning sensation, sensitivity to heat, migraines",pitta
+"cold, obesity, cough, sweet craving",kapha
+"anger, insomnia, anxiety, heat intolerance, indigestion",vata-pitta
+"thirst, indigestion, anger, insomnia",pitta
+"obesity, sinus congestion, lethargy",kapha
+"insomnia, fear, constipation, bloating, anxiety",vata
+"anxiety, insomnia, anger, irritability, indigestion",vata-pitta
+"heat intolerance, anxiety, indigestion, poor sleep",vata-pitta
+"fatigue, cold, sweet craving, mucus",kapha
+"ulcers, diarrhea, excessive hunger, heartburn, indigestion",pitta
+"congestion, sinus congestion, lethargy, obesity, sweet craving",kapha
+"anger, stress, indigestion",vata-pitta
+"irritability, indigestion, heat intolerance, insomnia, poor sleep",vata-pitta
+"stress, anger, poor sleep, anxiety, indigestion",vata-pitta
+"poor sleep, indigestion, insomnia",vata-pitta
+"congestion, sinus congestion, mucus",kapha
+"insomnia, irritability, anxiety, stress, anger",vata-pitta
+"irritability, heat intolerance, poor sleep, insomnia, stress",vata-pitta
+"indigestion, poor sleep, insomnia, anger",vata-pitta
+"skin rashes, ulcers, diarrhea, acidity",pitta
+"obesity, mucus, cough",kapha
+"skin rashes, burning sensation, sensitivity to heat, diarrhea",pitta
+"ulcers, excessive hunger, sensitivity to heat",pitta
+"sweet craving, mucus, obesity, cold, asthma",kapha
+"insomnia, migraines, burning sensation, acidity",pitta
+"fatigue, mucus, sweet craving, obesity, sinus congestion",kapha
+"sluggishness, obesity, asthma",kapha
+"insomnia, diarrhea, acidity, migraines",pitta
+"insomnia, anger, burning sensation, thirst, heartburn",pitta
+"thirst, burning sensation, indigestion",pitta
+"insomnia, heartburn, thirst",pitta
+"constipation, joint pain, fear",vata
+"indigestion, insomnia, anger",vata-pitta
+"cough, mucus, water retention",kapha
+"burning sensation, anger, diarrhea, insomnia, skin rashes",pitta
+"stress, heat intolerance, indigestion, irritability, insomnia",vata-pitta
+"migraines, ulcers, diarrhea, insomnia",pitta
+"sensitivity to heat, indigestion, excessive hunger",pitta
+"thirst, burning sensation, skin rashes, diarrhea",pitta
+"indigestion, poor sleep, insomnia, anxiety",vata-pitta
+"excessive hunger, ulcers, sensitivity to heat, burning sensation",pitta
+"insomnia, thirst, excessive hunger, burning sensation",pitta
+"dryness, joint pain, dizziness",vata
+"thirst, skin rashes, insomnia, excessive hunger, ulcers",pitta
+"joint pain, anxiety, dizziness, irregular sleep",vata
+"irritability, insomnia, poor sleep, stress",vata-pitta
+"anger, migraines, diarrhea, burning sensation",pitta
+"dryness, insomnia, constipation, irregular sleep",vata
+"congestion, lethargy, heaviness",kapha
+"acidity, diarrhea, excessive hunger, thirst, migraines",pitta
+"heat intolerance, poor sleep, irritability, anger",vata-pitta
+"diarrhea, thirst, migraines, acidity",pitta
+"anger, stress, irritability, poor sleep, heat intolerance",vata-pitta
+"sweet craving, cold, sinus congestion",kapha
+"migraines, thirst, excessive hunger, heartburn",pitta
+"stress, indigestion, anxiety, insomnia, heat intolerance",vata-pitta
+"insomnia, irregular sleep, bloating",vata
+"dizziness, joint pain, dryness, irregular sleep, anxiety",vata
+"poor sleep, anger, indigestion, heat intolerance, stress",vata-pitta
+"dizziness, joint pain, bloating, insomnia, fatigue",vata
+"fatigue, dryness, joint pain, gas, dizziness",vata
+"heartburn, burning sensation, excessive hunger",pitta
+"anxiety, irritability, indigestion, insomnia",vata-pitta
+"thirst, diarrhea, sensitivity to heat",pitta
+"burning sensation, anger, heartburn, excessive hunger, acidity",pitta
+"anxiety, irritability, indigestion, heat intolerance, stress",vata-pitta
+"water retention, sweet craving, fatigue",kapha
+"mucus, congestion, sweet craving, water retention, fatigue",kapha
+"sluggishness, cold, asthma",kapha
+"insomnia, heat intolerance, anxiety, anger",vata-pitta
+"cough, heaviness, fatigue, sluggishness, sweet craving",kapha
+"migraines, heartburn, ulcers, diarrhea",pitta
+"sweet craving, obesity, heaviness, cough",kapha
+"heartburn, insomnia, diarrhea, indigestion",pitta
+"constipation, irregular sleep, insomnia, gas",vata
+"diarrhea, burning sensation, excessive hunger, thirst, ulcers",pitta
+"indigestion, irritability, poor sleep, insomnia",vata-pitta
+"fatigue, gas, dizziness, anxiety",vata
+"anger, heat intolerance, anxiety, stress",vata-pitta
+"lethargy, sinus congestion, water retention",kapha
+"indigestion, excessive hunger, ulcers, thirst",pitta
+"anger, poor sleep, indigestion, stress, insomnia",vata-pitta
+"stress, insomnia, anger, indigestion",vata-pitta
+"indigestion, stress, irritability",vata-pitta
+"sensitivity to heat, ulcers, migraines, excessive hunger",pitta
+"dryness, gas, joint pain",vata
+"indigestion, insomnia, anger, irritability, heat intolerance",vata-pitta
+"anxiety, insomnia, anger",vata-pitta
+"irritability, indigestion, insomnia, anxiety, stress",vata-pitta
+"sluggishness, sweet craving, asthma, sinus congestion",kapha
+"irritability, heat intolerance, insomnia, anger",vata-pitta
+"insomnia, heat intolerance, indigestion, irritability, anxiety",vata-pitta
+"stress, anxiety, irritability, indigestion, insomnia",vata-pitta
+"dryness, gas, irregular sleep, constipation",vata
+"asthma, lethargy, mucus, congestion, cold",kapha
+"cough, mucus, obesity",kapha
+"anxiety, irregular sleep, gas, bloating",vata
+"irritability, indigestion, insomnia, heat intolerance, poor sleep",vata-pitta
+"anger, thirst, migraines, indigestion, excessive hunger",pitta
+"burning sensation, excessive hunger, heartburn, migraines, indigestion",pitta
+"congestion, cold, fatigue, heaviness, asthma",kapha
+"heartburn, burning sensation, indigestion",pitta
+"constipation, dryness, insomnia, gas, fatigue",vata
+"sensitivity to heat, skin rashes, anger, thirst, heartburn",pitta
+"poor sleep, anger, indigestion",vata-pitta
+"skin rashes, diarrhea, indigestion, migraines",pitta
+"irritability, stress, indigestion, poor sleep, anger",vata-pitta
+"congestion, cold, fatigue, mucus",kapha
+"poor sleep, anger, indigestion, anxiety, irritability",vata-pitta
+"ulcers, indigestion, heartburn, excessive hunger",pitta
+"insomnia, irregular sleep, dizziness, anxiety, fatigue",vata
+"thirst, acidity, excessive hunger",pitta
+"irregular sleep, anxiety, dryness, joint pain",vata
+"anxiety, indigestion, poor sleep",vata-pitta
+"asthma, sluggishness, water retention",kapha
+"insomnia, burning sensation, anger, thirst, acidity",pitta
+"bloating, irregular sleep, constipation, dizziness",vata
+"anxiety, heat intolerance, poor sleep, irritability",vata-pitta
+"cold, fatigue, lethargy, heaviness",kapha
+"anxiety, insomnia, indigestion, anger",vata-pitta
+"irritability, heat intolerance, stress, insomnia",vata-pitta
+"anxiety, bloating, gas",vata
+"bloating, constipation, irregular sleep, anxiety",vata
+"irritability, insomnia, stress, anxiety",vata-pitta
+"heaviness, obesity, congestion",kapha
+"burning sensation, anger, acidity",pitta
+"indigestion, irritability, insomnia, heat intolerance",vata-pitta
+"heat intolerance, indigestion, insomnia",vata-pitta
+"migraines, burning sensation, excessive hunger",pitta
+"insomnia, anxiety, heat intolerance, poor sleep, anger",vata-pitta
+"anxiety, insomnia, fatigue",vata
+"ulcers, excessive hunger, anger",pitta
+"cough, sluggishness, asthma",kapha
+"stress, poor sleep, irritability, insomnia",vata-pitta
+"cold, sweet craving, lethargy, fatigue",kapha
+"ulcers, thirst, burning sensation, indigestion, diarrhea",pitta
+"anxiety, gas, dizziness, dryness",vata
+"skin rashes, anger, diarrhea, insomnia",pitta
+"diarrhea, thirst, indigestion, skin rashes",pitta
+"acidity, indigestion, anger, sensitivity to heat, excessive hunger",pitta
+"lethargy, heaviness, obesity, cough, asthma",kapha
+"fatigue, dryness, joint pain",vata
+"burning sensation, skin rashes, indigestion, migraines",pitta
+"sluggishness, cough, congestion, cold, asthma",kapha
+"anger, insomnia, acidity",pitta
+"fatigue, dizziness, constipation, anxiety",vata
+"diarrhea, anger, excessive hunger, heartburn",pitta
+"fatigue, mucus, lethargy",kapha
+"insomnia, anxiety, irritability",vata-pitta
+"heaviness, cold, lethargy",kapha
+"fatigue, water retention, congestion, obesity, sinus congestion",kapha
+"dryness, bloating, fatigue, gas",vata
+"lethargy, fatigue, obesity, asthma, mucus",kapha
+"fatigue, asthma, sweet craving",kapha
+"fatigue, bloating, dizziness, joint pain, insomnia",vata
+"indigestion, anger, irritability",vata-pitta
+"joint pain, gas, anxiety",vata
+"sluggishness, heaviness, mucus, fatigue",kapha
+"cold, sinus congestion, lethargy",kapha
+"fatigue, cough, water retention, heaviness, obesity",kapha
+"irritability, insomnia, indigestion",vata-pitta
+"anxiety, gas, dryness",vata
+"dryness, bloating, gas, fear",vata
+"sinus congestion, fatigue, mucus",kapha
+"fatigue, obesity, sluggishness, sinus congestion",kapha
+"anxiety, fatigue, gas",vata
+"dryness, dizziness, joint pain, constipation, bloating",vata
+"fear, dryness, bloating, joint pain",vata
+"acidity, anger, skin rashes, burning sensation, excessive hunger",pitta
+"indigestion, acidity, burning sensation, migraines",pitta
+"burning sensation, migraines, skin rashes, thirst, insomnia",pitta
+"fatigue, anxiety, fear, constipation, joint pain",vata
+"skin rashes, diarrhea, thirst, insomnia, migraines",pitta
+"constipation, fear, gas, anxiety, dryness",vata
+"indigestion, irritability, anxiety",vata-pitta
+"sweet craving, water retention, sinus congestion",kapha
+"fear, constipation, dryness, fatigue",vata
+"skin rashes, heartburn, sensitivity to heat, ulcers",pitta
+"fear, constipation, joint pain, gas, fatigue",vata
+"constipation, fear, insomnia, irregular sleep, gas",vata
+"poor sleep, irritability, heat intolerance, stress",vata-pitta
+"indigestion, anxiety, anger",vata-pitta
+"lethargy, asthma, heaviness, sweet craving, sluggishness",kapha
+"cold, sweet craving, asthma, sluggishness",kapha
+"anger, irritability, insomnia",vata-pitta
+"fear, bloating, fatigue",vata
+"irregular sleep, dryness, dizziness, anxiety",vata
+"heaviness, fatigue, sluggishness, lethargy, cough",kapha
+"cold, asthma, sweet craving, cough",kapha
+"heaviness, mucus, cold, cough",kapha
+"mucus, sluggishness, congestion, cough",kapha
+"indigestion, insomnia, irritability, heat intolerance",vata-pitta
+"insomnia, dryness, irregular sleep, dizziness, fatigue",vata
+"insomnia, heat intolerance, anxiety, anger",vata-pitta
+"insomnia, stress, poor sleep, irritability",vata-pitta
+"anger, anxiety, irritability, indigestion",vata-pitta
+"bloating, fatigue, constipation, dryness",vata
+"lethargy, mucus, obesity, cold",kapha
+"burning sensation, sensitivity to heat, skin rashes, indigestion",pitta
+"indigestion, thirst, sensitivity to heat, insomnia",pitta
+"fatigue, heaviness, cough, lethargy",kapha
+"insomnia, anger, diarrhea",pitta
+"congestion, lethargy, fatigue, cough",kapha
+"sensitivity to heat, acidity, insomnia, anger",pitta
+"sluggishness, sinus congestion, cough, water retention",kapha
+"poor sleep, stress, indigestion",vata-pitta
+"constipation, insomnia, dizziness, dryness",vata
+"water retention, lethargy, congestion, sweet craving",kapha
+"asthma, sluggishness, water retention",kapha
+"sweet craving, obesity, congestion, mucus, asthma",kapha
+"stress, heat intolerance, anger",vata-pitta
+"anger, heat intolerance, poor sleep",vata-pitta
+"acidity, indigestion, migraines, diarrhea",pitta
+"stress, insomnia, irritability, anxiety",vata-pitta
+"excessive hunger, burning sensation, thirst, anger",pitta
+"asthma, sinus congestion, lethargy",kapha
+"anxiety, constipation, fear, dryness, insomnia",vata
+"heat intolerance, irritability, poor sleep",vata-pitta
+"heaviness, asthma, sinus congestion, sweet craving, cough",kapha
+"thirst, insomnia, burning sensation",pitta
+"gas, anxiety, insomnia, bloating",vata
+"constipation, dizziness, fear, bloating, irregular sleep",vata
+"stress, poor sleep, insomnia, anxiety, anger",vata-pitta
+"fatigue, joint pain, bloating, constipation, anxiety",vata
+"insomnia, anxiety, heat intolerance",vata-pitta
+"anxiety, irritability, poor sleep, heat intolerance, stress",vata-pitta
+"anxiety, indigestion, poor sleep",vata-pitta
+"cough, obesity, sweet craving",kapha
+"sweet craving, cold, lethargy",kapha
+"water retention, cold, obesity, lethargy, asthma",kapha
+"congestion, cough, cold, sinus congestion, lethargy",kapha
+"fatigue, cold, congestion, lethargy",kapha
+"insomnia, indigestion, poor sleep, irritability",vata-pitta
+"insomnia, anxiety, joint pain, fear, gas",vata
+"fear, joint pain, dizziness, irregular sleep, constipation",vata
+"gas, insomnia, dryness, constipation, bloating",vata
+"joint pain, bloating, irregular sleep, fear, fatigue",vata
+"acidity, sensitivity to heat, anger",pitta
+"sensitivity to heat, acidity, diarrhea, skin rashes, migraines",pitta
+"dizziness, fear, joint pain, fatigue",vata
+"heaviness, asthma, obesity, cold",kapha
+"cold, water retention, cough, congestion, mucus",kapha
+"thirst, burning sensation, migraines, anger, indigestion",pitta
+"fatigue, fear, joint pain, constipation, bloating",vata
+"obesity, cold, sinus congestion",kapha
+"excessive hunger, acidity, migraines",pitta
+"sweet craving, heaviness, cold",kapha
+"congestion, sweet craving, sluggishness",kapha
+"indigestion, diarrhea, acidity, excessive hunger",pitta
+"irregular sleep, gas, insomnia",vata
+"dizziness, constipation, bloating",vata
+"insomnia, anger, diarrhea",pitta
+"dryness, insomnia, joint pain, bloating",vata
+"bloating, irregular sleep, dryness",vata
+"migraines, acidity, ulcers",pitta
+"joint pain, bloating, irregular sleep, fear",vata
+"burning sensation, thirst, skin rashes",pitta
+"poor sleep, irritability, stress, insomnia",vata-pitta
+"sweet craving, lethargy, cold, obesity",kapha
+"ulcers, skin rashes, migraines",pitta
+"anxiety, bloating, dizziness, insomnia, fatigue",vata
+"joint pain, fatigue, irregular sleep, dizziness",vata
+"heartburn, insomnia, indigestion, diarrhea, migraines",pitta
+"anxiety, bloating, fatigue, insomnia",vata
+"dizziness, insomnia, fear",vata
+"insomnia, fatigue, gas, dizziness, anxiety",vata
+"sluggishness, cold, sweet craving",kapha
+"asthma, fatigue, heaviness, cough",kapha
+"sluggishness, fatigue, asthma, mucus, obesity",kapha
+"anxiety, dryness, constipation, dizziness, joint pain",vata
+"bloating, fear, dryness, fatigue",vata
+"poor sleep, indigestion, irritability",vata-pitta
+"sinus congestion, mucus, obesity",kapha
+"insomnia, gas, irregular sleep",vata
+"cough, sweet craving, sinus congestion, congestion",kapha
+"thirst, indigestion, burning sensation",pitta
+"joint pain, dryness, insomnia, constipation",vata
+"heaviness, sinus congestion, water retention, sluggishness",kapha
+"irregular sleep, fatigue, insomnia, joint pain",vata
+"thirst, migraines, insomnia",pitta
+"anxiety, stress, heat intolerance, anger",vata-pitta
+"diarrhea, thirst, burning sensation",pitta
+"insomnia, joint pain, bloating, anxiety",vata
+"cough, cold, asthma",kapha
+"migraines, burning sensation, skin rashes, sensitivity to heat, thirst",pitta
+"insomnia, anxiety, poor sleep",vata-pitta
+"sensitivity to heat, migraines, diarrhea, acidity",pitta
+"indigestion, anxiety, irritability, poor sleep, insomnia",vata-pitta
+"dryness, joint pain, fear, irregular sleep",vata
+"indigestion, poor sleep, stress, insomnia, irritability",vata-pitta
+"insomnia, gas, fear, joint pain",vata
+"cold, mucus, cough, water retention",kapha
+"lethargy, heaviness, water retention",kapha
+"anger, poor sleep, stress, irritability",vata-pitta
+"irritability, insomnia, indigestion, stress",vata-pitta
+"anger, anxiety, insomnia, indigestion",vata-pitta
+"fatigue, cough, sluggishness",kapha
+"cold, congestion, sweet craving, asthma, mucus",kapha
+"sensitivity to heat, excessive hunger, burning sensation",pitta
+"anxiety, gas, fear, dryness, dizziness",vata
+"lethargy, water retention, sluggishness, heaviness",kapha
+"anxiety, heat intolerance, poor sleep, irritability",vata-pitta
+"heat intolerance, irritability, anger",vata-pitta
+"joint pain, dizziness, irregular sleep, insomnia",vata
+"dizziness, anxiety, constipation, dryness",vata
+"acidity, thirst, heartburn, skin rashes, anger",pitta
+"mucus, heaviness, obesity",kapha
+"indigestion, anxiety, stress",vata-pitta
+"skin rashes, migraines, heartburn, burning sensation, diarrhea",pitta
+"water retention, sweet craving, cold, fatigue, obesity",kapha
+"bloating, constipation, insomnia, fatigue",vata
+"constipation, dryness, fear, anxiety",vata
+"excessive hunger, sensitivity to heat, burning sensation, migraines",pitta
+"insomnia, heat intolerance, anger",vata-pitta
+"dizziness, dryness, irregular sleep, constipation",vata
+"insomnia, burning sensation, acidity",pitta
+"irritability, heat intolerance, anxiety, insomnia",vata-pitta
+"asthma, congestion, mucus, cold, water retention",kapha
+"acidity, burning sensation, thirst, heartburn",pitta
+"sinus congestion, congestion, sweet craving, cough, sluggishness",kapha
+"heaviness, water retention, cough, asthma, congestion",kapha
+"poor sleep, indigestion, anger",vata-pitta
+"anxiety, fear, insomnia",vata
+"cough, obesity, heaviness, mucus, asthma",kapha
+"poor sleep, indigestion, insomnia, anxiety, heat intolerance",vata-pitta
+"anger, indigestion, anxiety, heat intolerance, stress",vata-pitta
+"insomnia, anger, irritability",vata-pitta
+"anxiety, dryness, joint pain, fatigue",vata
+"dryness, fear, constipation",vata
+"mucus, heaviness, obesity",kapha
+"insomnia, acidity, sensitivity to heat, thirst, anger",pitta
+"heat intolerance, irritability, poor sleep, anxiety, anger",vata-pitta
+"heartburn, diarrhea, burning sensation, thirst",pitta
+"sweet craving, sluggishness, cough, asthma, water retention",kapha
+"anxiety, insomnia, gas, irregular sleep",vata
+"anxiety, joint pain, dryness, dizziness, bloating",vata
+"lethargy, cold, sinus congestion",kapha
+"migraines, excessive hunger, heartburn",pitta
+"mucus, water retention, lethargy",kapha
+"stress, poor sleep, irritability, indigestion, heat intolerance",vata-pitta
+"sweet craving, asthma, water retention, congestion, lethargy",kapha
+"lethargy, cough, sweet craving, cold",kapha
+"diarrhea, insomnia, thirst, excessive hunger, heartburn",pitta
+"anger, poor sleep, indigestion, stress",vata-pitta
+"insomnia, constipation, gas, fear, irregular sleep",vata
+"sensitivity to heat, migraines, heartburn, burning sensation, insomnia",pitta
+"anger, insomnia, indigestion, irritability, poor sleep",vata-pitta
+"irregular sleep, fear, anxiety, dizziness, constipation",vata
+"indigestion, heat intolerance, anxiety, irritability",vata-pitta
+"fatigue, sluggishness, congestion",kapha
+"poor sleep, irritability, anxiety, anger, stress",vata-pitta
+"acidity, sensitivity to heat, anger",pitta
+"sensitivity to heat, insomnia, thirst, excessive hunger",pitta
+"water retention, asthma, obesity, congestion",kapha
+"constipation, dizziness, gas, anxiety, dryness",vata
+"indigestion, diarrhea, burning sensation, thirst",pitta
+"skin rashes, heartburn, diarrhea",pitta
+"fear, joint pain, bloating",vata
+"anxiety, dryness, joint pain, gas, insomnia",vata
+"cold, lethargy, fatigue, mucus, sweet craving",kapha
+"congestion, obesity, mucus, lethargy",kapha
+"irregular sleep, fatigue, anxiety, dryness, constipation",vata
+"anger, skin rashes, ulcers, excessive hunger",pitta
+"fatigue, anxiety, dizziness, constipation, dryness",vata
+"acidity, sensitivity to heat, ulcers",pitta
+"acidity, diarrhea, insomnia, ulcers",pitta
+"dizziness, insomnia, irregular sleep, bloating",vata
+"indigestion, migraines, ulcers",pitta
+"anxiety, fatigue, insomnia, joint pain, irregular sleep",vata
+"mucus, water retention, lethargy, sinus congestion, obesity",kapha
+"congestion, obesity, cough, lethargy",kapha
+"poor sleep, insomnia, indigestion",vata-pitta
+"heaviness, sweet craving, asthma, congestion",kapha
+"sweet craving, water retention, sinus congestion",kapha
+"fatigue, dizziness, irregular sleep, insomnia, constipation",vata
+"constipation, irregular sleep, joint pain, dizziness",vata
+"poor sleep, anger, insomnia",vata-pitta
+"stress, anger, heat intolerance",vata-pitta
+"burning sensation, insomnia, migraines, diarrhea",pitta
+"insomnia, heat intolerance, anger, anxiety",vata-pitta
+"burning sensation, excessive hunger, insomnia",pitta
+"excessive hunger, migraines, indigestion",pitta
+"anxiety, indigestion, insomnia",vata-pitta
+"insomnia, stress, indigestion, irritability, heat intolerance",vata-pitta
+"heaviness, congestion, fatigue",kapha
+"stress, insomnia, anxiety, poor sleep",vata-pitta
+"gas, fatigue, anxiety",vata
+"acidity, thirst, diarrhea, skin rashes, burning sensation",pitta
+"insomnia, poor sleep, irritability, indigestion",vata-pitta
+"fear, dryness, bloating, insomnia, fatigue",vata
+"heartburn, burning sensation, indigestion, acidity, excessive hunger",pitta
+"poor sleep, anger, indigestion, irritability",vata-pitta
+"constipation, gas, insomnia, anxiety, irregular sleep",vata
+"joint pain, insomnia, gas, irregular sleep, fear",vata
+"joint pain, dryness, dizziness, gas",vata
+"stress, indigestion, irritability",vata-pitta
+"constipation, irregular sleep, dryness",vata
+"anxiety, irritability, poor sleep, insomnia",vata-pitta
+"migraines, thirst, indigestion, heartburn",pitta
+"dizziness, constipation, irregular sleep",vata
+"heaviness, mucus, cold",kapha
+"dryness, fatigue, fear, irregular sleep",vata
+"acidity, migraines, thirst, excessive hunger",pitta
+"fatigue, sweet craving, congestion",kapha
+"dizziness, fear, insomnia",vata
+"migraines, sensitivity to heat, acidity",pitta
+"fatigue, dryness, insomnia, fear, anxiety",vata
+"fatigue, irregular sleep, anxiety",vata
+"stress, heat intolerance, insomnia",vata-pitta
+"anger, indigestion, burning sensation, migraines",pitta
+"indigestion, heat intolerance, anger, anxiety",vata-pitta
+"water retention, asthma, fatigue, sinus congestion",kapha
+"water retention, obesity, mucus",kapha
+"indigestion, anger, migraines, insomnia, skin rashes",pitta
+"cough, sweet craving, fatigue, asthma, sluggishness",kapha
+"water retention, sinus congestion, congestion, obesity",kapha
+"indigestion, anxiety, insomnia",vata-pitta
+"heat intolerance, anxiety, anger, insomnia",vata-pitta
+"insomnia, dizziness, bloating, constipation",vata
+"dryness, insomnia, gas, bloating, anxiety",vata
+"dryness, dizziness, gas",vata
+"poor sleep, anxiety, irritability, indigestion, stress",vata-pitta
+"constipation, gas, dryness",vata
+"heaviness, water retention, sinus congestion, cough",kapha
+"fear, joint pain, fatigue",vata
+"mucus, obesity, cold, congestion, water retention",kapha
+"acidity, insomnia, burning sensation",pitta
+"irregular sleep, dizziness, constipation, fear",vata
+"heartburn, insomnia, excessive hunger, sensitivity to heat, thirst",pitta
+"insomnia, dryness, dizziness, anxiety",vata
+"anxiety, dryness, fear, insomnia, bloating",vata
+"constipation, fear, joint pain, fatigue",vata
+"fatigue, sweet craving, heaviness, congestion",kapha
+"fatigue, sweet craving, cough, sinus congestion",kapha
+"sluggishness, cold, asthma, sinus congestion",kapha
+"skin rashes, anger, ulcers, burning sensation",pitta
+"irritability, heat intolerance, poor sleep",vata-pitta
+"thirst, anger, ulcers, diarrhea, excessive hunger",pitta
+"insomnia, heat intolerance, anxiety",vata-pitta
+"fear, dizziness, anxiety",vata
+"asthma, obesity, congestion, cough",kapha
+"cold, mucus, sinus congestion, fatigue, water retention",kapha
+"excessive hunger, migraines, diarrhea, ulcers",pitta
+"indigestion, heat intolerance, insomnia, anxiety, irritability",vata-pitta
+"lethargy, fatigue, congestion, sweet craving, asthma",kapha
+"stress, anxiety, insomnia, heat intolerance",vata-pitta
+"heat intolerance, poor sleep, indigestion",vata-pitta
+"bloating, gas, dryness",vata
+"indigestion, excessive hunger, ulcers",pitta
+"excessive hunger, migraines, indigestion, heartburn, insomnia",pitta
+"insomnia, indigestion, anxiety, anger",vata-pitta

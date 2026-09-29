@@ -1,0 +1,19 @@
+<svg width="150" height="80" viewBox="0 0 150 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="branchGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Main branch -->
+  <path d="M10 40 Q50 35, 90 40 Q120 42, 140 40" stroke="#15803d" stroke-width="3" fill="none"/>
+  <!-- Small leaves -->
+  <ellipse cx="25" cy="30" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(-30 25 30)"/>
+  <ellipse cx="35" cy="50" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(30 35 50)"/>
+  <ellipse cx="55" cy="25" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(-45 55 25)"/>
+  <ellipse cx="65" cy="55" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(45 65 55)"/>
+  <ellipse cx="85" cy="28" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(-20 85 28)"/>
+  <ellipse cx="95" cy="52" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(20 95 52)"/>
+  <ellipse cx="115" cy="32" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(-35 115 32)"/>
+  <ellipse cx="125" cy="48" rx="8" ry="12" fill="url(#branchGradient)" transform="rotate(35 125 48)"/>
+</svg>

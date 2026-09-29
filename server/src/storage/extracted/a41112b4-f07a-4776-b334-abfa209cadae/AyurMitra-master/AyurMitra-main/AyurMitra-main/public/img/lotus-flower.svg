@@ -1,0 +1,30 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="lotusGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.9" />
+      <stop offset="70%" style="stop-color:#f59e0b;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:0.5" />
+    </radialGradient>
+  </defs>
+  <!-- Outer petals -->
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(0 60 60)"/>
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(45 60 60)"/>
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(90 60 60)"/>
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(135 60 60)"/>
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(180 60 60)"/>
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(225 60 60)"/>
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(270 60 60)"/>
+  <ellipse cx="60" cy="40" rx="15" ry="25" fill="url(#lotusGradient)" transform="rotate(315 60 60)"/>
+  <!-- Inner petals -->
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(22.5 60 60)"/>
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(67.5 60 60)"/>
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(112.5 60 60)"/>
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(157.5 60 60)"/>
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(202.5 60 60)"/>
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(247.5 60 60)"/>
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(292.5 60 60)"/>
+  <ellipse cx="60" cy="45" rx="10" ry="18" fill="#fbbf24" opacity="0.8" transform="rotate(337.5 60 60)"/>
+  <!-- Center -->
+  <circle cx="60" cy="60" r="8" fill="#f59e0b"/>
+  <circle cx="60" cy="60" r="4" fill="#d97706"/>
+</svg>

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { ReactLenis } from "lenis/react";
 
 import Navbar from "../components/layout/Navbar";
@@ -23,7 +23,6 @@ const getDeviceProfile = () => {
   }
 
   const width = window.innerWidth;
-  const height = window.innerHeight;
 
   const reducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",

@@ -1,0 +1,653 @@
+// src/controllers/admin.controller.js
+const { asyncHandler, AppError } = require('../middleware/error.middleware');
+const User = require('../models/User');
+const Consultation = require('../models/Consultation');
+const Therapist = require('../models/Therapist');
+const Doctor = require('../models/Doctor');
+const moment = require('moment');
+
+class AdminController {
+  
+  // ================================
+  // USER MANAGEMENT SECTION
+  // ================================
+  
+  // Get all users with filtering and pagination
+  getUsers = asyncHandler(async (req, res) => {
+    const {
+      page = 1,
+      limit = 10,
+      role,
+      isActive,
+      search,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = req.query;
+    
+    // Build filter object
+    const filter = {};
+    if (role) filter.role = role;
+    if (isActive !== undefined) filter.isActive = isActive === 'true';
+    
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Build sort object
+    const sort = {};
+    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+    
+    // Execute query with pagination
+    const skip = (page - 1) * limit;
+    
+    const [users, totalUsers] = await Promise.all([
+      User.find(filter)
+        .select('-passwordHash -refreshTokens')
+        .sort(sort)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .populate('createdBy', 'name email')
+        .populate('updatedBy', 'name email'),
+      User.countDocuments(filter)
+    ]);
+    
+    const totalPages = Math.ceil(totalUsers / limit);
+    
+    return res.json({
+      success: true,
+      data: {
+        users,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalUsers,
+          hasNextPage: page < totalPages,
+          hasPrevPage: page > 1
+        }
+      }
+    });
+  });
+  
+  // Add this method to your AdminController class
+getUserStats = asyncHandler(async (req, res) => {
+    const today = moment().startOf('day');
+    const thisWeek = moment().startOf('week');
+    const thisMonth = moment().startOf('month');
+    
+    // Basic user counts
+    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments({ isActive: true });
+    const inactiveUsers = await User.countDocuments({ isActive: false });
+    
+    // New users this week and month
+    const newUsersThisWeek = await User.countDocuments({
+      createdAt: { $gte: thisWeek.toDate() }
+    });
+    
+    const newUsersThisMonth = await User.countDocuments({
+      createdAt: { $gte: thisMonth.toDate() }
+    });
+    
+    // Role-wise distribution
+    const roleStats = await User.aggregate([
+      {
+        $group: {
+          _id: '$role',
+          count: { $sum: 1 },
+          active: { $sum: { $cond: ['$isActive', 1, 0] } },
+          inactive: { $sum: { $cond: ['$isActive', 0, 1] } }
+        }
+      }
+    ]);
+    
+    // Recent user registrations (last 7 days)
+    const recentRegistrations = await User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: moment().subtract(7, 'days').toDate() }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { '_id.date': 1 }
+      }
+    ]);
+    
+    return res.json({
+      success: true,
+      data: {
+        overview: {
+          totalUsers,
+          activeUsers,
+          inactiveUsers,
+          newUsersThisWeek,
+          newUsersThisMonth
+        },
+        roleDistribution: roleStats,
+        recentRegistrations,
+        generatedAt: new Date().toISOString()
+      }
+    });
+  });
+  
+  // Get single user by ID
+  getUserById = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    
+    const user = await User.findById(userId)
+      .select('-passwordHash -refreshTokens')
+      .populate('createdBy', 'name email')
+      .populate('updatedBy', 'name email');
+    
+    if (!user) {
+      throw new AppError('User not found', 404, 'USER_NOT_FOUND');
+    }
+    
+    return res.json({
+      success: true,
+      data: { user }
+    });
+  });
+  
+  // Create new user
+  createUser = asyncHandler(async (req, res) => {
+    const {
+      name,
+      email,
+      password,
+      role = 'patient',
+      permissions = [],
+      isActive = true,
+      address,
+      profile
+    } = req.body;
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new AppError('User with this email already exists', 400, 'USER_EXISTS');
+    }
+    
+    // Create user
+    const userData = {
+      name,
+      email,
+      passwordHash: password, // Will be hashed by pre-save middleware
+      role,
+      permissions,
+      isActive,
+      address,
+      profile,
+      createdBy: req.user._id,
+      emailVerified: true // Admin-created users are auto-verified
+    };
+    
+    const user = await User.create(userData);
+    
+    // Remove sensitive data from response
+    const userResponse = user.toObject();
+    delete userResponse.passwordHash;
+    delete userResponse.refreshTokens;
+    
+    return res.status(201).json({
+      success: true,
+      message: 'User created successfully',
+      data: { user: userResponse }
+    });
+  });
+  
+  // Update user
+  updateUser = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const updateData = { ...req.body };
+    
+    // Remove fields that shouldn't be updated directly
+    delete updateData.passwordHash;
+    delete updateData.refreshTokens;
+    delete updateData.createdAt;
+    delete updateData.createdBy;
+    
+    // Add audit info
+    updateData.updatedBy = req.user._id;
+    
+    // Hash password if provided
+    if (updateData.password) {
+      updateData.passwordHash = updateData.password; // Will be hashed by pre-save middleware
+      delete updateData.password;
+    }
+    
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-passwordHash -refreshTokens');
+    
+    if (!user) {
+      throw new AppError('User not found', 404, 'USER_NOT_FOUND');
+    }
+    
+    return res.json({
+      success: true,
+      message: 'User updated successfully',
+      data: { user }
+    });
+  });
+  
+  // Toggle user active status
+  toggleUserStatus = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new AppError('User not found', 404, 'USER_NOT_FOUND');
+    }
+    
+    // Prevent admin from deactivating themselves
+    if (user._id.toString() === req.user._id.toString()) {
+      throw new AppError('Cannot change your own status', 400, 'INVALID_OPERATION');
+    }
+    
+    user.isActive = !user.isActive;
+    user.updatedBy = req.user._id;
+    await user.save();
+    
+    return res.json({
+      success: true,
+      message: User ${user.isActive ? 'activated' : 'deactivated'} successfully,
+      data: {
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          isActive: user.isActive
+        }
+      }
+    });
+  });
+  
+  // ================================
+  // APPOINTMENT MANAGEMENT SECTION  
+  // ================================
+  
+  // Get all appointments with filtering
+  getAppointments = asyncHandler(async (req, res) => {
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      providerId,
+      patientId,
+      startDate,
+      endDate,
+      sortBy = 'scheduledAt',
+      sortOrder = 'desc'
+    } = req.query;
+    
+    // Build filter
+    const filter = {};
+    if (status) filter.status = status;
+    if (providerId) filter.providerId = providerId;
+    if (patientId) filter.patientId = patientId;
+    
+    if (startDate || endDate) {
+      filter.scheduledAt = {};
+      if (startDate) filter.scheduledAt.$gte = new Date(startDate);
+      if (endDate) filter.scheduledAt.$lte = new Date(endDate);
+    }
+    
+    // Build sort
+    const sort = {};
+    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+    
+    const skip = (page - 1) * limit;
+    
+    const [appointments, totalAppointments] = await Promise.all([
+      Consultation.find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .populate('providerId', 'name email role')
+        .populate('patientId', 'name email'),
+      Consultation.countDocuments(filter)
+    ]);
+    
+    const totalPages = Math.ceil(totalAppointments / limit);
+    
+    return res.json({
+      success: true,
+      data: {
+        appointments,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalAppointments,
+          hasNextPage: page < totalPages,
+          hasPrevPage: page > 1
+        }
+      }
+    });
+  });
+  
+  // Reschedule appointment
+  rescheduleAppointment = asyncHandler(async (req, res) => {
+    const { appointmentId } = req.params;
+    const { newDateTime, reason } = req.body;
+    
+    if (!newDateTime) {
+      throw new AppError('New date time is required', 400, 'MISSING_DATETIME');
+    }
+    
+    const appointment = await Consultation.findById(appointmentId)
+      .populate('providerId', 'name email')
+      .populate('patientId', 'name email');
+      
+    if (!appointment) {
+      throw new AppError('Appointment not found', 404, 'APPOINTMENT_NOT_FOUND');
+    }
+    
+    // Store original details for audit
+    const originalDateTime = appointment.scheduledAt;
+    
+    // Update appointment
+    appointment.scheduledAt = new Date(newDateTime);
+    appointment.updatedBy = req.user._id;
+    
+    // Add to history/audit log
+    if (!appointment.adminActions) appointment.adminActions = [];
+    appointment.adminActions.push({
+      action: 'reschedule',
+      performedBy: req.user._id,
+      originalDateTime,
+      newDateTime: new Date(newDateTime),
+      reason: reason || 'Admin rescheduled',
+      timestamp: new Date()
+    });
+    
+    await appointment.save();
+    
+    return res.json({
+      success: true,
+      message: 'Appointment rescheduled successfully',
+      data: { 
+        appointment,
+        changes: {
+          from: originalDateTime,
+          to: newDateTime,
+          reason
+        }
+      }
+    });
+  });
+  deleteUser = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    
+    // Prevent admin from deleting themselves
+    if (userId === req.user._id.toString()) {
+      throw new AppError('Cannot delete your own account', 400, 'INVALID_OPERATION');
+    }
+    
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        isActive: false,
+        updatedBy: req.user._id,
+        updatedAt: new Date(),
+        // Add deletion marker
+        deletedAt: new Date(),
+        deletedBy: req.user._id
+      },
+      { new: true }
+    ).select('_id name email isActive');
+    
+    if (!user) {
+      throw new AppError('User not found', 404, 'USER_NOT_FOUND');
+    }
+    
+    return res.json({
+      success: true,
+      message: 'User deleted successfully',
+      data: { user }
+    });
+  });
+  
+  // Cancel appointment
+  cancelAppointment = asyncHandler(async (req, res) => {
+    const { appointmentId } = req.params;
+    const { reason } = req.body;
+    
+    const appointment = await Consultation.findById(appointmentId)
+      .populate('providerId', 'name email')
+      .populate('patientId', 'name email');
+      
+    if (!appointment) {
+      throw new AppError('Appointment not found', 404, 'APPOINTMENT_NOT_FOUND');
+    }
+    
+    if (appointment.status === 'cancelled') {
+      throw new AppError('Appointment is already cancelled', 400, 'ALREADY_CANCELLED');
+    }
+    
+    // Update status
+    appointment.status = 'cancelled';
+    appointment.updatedBy = req.user._id;
+    
+    // Add to audit log
+    if (!appointment.adminActions) appointment.adminActions = [];
+    appointment.adminActions.push({
+      action: 'cancel',
+      performedBy: req.user._id,
+      reason: reason || 'Admin cancelled',
+      timestamp: new Date()
+    });
+    
+    await appointment.save();
+    
+    return res.json({
+      success: true,
+      message: 'Appointment cancelled successfully',
+      data: { appointment }
+    });
+  });
+  
+  // ================================
+  // DASHBOARD & ANALYTICS SECTION
+  // ================================
+  
+  // Get admin dashboard statistics
+  getDashboardStats = asyncHandler(async (req, res) => {
+    const today = moment().startOf('day');
+    const thisWeek = moment().startOf('week');
+    const thisMonth = moment().startOf('month');
+    
+    // User statistics
+    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments({ isActive: true });
+    const newUsersThisWeek = await User.countDocuments({
+      createdAt: { $gte: thisWeek.toDate() }
+    });
+    
+    // Appointment statistics
+    const totalAppointments = await Consultation.countDocuments();
+    const todaysAppointments = await Consultation.countDocuments({
+      scheduledAt: {
+        $gte: today.toDate(),
+        $lt: moment(today).add(1, 'day').toDate()
+      }
+    });
+    const thisWeeksAppointments = await Consultation.countDocuments({
+      scheduledAt: { $gte: thisWeek.toDate() }
+    });
+    
+    // Role-wise user distribution
+    const userRoles = await User.aggregate([
+      {
+        $group: {
+          _id: '$role',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    
+    // Appointment status distribution
+    const appointmentStatus = await Consultation.aggregate([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    
+    // Monthly appointment trends
+    const monthlyTrends = await Consultation.aggregate([
+      {
+        $match: {
+          scheduledAt: { $gte: moment().subtract(6, 'months').toDate() }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$scheduledAt' },
+            month: { $month: '$scheduledAt' }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { '_id.year': 1, '_id.month': 1 }
+      }
+    ]);
+    
+    return res.json({
+      success: true,
+      data: {
+        overview: {
+          totalUsers,
+          activeUsers,
+          newUsersThisWeek,
+          totalAppointments,
+          todaysAppointments,
+          thisWeeksAppointments
+        },
+        distributions: {
+          userRoles,
+          appointmentStatus
+        },
+        trends: {
+          monthlyAppointments: monthlyTrends
+        }
+      }
+    });
+  });
+  
+  // Get system health and performance metrics
+  getSystemMetrics = asyncHandler(async (req, res) => {
+    // Database performance metrics
+    const dbStats = {
+      users: await User.countDocuments(),
+      consultations: await Consultation.countDocuments(),
+      therapists: await Therapist.countDocuments(),
+      doctors: await Doctor.countDocuments()
+    };
+    
+    // Recent activity
+    const recentActivity = await Consultation.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate('providerId', 'name')
+      .populate('patientId', 'name')
+      .select('scheduledAt status createdAt');
+    
+    return res.json({
+      success: true,
+      data: {
+        database: dbStats,
+        recentActivity,
+        serverTime: new Date().toISOString(),
+        uptime: process.uptime()
+      }
+    });
+  });
+}
+
+// Add this method to your AdminController class
+getUserStats = asyncHandler(async (req, res) => {
+  const today = moment().startOf('day');
+  const thisWeek = moment().startOf('week');
+  const thisMonth = moment().startOf('month');
+  
+  // Basic user counts
+  const totalUsers = await User.countDocuments();
+  const activeUsers = await User.countDocuments({ isActive: true });
+  const inactiveUsers = await User.countDocuments({ isActive: false });
+  
+  // New users this week and month
+  const newUsersThisWeek = await User.countDocuments({
+    createdAt: { $gte: thisWeek.toDate() }
+  });
+  
+  const newUsersThisMonth = await User.countDocuments({
+    createdAt: { $gte: thisMonth.toDate() }
+  });
+  
+  // Role-wise distribution
+  const roleStats = await User.aggregate([
+    {
+      $group: {
+        _id: '$role',
+        count: { $sum: 1 },
+        active: { $sum: { $cond: ['$isActive', 1, 0] } },
+        inactive: { $sum: { $cond: ['$isActive', 0, 1] } }
+      }
+    }
+  ]);
+  
+  // Recent user registrations (last 7 days)
+  const recentRegistrations = await User.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: moment().subtract(7, 'days').toDate() }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }
+        },
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort: { '_id.date': 1 }
+    }
+  ]);
+  
+  return res.json({
+    success: true,
+    data: {
+      overview: {
+        totalUsers,
+        activeUsers,
+        inactiveUsers,
+        newUsersThisWeek,
+        newUsersThisMonth
+      },
+      roleDistribution: roleStats,
+      recentRegistrations,
+      generatedAt: new Date().toISOString()
+    }
+  });
+});
+
+module.exports = new AdminController();
