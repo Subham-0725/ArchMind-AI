@@ -11,6 +11,8 @@ import { randomUUID } from "crypto";
 import Project from "../models/Project.js";
 import { generateArchitecture, generateERD } from "../services/llmService.js";
 import { aggregateBlueprint } from "../rie/blueprintAggregator.js";
+import { extractDatabaseSchema } from "../rie/dbSchemaExtractor.js";
+import { populateKeyFileContents } from "../services/githubService.js";
 
 /**
  * Valid analysis module names and the capability key each one requires.
@@ -84,21 +86,29 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
   await project.save();
 
   try {
-    // Retrieve or generate Repository Blueprint
-    let blueprint = project.blueprint;
-    if (!blueprint || !blueprint.metadata || !blueprint.metadata.name) {
-      blueprint = aggregateBlueprint({
-        name: project.name,
-        source: project.source,
-        tree: project.tree,
-        techStack: project.techStack,
-        primaryLanguage: project.primaryLanguage,
-        secondaryLanguages: project.secondaryLanguages,
-        capabilities: project.capabilities,
-        ast: project.ast,
-      });
-      project.blueprint = blueprint;
+    // If project has database capability, ensure database schema is fresh
+    if (project.capabilities?.hasDatabase) {
+      if (!project.database || !Array.isArray(project.database.entities) || project.database.entities.length === 0) {
+        if (project.source === "github" && project.github?.owner && project.github?.repo) {
+          await populateKeyFileContents(project.github.owner, project.github.repo, project.tree);
+        }
+        project.database = extractDatabaseSchema(project.tree, project.capabilities, project.techStack, null);
+      }
     }
+
+    // Always regenerate blueprint to ensure latest database & models are in sync
+    const blueprint = aggregateBlueprint({
+      name: project.name,
+      source: project.source,
+      tree: project.tree,
+      techStack: project.techStack,
+      primaryLanguage: project.primaryLanguage,
+      secondaryLanguages: project.secondaryLanguages,
+      capabilities: project.capabilities,
+      ast: project.ast,
+      database: project.database,
+    });
+    project.blueprint = blueprint;
 
     let resultPayload = null;
 
@@ -130,7 +140,7 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
 /**
  * POST /api/projects/:id/analyze
  *
- * "Run Full Analysis" — queues all relevant modules that are not already completed.
+ * "Run Full Analysis" — queues all relevant modules. Supports ?force=true.
  */
 export const analyzeProject = async (req, res) => {
   try {
@@ -138,6 +148,7 @@ export const analyzeProject = async (req, res) => {
     if (!userId) return res.status(401).json({ success: false, error: "Unauthorized." });
 
     const { id } = req.params;
+    const isForce = req.body?.force === true || req.query?.force === "true";
     const result = await loadOwnedProject(userId, id);
     if (result.error) return res.status(result.status).json({ success: false, error: result.error });
 
@@ -157,8 +168,8 @@ export const analyzeProject = async (req, res) => {
 
       const currentStatus = getModuleStatus(project, moduleName);
 
-      // Skip if already completed and current
-      if (currentStatus.status === "completed") {
+      // Skip if already completed and current (unless force=true)
+      if (currentStatus.status === "completed" && !isForce) {
         skippedCompleted.push(moduleName);
         continue;
       }
@@ -247,9 +258,10 @@ export const analyzeModule = async (req, res) => {
       });
     }
 
+    const isForce = req.body?.force === true || req.query?.force === "true";
     const currentStatus = getModuleStatus(project, moduleName);
 
-    if (currentStatus.status === "completed") {
+    if (currentStatus.status === "completed" && !isForce) {
       return res.status(200).json({
         success: true,
         message: `${MODULE_CONFIG[moduleName].label} analysis is already completed.`,

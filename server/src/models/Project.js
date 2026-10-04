@@ -174,6 +174,15 @@ const projectSchema = new mongoose.Schema(
       isBudgetTruncated: { type: Boolean, default: false },
     },
 
+    // Extracted Database Schema (Feature 15)
+    // Populated during RIE ingestion from static analysis of model files.
+    // Used as the primary source for ERD generation via LLM.
+    database: {
+      type: { type: String, default: null },
+      entities: { type: Array, default: [] },
+      relationships: { type: Array, default: [] },
+    },
+
     // Temporary extraction path used during RIE processing.
     // Populated during in-flight extraction; cleared (set to null) after cleanup.
     // Stored so that a crashed job can resume or be inspected.
@@ -275,6 +284,7 @@ projectSchema.methods.toSafeObject = function () {
     capabilities: this.capabilities,
     ast: this.ast || null,
     blueprint: this.blueprint || null,
+    database: this.database || null,
     analysisResults: this.analysisResults || null,
     analysis: {
       architecture: analysis.architecture || defaultModuleStatus,

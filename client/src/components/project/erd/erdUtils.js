@@ -22,11 +22,13 @@ export const getLayoutedErdElements = (erdData, direction = "LR") => {
   const isHorizontal = direction === "LR";
   dagreGraph.setGraph({
     rankdir: direction,
-    nodesep: isHorizontal ? 70 : 60,
-    ranksep: isHorizontal ? 120 : 90,
+    nodesep: isHorizontal ? 60 : 70,
+    ranksep: isHorizontal ? 120 : 100,
+    marginx: 40,
+    marginy: 40,
   });
 
-  const nodeWidth = 260;
+  const nodeWidth = 280;
 
   // Initial nodes creation
   const rawNodes = entities.map((entity, idx) => {
@@ -35,13 +37,16 @@ export const getLayoutedErdElements = (erdData, direction = "LR") => {
     const nodeHeight = Math.max(110, 55 + fieldsCount * 28);
     const nodeId = String(entity.id || entity.name || `entity-${idx + 1}`);
 
+    const entityName = entity.name || entity.id || `Model_${idx + 1}`;
+    const tableName = entity.tableName || entity.name || `${entityName.toLowerCase()}s`;
+
     return {
       id: nodeId,
       type: "customEntity",
       data: {
         id: nodeId,
-        name: entity.name || `Entity${idx + 1}`,
-        tableName: entity.tableName || entity.name || `table_${idx + 1}`,
+        name: entityName,
+        tableName: tableName,
         fields: Array.isArray(entity.fields) ? entity.fields : [],
       },
       nodeHeight,

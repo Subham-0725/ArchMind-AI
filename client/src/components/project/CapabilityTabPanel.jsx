@@ -62,7 +62,7 @@ export default function CapabilityTabPanel({ tab, project, onAnalysisUpdate }) {
 
   // If tab is ERD and analysis is completed, render interactive ErdCanvas
   if (tab?.id === "erd" && moduleStatus === "completed") {
-    const erdData = analysisResults.erd || analysis.erd?.result;
+    const erdData = analysisResults?.erd || null;
     return (
       <ErdCanvas
         erdData={erdData}

@@ -309,3 +309,83 @@ export const fetchRepoTree = async (owner, repo, defaultBranch = "main") => {
     },
   };
 };
+
+/**
+ * Fetches the raw content of a file blob from GitHub Git Data API using its SHA.
+ *
+ * @param {string} owner
+ * @param {string} repo
+ * @param {string} sha
+ * @returns {Promise<string|null>} UTF-8 text content or null
+ */
+export const fetchFileBlob = async (owner, repo, sha) => {
+  if (!owner || !repo || !sha) return null;
+  const url = `${GITHUB_API_BASE}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/git/blobs/${sha}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) return null;
+    const data = await response.json();
+
+    if (data.encoding === "base64" && data.content) {
+      // Remove any whitespace/newlines in base64 string
+      const cleanBase64 = data.content.replace(/\s+/g, "");
+      return Buffer.from(cleanBase64, "base64").toString("utf-8");
+    }
+    return null;
+  } catch (err) {
+    console.warn(`[githubService] fetchFileBlob error for ${sha}:`, err.message);
+    return null;
+  }
+};
+
+/**
+ * Populates file content for key architectural, schema, and model files
+ * directly into the tree data nodes for static analysis.
+ *
+ * @param {string} owner
+ * @param {string} repo
+ * @param {Array<Object>} tree
+ * @returns {Promise<Array<Object>>}
+ */
+export const populateKeyFileContents = async (owner, repo, tree = []) => {
+  const isKeyFile = (p) => {
+    if (!p) return false;
+    const lower = p.toLowerCase();
+    return (
+      /(?:^|\/)(?:models?|schemas?|entities|db|database)\//i.test(lower) ||
+      /\.(?:model|schema)\.[jt]sx?$/i.test(lower) ||
+      lower.endsWith("schema.prisma") ||
+      lower.endsWith("models.py") ||
+      lower.endsWith("model.py") ||
+      lower.endsWith(".sql") ||
+      /^(?:server|app|index|main)\.[jt]sx?$/i.test(lower) ||
+      lower.endsWith("/server.js") ||
+      lower.endsWith("/app.js") ||
+      lower.endsWith("/index.js") ||
+      lower === "package.json"
+    );
+  };
+
+  const keyFiles = tree.filter((f) => f.type !== "dir" && f.sha && isKeyFile(f.path)).slice(0, 40);
+
+  await Promise.all(
+    keyFiles.map(async (file) => {
+      try {
+        const content = await fetchFileBlob(owner, repo, file.sha);
+        if (content) {
+          file.content = content;
+        }
+      } catch (err) {
+        console.warn(`[githubService] Failed to populate content for ${file.path}:`, err.message);
+      }
+    })
+  );
+
+  return tree;
+};
+

@@ -48,6 +48,7 @@ function deduplicate(items, keyFn) {
  * @param {Array} [projectData.secondaryLanguages=[]] - Secondary languages
  * @param {Object} [projectData.capabilities={}] - Smart relevance capabilities
  * @param {Object} [projectData.ast={}] - Tree-sitter AST extraction
+ * @param {Object} [projectData.database=null] - Extracted database schema (dbSchemaExtractor output)
  * @param {Object} [options={}]
  * @param {number} [options.maxTokens=8000] - Token budget cap
  * @returns {Object} Normalized Repository Blueprint
@@ -71,6 +72,7 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
       details: {},
     },
     ast = {},
+    database = null,
   } = projectData;
 
   // 1. Process Structure (Filter noise directories and compact fields)
@@ -148,7 +150,21 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
     (f) => `${f.file}:${f.name}`
   );
 
-  // 3. Assemble Base Blueprint Object
+  // 3. Normalize database schema (strip noise, limit for token budget)
+  let databaseSchema = null;
+  if (database && Array.isArray(database.entities) && database.entities.length > 0) {
+    databaseSchema = {
+      type: database.type || "Unknown",
+      entities: database.entities.map((e) => ({
+        name: e.name,
+        sourceFile: normalizePath(e.sourceFile || ""),
+        fields: Array.isArray(e.fields) ? e.fields : [],
+      })),
+      relationships: Array.isArray(database.relationships) ? database.relationships : [],
+    };
+  }
+
+  // 4. Assemble Base Blueprint Object
   let blueprint = {
     version: 1,
     generatedAt: new Date().toISOString(),
@@ -170,11 +186,12 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
     models,
     classes,
     functions,
+    database: databaseSchema,
     tokenEstimate: 0,
     isBudgetTruncated: false,
   };
 
-  // 4. Token Budget Optimization & Truncation Strategy
+  // 5. Token Budget Optimization & Truncation Strategy
   let jsonString = JSON.stringify(blueprint);
   let charLength = jsonString.length;
 
@@ -201,7 +218,17 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
       charLength = jsonString.length;
     }
 
-    // Step D: Omit functions entirely if still over budget (preserving routes, models, capabilities)
+    // Step D: Limit database entity fields to 20 per entity if still over budget (PRESERVE entity names)
+    if (charLength > maxChars && blueprint.database?.entities) {
+      blueprint.database.entities = blueprint.database.entities.map((e) => ({
+        ...e,
+        fields: e.fields.slice(0, 20),
+      }));
+      jsonString = JSON.stringify(blueprint);
+      charLength = jsonString.length;
+    }
+
+    // Step E: Omit functions entirely if still over budget (preserving routes, models, database, capabilities)
     if (charLength > maxChars) {
       blueprint.functions = [];
       jsonString = JSON.stringify(blueprint);

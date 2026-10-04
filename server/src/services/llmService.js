@@ -29,7 +29,7 @@ function getActiveProvider() {
 /**
  * Helper to clean and parse JSON from LLM responses (strips markdown code blocks).
  */
-export function parseAndValidateJson(text, type = "architecture") {
+export function parseAndValidateJson(text, type = "architecture", context = null) {
   if (!text || typeof text !== "string") {
     throw new Error("Empty response from LLM provider.");
   }
@@ -53,7 +53,7 @@ export function parseAndValidateJson(text, type = "architecture") {
   if (type === "architecture") {
     return validateArchitectureSchema(parsed);
   } else if (type === "erd") {
-    return validateErdSchema(parsed);
+    return validateErdSchema(parsed, context);
   }
 
   return parsed;
@@ -94,42 +94,102 @@ function validateArchitectureSchema(data) {
 
 /**
  * Validates and repairs ERD schema ({ entities: [], relationships: [] }).
+ * Strictly enforces that entities correspond to real models and removes
+ * generic placeholders (Entity2, table_2, etc.).
  */
-function validateErdSchema(data) {
-  const entities = Array.isArray(data.entities) ? data.entities : [];
-  const rawRelationships = Array.isArray(data.relationships) ? data.relationships : [];
+function validateErdSchema(data, blueprint = null) {
+  const rawEntities = Array.isArray(data?.entities) ? data.entities : [];
+  const rawRelationships = Array.isArray(data?.relationships) ? data.relationships : [];
 
-  const validEntities = entities.map((ent, idx) => ({
-    id: String(ent.id || `entity-${idx + 1}`),
-    name: ent.name || `Entity${idx + 1}`,
-    tableName: ent.tableName || ent.name || `table_${idx + 1}`,
-    fields: Array.isArray(ent.fields)
-      ? ent.fields.map((f) => ({
-          name: f.name || "field",
-          type: f.type || "String",
-          isPrimary: Boolean(f.isPrimary),
-          isNullable: f.isNullable !== false,
-        }))
-      : [],
-  }));
+  // Collect known valid model names from blueprint if available
+  const knownNames = new Set();
+  const knownNameMap = new Map(); // lowercase -> original case
+  if (blueprint?.database?.entities) {
+    for (const ent of blueprint.database.entities) {
+      if (ent.name) {
+        knownNames.add(ent.name.toLowerCase());
+        knownNameMap.set(ent.name.toLowerCase(), ent.name);
+      }
+    }
+  }
+  if (Array.isArray(blueprint?.models)) {
+    for (const m of blueprint.models) {
+      if (m.name) {
+        knownNames.add(m.name.toLowerCase());
+        knownNameMap.set(m.name.toLowerCase(), m.name);
+      }
+    }
+  }
+
+  const validEntities = [];
+
+  for (let idx = 0; idx < rawEntities.length; idx++) {
+    const ent = rawEntities[idx];
+    if (!ent) continue;
+
+    let rawName = String(ent.name || ent.id || "").trim();
+
+    // Check if name is a generic placeholder like "Entity1", "Entity2", "table_2", etc.
+    const isGenericPlaceholder = /^(Entity\d+|table_\d+|Component\d+|Model_\d+|Record)$/i.test(rawName);
+
+    if (isGenericPlaceholder && knownNames.size > 0 && !knownNames.has(rawName.toLowerCase())) {
+      // If LLM returned a placeholder but there is an unmatched known model, try to recover it
+      const remainingKnown = Array.from(knownNames).filter(
+        (kn) => !validEntities.some((ve) => ve.name.toLowerCase() === kn)
+      );
+      if (remainingKnown.length > 0) {
+        const recoveredName = knownNameMap.get(remainingKnown[0]);
+        rawName = recoveredName;
+      } else {
+        // Drop ungrounded placeholder
+        continue;
+      }
+    }
+
+    if (!rawName) continue;
+
+    const entityName = knownNameMap.get(rawName.toLowerCase()) || rawName;
+    const entityId = String(ent.id || `entity-${entityName.toLowerCase().replace(/\s+/g, "-")}`);
+    const tableName = ent.tableName || `${entityName.toLowerCase().replace(/\s+/g, "_")}s`;
+
+    validEntities.push({
+      id: entityId,
+      name: entityName,
+      tableName,
+      fields: Array.isArray(ent.fields)
+        ? ent.fields.map((f) => ({
+            name: f.name || "field",
+            type: f.type || "String",
+            isPrimary: Boolean(f.isPrimary),
+            isForeign: Boolean(f.isForeign),
+            isRequired: f.isRequired !== undefined ? Boolean(f.isRequired) : !f.isNullable,
+            isNullable: f.isNullable !== false && !f.isPrimary,
+            isUnique: Boolean(f.isUnique),
+            references: f.references || null,
+            defaultValue: f.defaultValue || null,
+          }))
+        : [],
+    });
+  }
 
   const entityIds = new Set(validEntities.map((e) => e.id));
+  const entityNames = new Set(validEntities.map((e) => e.name.toLowerCase()));
 
   const validRelationships = rawRelationships
-    .filter(
-      (r) =>
-        r &&
-        r.sourceEntity &&
-        r.targetEntity &&
-        entityIds.has(String(r.sourceEntity)) &&
-        entityIds.has(String(r.targetEntity))
-    )
+    .filter((r) => {
+      if (!r || !r.sourceEntity || !r.targetEntity) return false;
+      const srcStr = String(r.sourceEntity).toLowerCase();
+      const tgtStr = String(r.targetEntity).toLowerCase();
+      const srcOk = entityIds.has(String(r.sourceEntity)) || entityNames.has(srcStr);
+      const tgtOk = entityIds.has(String(r.targetEntity)) || entityNames.has(tgtStr);
+      return srcOk && tgtOk;
+    })
     .map((r, idx) => ({
       id: String(r.id || `rel-${idx + 1}`),
       sourceEntity: String(r.sourceEntity),
       targetEntity: String(r.targetEntity),
       type: r.type || "one-to-many",
-      foreignKey: r.foreignKey || "",
+      foreignKey: r.foreignKey || r.field || "",
     }));
 
   return { entities: validEntities, relationships: validRelationships };
@@ -234,14 +294,99 @@ export async function generateERD(blueprint, options = {}) {
 
   const provider = getActiveProvider();
 
-  const systemInstruction = "You are ArchMind AI Senior Database Architect. Output STRICT JSON only.";
+  // 1. Build deterministic ground truth entities from static schema extraction and AST
+  const databaseInfo = blueprint.database;
+  const extractedEntities = Array.isArray(databaseInfo?.entities) ? databaseInfo.entities : [];
+  const fallbackModels = Array.isArray(blueprint.models) ? blueprint.models : [];
+
+  const authoritativeEntitiesMap = new Map();
+
+  for (const ent of extractedEntities) {
+    if (ent.name) {
+      const lower = ent.name.toLowerCase();
+      authoritativeEntitiesMap.set(lower, {
+        id: `entity-${lower.replace(/[^a-z0-9_-]/g, "-")}`,
+        name: ent.name,
+        tableName: `${lower.replace(/[^a-z0-9_]/g, "_")}s`,
+        fields: Array.isArray(ent.fields) && ent.fields.length > 0
+          ? ent.fields.map((f) => ({
+              name: f.name || "field",
+              type: f.type || "String",
+              isPrimary: Boolean(f.isPrimary),
+              isForeign: Boolean(f.isForeign),
+              isRequired: Boolean(f.isRequired),
+              isUnique: Boolean(f.isUnique),
+              references: f.references || null,
+              defaultValue: f.defaultValue || null,
+            }))
+          : [
+              { name: "_id", type: "ObjectId", isPrimary: true, isForeign: false, isRequired: true, isUnique: true, references: null, defaultValue: null },
+            ],
+      });
+    }
+  }
+
+  for (const m of fallbackModels) {
+    if (m.name && !authoritativeEntitiesMap.has(m.name.toLowerCase())) {
+      const lower = m.name.toLowerCase();
+      authoritativeEntitiesMap.set(lower, {
+        id: `entity-${lower.replace(/[^a-z0-9_-]/g, "-")}`,
+        name: m.name,
+        tableName: `${lower.replace(/[^a-z0-9_]/g, "_")}s`,
+        fields: [
+          { name: "_id", type: "ObjectId", isPrimary: true, isForeign: false, isRequired: true, isUnique: true, references: null, defaultValue: null },
+        ],
+      });
+    }
+  }
+
+  const deterministicEntities = Array.from(authoritativeEntitiesMap.values());
+  const deterministicRelationships = Array.isArray(databaseInfo?.relationships)
+    ? databaseInfo.relationships
+        .map((r, idx) => {
+          const srcId = authoritativeEntitiesMap.get(r.from?.toLowerCase())?.id;
+          const tgtId = authoritativeEntitiesMap.get(r.to?.toLowerCase())?.id;
+          if (!srcId || !tgtId) return null;
+          return {
+            id: `rel-${idx + 1}`,
+            sourceEntity: srcId,
+            targetEntity: tgtId,
+            type: r.type || "one-to-many",
+            foreignKey: r.field || "",
+          };
+        })
+        .filter(Boolean)
+    : [];
+
+  if (options.mock || deterministicEntities.length === 0 || provider.type === "mock") {
+    return mockERD(blueprint);
+  }
+
+  const allowedEntityListStr = deterministicEntities.map((e) => e.name).join(", ");
+
+  const databaseContext = {
+    type: databaseInfo?.type || "MongoDB",
+    authoritativeEntities: deterministicEntities,
+    extractedRelationships: deterministicRelationships,
+    note: "All entities and fields were extracted directly from the repository source code.",
+  };
+
+  const systemInstruction = "You are ArchMind AI Senior Database Architect. Output STRICT JSON only. Ground exclusively on the provided models. Never invent placeholder entities (e.g., Entity1, Entity2, table_1, table_2).";
+
   const prompt = `
-Analyze the database models and schemas in the following Repository Blueprint and generate an Entity Relationship Diagram (ERD).
+Analyze the following extracted database schema information and generate an Entity Relationship Diagram (ERD).
 
-Repository Blueprint:
-${JSON.stringify(blueprint, null, 2)}
+Project: ${blueprint.metadata?.name || "Unknown"}
+Database Type: ${databaseContext.type}
+Capabilities: ${JSON.stringify(blueprint.capabilities, null, 2)}
 
-Output STRICT JSON matching this schema:
+Authoritative Allowed Entities (${deterministicEntities.length} models):
+[${allowedEntityListStr}]
+
+Extracted Database Schema & Models:
+${JSON.stringify(databaseContext, null, 2)}
+
+Output STRICT JSON matching this exact schema:
 {
   "entities": [
     {
@@ -249,8 +394,8 @@ Output STRICT JSON matching this schema:
       "name": "User",
       "tableName": "users",
       "fields": [
-        { "name": "id", "type": "ObjectId", "isPrimary": true, "isNullable": false },
-        { "name": "clerkId", "type": "String", "isPrimary": false, "isNullable": false }
+        { "name": "_id", "type": "ObjectId", "isPrimary": true, "isForeign": false, "isRequired": true, "isUnique": true },
+        { "name": "email", "type": "String", "isPrimary": false, "isForeign": false, "isRequired": true, "isUnique": true }
       ]
     }
   ],
@@ -265,13 +410,16 @@ Output STRICT JSON matching this schema:
   ]
 }
 
-Rules:
-1. Every relationship "sourceEntity" and "targetEntity" MUST exist in "entities".
-2. "type" must be one of: "one-to-one", "one-to-many", "many-to-many".
-3. Ground entities strictly on models extracted in the blueprint.
-4. Output ONLY valid JSON inside a json code block.
+CRITICAL RULES:
+1. You MUST generate all ${deterministicEntities.length} authoritative models: [${allowedEntityListStr}]. Do not omit any.
+2. NEVER invent placeholder entities (e.g., Entity1, Entity2, Entity3, Entity4, Entity5, table_1, table_2, etc.).
+3. NEVER rename entities. Preserve exact model names.
+4. Preserve all extracted schema fields from the extracted data above.
+5. Every relationship sourceEntity and targetEntity MUST reference a valid entity id from your output.
+6. Output ONLY valid JSON. No markdown, no conversational text.
 `;
 
+  let llmResult = null;
   try {
     if (provider.type === "groq") {
       const completion = await provider.client.chat.completions.create({
@@ -283,20 +431,64 @@ Rules:
         response_format: { type: "json_object" },
       });
       const text = completion.choices[0]?.message?.content;
-      return parseAndValidateJson(text, "erd");
+      llmResult = parseAndValidateJson(text, "erd", blueprint);
     } else if (provider.type === "gemini") {
       const response = await provider.client.models.generateContent({
         model: "gemini-2.5-flash",
         contents: prompt,
       });
-      return parseAndValidateJson(response.text, "erd");
-    } else {
-      return mockERD(blueprint);
+      llmResult = parseAndValidateJson(response.text, "erd", blueprint);
     }
   } catch (err) {
-    console.error("[llmService] generateERD error:", err.message);
-    throw new Error(`ERD LLM Generation Failed: ${err.message}`);
+    console.warn("[llmService] LLM generation failed, falling back to deterministic extraction:", err.message);
+    return { entities: deterministicEntities, relationships: deterministicRelationships };
   }
+
+  // 2. Grounding Merger: Guarantee that EVERY deterministic model and field is present in the final output
+  const finalEntitiesMap = new Map();
+
+  // Seed with deterministic extraction (guarantees 100% data integrity for all models)
+  for (const ent of deterministicEntities) {
+    finalEntitiesMap.set(ent.name.toLowerCase(), { ...ent });
+  }
+
+  // Overlay LLM enhancements if valid
+  if (llmResult && Array.isArray(llmResult.entities)) {
+    for (const llmEnt of llmResult.entities) {
+      if (!llmEnt.name) continue;
+      const key = llmEnt.name.toLowerCase();
+      if (finalEntitiesMap.has(key)) {
+        const existing = finalEntitiesMap.get(key);
+        // Only adopt LLM fields if they have at least as many fields as static extraction
+        if (Array.isArray(llmEnt.fields) && llmEnt.fields.length >= existing.fields.length) {
+          finalEntitiesMap.set(key, {
+            ...existing,
+            tableName: llmEnt.tableName || existing.tableName,
+            fields: llmEnt.fields,
+          });
+        }
+      }
+    }
+  }
+
+  // Merge relationships
+  const relationshipsMap = new Map();
+  for (const r of deterministicRelationships) {
+    relationshipsMap.set(`${r.sourceEntity}->${r.targetEntity}:${r.foreignKey}`, r);
+  }
+  if (llmResult && Array.isArray(llmResult.relationships)) {
+    for (const r of llmResult.relationships) {
+      const key = `${r.sourceEntity}->${r.targetEntity}:${r.foreignKey}`;
+      if (!relationshipsMap.has(key)) {
+        relationshipsMap.set(key, r);
+      }
+    }
+  }
+
+  return {
+    entities: Array.from(finalEntitiesMap.values()),
+    relationships: Array.from(relationshipsMap.values()),
+  };
 }
 
 // ── Deterministic Mock Generators ─────────────────────────────────────────────
@@ -363,36 +555,64 @@ function mockArchitecture(blueprint) {
   return { nodes, edges };
 }
 
-function mockERD(blueprint) {
-  const models = blueprint?.models || [];
-  const entities = models.map((m, idx) => ({
-    id: `entity-${m.name.toLowerCase()}`,
-    name: m.name,
-    tableName: `${m.name.toLowerCase()}s`,
-    fields: [
-      { name: "id", type: "ObjectId", isPrimary: true, isNullable: false },
-      { name: "createdAt", type: "Date", isPrimary: false, isNullable: false },
-    ],
-  }));
+export function mockERD(blueprint) {
+  const dbSchema = blueprint?.database;
+  const hasStructuredSchema = dbSchema && Array.isArray(dbSchema.entities) && dbSchema.entities.length > 0;
+  const fallbackModels = Array.isArray(blueprint?.models) ? blueprint.models : [];
 
-  if (entities.length === 0) {
-    entities.push({
-      id: "entity-default",
-      name: "Record",
-      tableName: "records",
-      fields: [{ name: "id", type: "String", isPrimary: true, isNullable: false }],
-    });
+  const entities = [];
+  const relationships = [];
+  const seenEntityNames = new Set();
+
+  if (hasStructuredSchema) {
+    // 1. Build entities from structured database extraction
+    for (const e of dbSchema.entities) {
+      if (!e.name) continue;
+      const lower = e.name.toLowerCase();
+      seenEntityNames.add(lower);
+      entities.push({
+        id: `entity-${lower.replace(/[^a-z0-9_-]/g, "-")}`,
+        name: e.name,
+        tableName: `${lower.replace(/[^a-z0-9_]/g, "_")}s`,
+        fields: Array.isArray(e.fields) ? e.fields : [],
+      });
+    }
+
+    // 2. Build relationships from structured extraction
+    if (Array.isArray(dbSchema.relationships)) {
+      const entityIdMap = new Map(entities.map((e) => [e.name.toLowerCase(), e.id]));
+      for (let idx = 0; idx < dbSchema.relationships.length; idx++) {
+        const r = dbSchema.relationships[idx];
+        const srcId = entityIdMap.get(r.from?.toLowerCase());
+        const tgtId = entityIdMap.get(r.to?.toLowerCase());
+        if (srcId && tgtId) {
+          relationships.push({
+            id: `rel-${idx + 1}`,
+            sourceEntity: srcId,
+            targetEntity: tgtId,
+            type: r.type || "one-to-many",
+            foreignKey: r.field || "",
+          });
+        }
+      }
+    }
   }
 
-  const relationships = [];
-  if (entities.length > 1) {
-    relationships.push({
-      id: "rel-1",
-      sourceEntity: entities[0].id,
-      targetEntity: entities[1].id,
-      type: "one-to-many",
-      foreignKey: `${entities[0].name.toLowerCase()}Id`,
-    });
+  // 3. Supplement with any AST-detected models not yet in entities
+  for (const m of fallbackModels) {
+    if (m.name && !seenEntityNames.has(m.name.toLowerCase())) {
+      seenEntityNames.add(m.name.toLowerCase());
+      const lower = m.name.toLowerCase();
+      entities.push({
+        id: `entity-${lower.replace(/[^a-z0-9_-]/g, "-")}`,
+        name: m.name,
+        tableName: `${lower.replace(/[^a-z0-9_]/g, "_")}s`,
+        fields: [
+          { name: "_id", type: "ObjectId", isPrimary: true, isForeign: false, isRequired: true, isNullable: false, isUnique: true, references: null, defaultValue: null },
+          { name: "createdAt", type: "Date", isPrimary: false, isForeign: false, isRequired: false, isNullable: false, isUnique: false, references: null, defaultValue: null },
+        ],
+      });
+    }
   }
 
   return { entities, relationships };

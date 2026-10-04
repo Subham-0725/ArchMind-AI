@@ -110,10 +110,10 @@ export const fetchProjectById = async (token, projectId) => {
  * @param {string} projectId - MongoDB Project ObjectId
  * @returns {Promise<Object>} Analysis queue result
  */
-export const runFullAnalysis = async (token, projectId) => {
+export const runFullAnalysis = async (token, projectId, options = {}) => {
   const { data } = await api.post(
     `/api/projects/${projectId}/analyze`,
-    {},
+    { force: true, ...options },
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return data;
@@ -125,12 +125,13 @@ export const runFullAnalysis = async (token, projectId) => {
  * @param {string} token      - Clerk JWT
  * @param {string} projectId  - MongoDB Project ObjectId
  * @param {string} moduleName - Module name (architecture, erd, api, security, devops)
+ * @param {Object} [options]
  * @returns {Promise<Object>} Module analysis result
  */
-export const runModuleAnalysis = async (token, projectId, moduleName) => {
+export const runModuleAnalysis = async (token, projectId, moduleName, options = {}) => {
   const { data } = await api.post(
     `/api/projects/${projectId}/${moduleName}`,
-    {},
+    { force: true, ...options },
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return data;

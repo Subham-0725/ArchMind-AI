@@ -8,7 +8,7 @@ import { getAuth } from "@clerk/express";
 import { randomUUID } from "crypto";
 import Project from "../models/Project.js";
 import { parseGithubUrl } from "../utils/githubUrl.js";
-import { fetchRepoMetadata, fetchRepoTree } from "../services/githubService.js";
+import { fetchRepoMetadata, fetchRepoTree, populateKeyFileContents } from "../services/githubService.js";
 import { extractZip } from "../rie/zipExtractor.js";
 import { scanRepository } from "../rie/repoScanner.js";
 import { detectProjectLanguage } from "../services/languageDetector.js";
@@ -16,6 +16,7 @@ import { buildTopology } from "../rie/topologyBuilder.js";
 import { detectCapabilities } from "../rie/relevanceDetector.js";
 import { parseRepository } from "../rie/astParser.js";
 import { aggregateBlueprint } from "../rie/blueprintAggregator.js";
+import { extractDatabaseSchema } from "../rie/dbSchemaExtractor.js";
 import { EXTRACTED_DIR, safeUnlink, safeRmDir } from "../config/storage.js";
 
 /**
@@ -57,6 +58,9 @@ export const importGithub = async (req, res) => {
     // 3. Fetch recursive tree from GitHub Git Trees API
     const treeData = await fetchRepoTree(owner, repo, metadata.defaultBranch);
 
+    // 3.2 Populate contents for model/schema/architecture files
+    await populateKeyFileContents(owner, repo, treeData.tree);
+
     // 3.5 Multi-signal language & framework static detection (Feature 08)
     const langResult = detectProjectLanguage(treeData.tree, null);
 
@@ -84,6 +88,9 @@ export const importGithub = async (req, res) => {
     // 3.8 Tree-sitter AST Parsing (Feature 12)
     const ast = await parseRepository(treeData.tree, {});
 
+    // 3.85 Database Schema Extraction (Feature 15)
+    const database = extractDatabaseSchema(treeData.tree, capabilities, techStack, null);
+
     // 3.9 Repository Blueprint Aggregator (Feature 13)
     const blueprint = aggregateBlueprint({
       name: metadata.name,
@@ -94,6 +101,7 @@ export const importGithub = async (req, res) => {
       secondaryLanguages: langResult.secondaryLanguages,
       capabilities,
       ast,
+      database,
     });
 
     // 4. Atomic upsert into MongoDB
@@ -143,6 +151,7 @@ export const importGithub = async (req, res) => {
           capabilities,
           ast,
           blueprint,
+          database,
         },
       },
       {
@@ -256,7 +265,10 @@ export const uploadZip = async (req, res) => {
     const capabilities = detectCapabilities(tree, mergedTechStack, extractedPath);
 
     // 2.8 Tree-sitter AST Parsing (Feature 12)
-    const ast = await parseRepository(tree, { extractionPath });
+    const ast = await parseRepository(tree, { extractionPath: extractedPath });
+
+    // 2.85 Database Schema Extraction (Feature 15)
+    const database = extractDatabaseSchema(tree, capabilities, mergedTechStack, extractedPath);
 
     // 2.9 Repository Blueprint Aggregator (Feature 13)
     const blueprint = aggregateBlueprint({
@@ -268,6 +280,7 @@ export const uploadZip = async (req, res) => {
       secondaryLanguages: langResult.secondaryLanguages,
       capabilities,
       ast,
+      database,
     });
 
     // 3. Persist to MongoDB (indexed on userId + zip.originalName)
@@ -295,6 +308,7 @@ export const uploadZip = async (req, res) => {
           capabilities,
           ast,
           blueprint,
+          database,
         },
       },
       {
@@ -549,6 +563,8 @@ export const getProjectById = async (req, res) => {
             devops: a.devops || defaultMod,
           };
         })(),
+        analysisResults: project.analysisResults || null,
+        database: project.database || null,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
       },

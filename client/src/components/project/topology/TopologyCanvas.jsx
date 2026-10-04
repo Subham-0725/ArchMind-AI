@@ -58,7 +58,7 @@ export default function TopologyCanvas({ topology }) {
   }
 
   return (
-    <div className="w-full h-full min-h-[500px] rounded-xl border border-white/[0.08] bg-[#04070d] relative overflow-hidden">
+    <div className="w-full flex-1 h-[650px] lg:h-[calc(100vh-160px)] min-h-[520px] max-h-[850px] rounded-xl border border-white/[0.08] bg-[#04070d] relative overflow-hidden shadow-2xl flex flex-col">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -66,9 +66,10 @@ export default function TopologyCanvas({ topology }) {
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.3 }}
-        minZoom={0.2}
-        maxZoom={1.5}
+        fitViewOptions={{ padding: 0.25, maxZoom: 1.0 }}
+        minZoom={0.35}
+        maxZoom={1.4}
+        translateExtent={[[-600, -500], [2200, 1600]]}
         colorMode="dark"
       >
         <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#1e293b" />
