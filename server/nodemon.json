@@ -1,4 +1,11 @@
 {
   "watch": ["src", ".env"],
-  "ext": "js,mjs,cjs,json,env"
+  "ext": "js,mjs,cjs,json,env",
+  "ignore": [
+    "src/storage/**",
+    "storage/**",
+    "../storage/**",
+    "test*.js",
+    "*.test.js"
+  ]
 }

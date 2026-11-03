@@ -39,7 +39,10 @@ function ErdCanvasInner({ erdData, onRegenerate, isRegenerating }) {
 
   // Initial layout when erdData changes
   useEffect(() => {
-    layoutGraph("LR");
+    const timer = setTimeout(() => {
+      layoutGraph("LR");
+    }, 0);
+    return () => clearTimeout(timer);
   }, [layoutGraph]);
 
   // Fit view after nodes are painted — runs whenever nodes array length changes

@@ -9,6 +9,8 @@ import { useAuth } from "@clerk/clerk-react";
 import { isTabEnabled, getTabDetails } from "../../constants/workspaceTabs";
 import { runModuleAnalysis } from "../../services/projectService";
 import ErdCanvas from "./erd/ErdCanvas";
+import SecurityAuditTab from "./security/SecurityAuditTab";
+import ApiExplorerTab from "./api/ApiExplorerTab";
 
 /**
  * Status configuration for visual rendering
@@ -60,16 +62,56 @@ export default function CapabilityTabPanel({ tab, project, onAnalysisUpdate }) {
   const enabled = isTabEnabled(tab, capabilities);
   const details = getTabDetails(tab, capabilities);
 
-  // If tab is ERD and analysis is completed, render interactive ErdCanvas
-  if (tab?.id === "erd" && moduleStatus === "completed") {
-    const erdData = analysisResults?.erd || null;
+  // If tab is Security, render deterministic SecurityAuditTab
+  if (tab?.id === "security") {
     return (
-      <ErdCanvas
-        erdData={erdData}
+      <SecurityAuditTab
+        project={project}
+        findings={project?.securityFindings || []}
+        summary={project?.securitySummary || {}}
         onRegenerate={handleGenerate}
         isRegenerating={isLoading}
+        onAnalysisUpdate={onAnalysisUpdate}
       />
     );
+  }
+
+  // If tab is API Explorer, render ApiExplorerTab
+  if (tab?.id === "apis") {
+    return (
+      <ApiExplorerTab
+        project={project}
+      />
+    );
+  }
+
+  // If tab is ERD and analysis is completed (or database models exist in blueprint/database)
+  if (tab?.id === "erd") {
+    const rawErd = analysisResults?.erd;
+    const hasLlmEntities = Array.isArray(rawErd?.entities) && rawErd.entities.length > 0;
+    const dbSchema = project?.database;
+    const hasStaticEntities = Array.isArray(dbSchema?.entities) && dbSchema.entities.length > 0;
+
+    let erdData = null;
+    if (hasLlmEntities) {
+      erdData = rawErd;
+    } else if (hasStaticEntities) {
+      erdData = {
+        database: dbSchema.type || "Database Schema",
+        entities: dbSchema.entities,
+        relationships: dbSchema.relationships || [],
+      };
+    }
+
+    if (moduleStatus === "completed" || hasStaticEntities) {
+      return (
+        <ErdCanvas
+          erdData={erdData}
+          onRegenerate={handleGenerate}
+          isRegenerating={isLoading}
+        />
+      );
+    }
   }
 
   // ── Disabled State: Module Not Available ──────────────────────────────────

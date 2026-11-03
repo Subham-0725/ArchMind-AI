@@ -10,6 +10,7 @@
 //   5. Provide safe error handling with typed codes (INVALID_ZIP, EMPTY_ZIP, SECURITY_ERROR, EXTRACT_ERROR)
 
 import AdmZip from "adm-zip";
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import { safeRmDir } from "../config/storage.js";
@@ -133,8 +134,17 @@ export const extractZip = async (zipFilePath, extractedDir, jobId) => {
     throw extractErr;
   }
 
+  // Compute SHA-256 fingerprint of the raw archive
+  let contentHash = "";
+  try {
+    contentHash = crypto.createHash("sha256").update(fs.readFileSync(zipFilePath)).digest("hex");
+  } catch {
+    contentHash = `zip-${Date.now()}`;
+  }
+
   return {
     extractedPath,
     entryCount: entries.length,
+    contentHash,
   };
 };

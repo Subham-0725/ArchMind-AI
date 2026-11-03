@@ -917,9 +917,15 @@ export default function Dashboard() {
         setAnalyzeStatus("Scanning repository & filtering tree...");
         const result = await importGithubProject(token, trimmedUrl);
 
-        setAnalyzeSuccess(
-          `Repository '${result.github?.fullName || result.name}' imported successfully! Scanned ${result.stats?.totalFiles || 0} files.`
-        );
+        if (result.isCached) {
+          setAnalyzeSuccess(
+            `Existing analysis was reused because the repository has not changed (Analysis version ${result.analysisVersion || 1}).`
+          );
+        } else {
+          setAnalyzeSuccess(
+            `Repository '${result.github?.fullName || result.name}' imported successfully! Scanned ${result.stats?.totalFiles || 0} files.`
+          );
+        }
 
         // Reload user's recent projects
         await loadRecentProjects();
@@ -964,9 +970,15 @@ export default function Dashboard() {
           }
         );
 
-        setAnalyzeSuccess(
-          `Repository '${result.name}' uploaded and scanned successfully! Found ${result.stats?.totalFiles || 0} files.`
-        );
+        if (result.isCached) {
+          setAnalyzeSuccess(
+            `Existing analysis was reused because the repository has not changed (Analysis version ${result.analysisVersion || 1}).`
+          );
+        } else {
+          setAnalyzeSuccess(
+            `Repository '${result.name}' uploaded and scanned successfully! Found ${result.stats?.totalFiles || 0} files.`
+          );
+        }
         setZipFile(null);
 
         // Reload user's recent projects

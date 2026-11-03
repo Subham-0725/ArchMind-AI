@@ -29,13 +29,14 @@ export const WORKSPACE_TABS = [
   },
   {
     id: "apis",
-    label: "API Sequences",
+    label: "API Explorer",
     icon: "⇄",
+    alwaysEnabled: true,
     capabilityKey: "hasApis",
     detailKey: "frameworks",
     analysisModule: "api",
     emptyState: {
-      title: "API Sequences",
+      title: "API Explorer",
       subtitle: "No API routes, controllers, or supported API frameworks were detected.",
       description:
         "ArchMind scanned the repository but found no API route handlers or controller definitions.",
@@ -61,6 +62,7 @@ export const WORKSPACE_TABS = [
     id: "security",
     label: "Security Audit",
     icon: "🛡",
+    alwaysEnabled: true,
     capabilityKey: "hasSecuritySensitiveCode",
     analysisModule: "security",
     emptyState: {

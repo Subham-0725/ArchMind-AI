@@ -13,12 +13,24 @@ import {
   uploadZip,
   updateProjectStatus,
   getProjectBlueprint,
+  getProjectFile,
 } from "../controllers/project.controller.js";
 import {
   analyzeProject,
   analyzeModule,
   getAnalysisStatus,
 } from "../controllers/analysis.controller.js";
+import {
+  getProjectApiRoutes,
+  getProjectApiRouteDetail,
+  getRouteSequenceDiagram,
+} from "../controllers/apiRoute.controller.js";
+import chatRoutes from "./chat.routes.js";
+import securityRoutes from "./security.routes.js";
+import {
+  triggerCodeReview,
+  triggerTestGeneration,
+} from "../controllers/security.controller.js";
 
 const router = Router();
 
@@ -59,8 +71,21 @@ const handleMulterErrors = (multerMiddleware) => (req, res, next) => {
   });
 };
 
+const logUploadStage = (stage) => (req, _res, next) => {
+  console.log(`[UPLOAD] ${stage}`);
+  next();
+};
+
 // POST /api/projects/upload — upload a ZIP repository archive
-router.post("/upload", requireAuth, handleMulterErrors(uploadZipMiddleware), uploadZip);
+router.post(
+  "/upload",
+  logUploadStage("Request received"),
+  requireAuth,
+  logUploadStage("Authentication passed"),
+  handleMulterErrors(uploadZipMiddleware),
+  logUploadStage("Multipart middleware completed"),
+  uploadZip
+);
 
 // POST /api/projects/github — import repository by GitHub URL
 router.post("/github", requireAuth, importGithub);
@@ -79,8 +104,31 @@ router.get("/:id/analysis", requireAuth, getAnalysisStatus);
 // GET /api/projects/:id/blueprint — get compiled repository blueprint
 router.get("/:id/blueprint", requireAuth, getProjectBlueprint);
 
-// POST /api/projects/:id/:module — trigger individual module analysis
-router.post("/:id/:module", requireAuth, analyzeModule);
+// GET /api/projects/:id/file?path=... — retrieve source file content
+router.get("/:id/file", requireAuth, getProjectFile);
+
+// ── API Route Intelligence endpoints ─────────────────────────────────────────
+
+// GET /api/projects/:id/api-routes — list extracted routes with filtering
+router.get("/:id/api-routes", requireAuth, getProjectApiRoutes);
+
+// GET /api/projects/:id/api-routes/:routeId/sequence — get request sequence diagram
+router.get("/:id/api-routes/:routeId/sequence", requireAuth, getRouteSequenceDiagram);
+
+// GET /api/projects/:id/api-routes/:routeId — get route detail with citation
+router.get("/:id/api-routes/:routeId", requireAuth, getProjectApiRouteDetail);
+
+// ── Security & Code Quality endpoints ───────────────────────────────────────
+router.use("/:projectId/security", securityRoutes);
+router.use("/:id/security", securityRoutes);
+router.post("/:projectId/code-review", requireAuth, triggerCodeReview);
+router.post("/:id/code-review", requireAuth, triggerCodeReview);
+router.post("/:projectId/tests/generate", requireAuth, triggerTestGeneration);
+router.post("/:id/tests/generate", requireAuth, triggerTestGeneration);
+
+// ── Repository AI Chat endpoints ─────────────────────────────────────────────
+router.use("/:projectId/chat", chatRoutes);
+router.use("/:id/chat", chatRoutes);
 
 // ── Project detail endpoints ─────────────────────────────────────────────────
 
@@ -89,6 +137,10 @@ router.get("/:id", requireAuth, getProjectById);
 
 // PATCH /api/projects/:id/status — update processing status and error details
 router.patch("/:id/status", requireAuth, updateProjectStatus);
+
+// ── Analysis module execution (placed after explicit sub-resource routes to prevent route collisions) ──
+// POST /api/projects/:id/:module — trigger individual module analysis (architecture, erd, api, security, devops)
+router.post("/:id/:module", requireAuth, analyzeModule);
 
 export default router;
 

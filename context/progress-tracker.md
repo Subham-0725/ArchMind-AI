@@ -148,6 +148,35 @@ Update this file after every meaningful implementation change.
   - `server/src/models/Project.js` — Exposed `analysisResults` in `toSafeObject()`.
   - `server/test-llm-integration.js` — Unit & integration test suite with 12 assertions covering schema validation, edge filtering, ERD capability guards, mock generation, and malformed JSON error isolation.
 
+- ✅ Repository Intelligence Engine (RIE) Stabilization & Phase 1 Backend Completion:
+  - Unified RIE Analysis Pipeline (`server/src/rie/pipeline/analysisPipeline.js`) unifying both ZIP and GitHub ingestion.
+  - Deterministic Secret Scanning & Redaction (`server/src/rie/security/secretScanner.js`, `secretPatterns.js`, `secretRedactor.js`).
+  - Source File Indexing & Persistence (`server/src/models/SourceFile.js`, `server/src/rie/indexing/sourceIndexer.js`).
+  - Strict Repository Blueprint Schema Validation (`server/src/rie/validation/blueprintValidator.js`).
+  - Secure Source File Content Retrieval endpoint (`GET /api/projects/:id/file?path=...`).
+  - Analysis Versioning & Cryptographic Source Fingerprint Cache Invalidation.
+
+- ✅ Phase 1 Frontend RIE Integration & Stabilization:
+  - Added `fetchProjectFile` and cache/force options to `client/src/services/projectService.js`.
+  - Built zero-dependency syntax & secret token highlighter `client/src/components/project/editor/codeHighlighter.js`.
+  - Built read-only source code viewer `client/src/components/project/editor/CodeEditorViewer.jsx` with line numbering, copy action, maximize toggle, jump-to-line pulse highlighting, binary file handling, loading skeletons, and error handling.
+  - Upgraded `client/src/components/project/FileTreeExplorer.jsx` with interactive file selection, active path highlighting, and recursive ancestor expansion.
+  - Built `client/src/components/project/security/SecurityAuditTab.jsx` with severity counters (Critical/High/Medium/Low), filter pills, search bar, masked secret evidence display, zero-leak guarantees, and click-to-open line navigation.
+  - Integrated `SecurityAuditTab` into `client/src/components/project/CapabilityTabPanel.jsx` and workspace tabs.
+  - Connected file retrieval, slide-in code viewer drawer, race condition defense (`AbortController` + monotonic active request ref), and forced re-analysis in `client/src/pages/ProjectWorkspace.jsx`.
+  - Added honest cache reuse notifications and indeterminate loading states in `client/src/pages/Dashboard.jsx`.
+
+- ✅ Phase 2 Backend: API Intelligence and Code Viewer Foundation:
+  - API Route Extractor (`server/src/rie/api/routeExtractor.js`): Static AST & pattern extraction across Express, Fastify, NestJS, FastAPI, Flask, and Django with parameter extraction, constant prefix resolution, and auth classification.
+  - Route Record Validation (`server/src/rie/api/routeValidator.js`): Strict validation for path traversal safety, line-range invariants, HTTP methods, and confidence levels.
+  - API Request Sequence Diagram Generator (`server/src/rie/api/sequenceGenerator.js`): Static call graph tracing (Client -> Router -> Middleware -> Controller -> Service -> Database -> Response) with safety bounding (`MAX_CALL_DEPTH=4`, `MAX_PARTICIPANTS=10`, `MAX_MESSAGES=25`), line-level citations, and Mermaid output.
+  - Route Explorer Controller & Endpoints (`server/src/controllers/apiRoute.controller.js`):
+    - `GET /api/projects/:id/api-routes`: List extracted routes with multi-field filtering (`method`, `framework`, `search`, `file`, `auth`) and summary statistics.
+    - `GET /api/projects/:id/api-routes/:routeId`: Detailed route metadata with line-level source citations.
+    - `GET /api/projects/:id/api-routes/:routeId/sequence`: Static sequence diagram generation with `analysisVersion` cache invalidation.
+  - Unified RIE Ingestion Integration (`server/src/rie/pipeline/analysisPipeline.js` & `server/src/controllers/project.controller.js`): Automatic extraction and persistence of API routes during both ZIP upload and GitHub import.
+  - Verified with 4 new comprehensive test suites (22 new test assertions, 42/42 total backend test assertions passing).
+
 ## In Progress
 
 - Frontend Workspace Diagram Rendering (React Flow Architecture & ERD visualizers).
@@ -157,6 +186,50 @@ Update this file after every meaningful implementation change.
 ### Immediate
 1. Frontend integration for rendering generated architecture & ERD diagrams in workspace tabs
 2. API Sequence & Security Audit module generators
+
+### Phase 2 Frontend — API Explorer, Sequence Viewer & Source Navigation (Completed)
+- ✅ API Explorer Workspace Tab (`client/src/constants/workspaceTabs.js`, `client/src/components/project/CapabilityTabPanel.jsx`):
+  - Added "API Explorer" tab (`id: "apis"`, icon `⇄`, always enabled).
+  - Handles repositories with detected endpoints as well as zero-endpoint codebases gracefully without false server errors.
+- ✅ Route Explorer & Summary Bar (`client/src/components/project/api/RouteSummaryBar.jsx`, `RouteFilters.jsx`, `RouteList.jsx`):
+  - Summary metrics: total endpoints, breakdown by HTTP method (GET, POST, PUT, PATCH, DELETE), auth-protected count, detected frameworks.
+  - Multi-field filtering: debounced search (250ms), HTTP method chips, auth toggle (Protected / Public / All), framework dropdown.
+  - Route card catalog: color-coded method badges, parameterized route highlighting (`:id`, `{user_id}`, `<int:id>`), handler & controller names, line-level source citations, auth locks, and active selection state.
+- ✅ Route Detail View (`client/src/components/project/api/RouteDetailCard.jsx`):
+  - Displays endpoint specifications, HTTP verb, route path, copy-to-clipboard button, controller & handler names, auth protection status, middleware chain, route parameters, schema validation badges, and extraction confidence.
+  - Line-level source citation card linking directly to `CodeEditorViewer` with line range display (`L45–L68`).
+- ✅ Sequence Diagram Viewer (`client/src/components/project/api/SequenceDiagramViewer.jsx`):
+  - Sandboxed Mermaid sequence diagram visualizer (`securityLevel: 'strict'`).
+  - Pan and Zoom controls (Zoom In, Zoom Out, Reset, 100% indicator).
+  - Static approximation disclaimer banner and traversal safety truncation warnings (`isTruncated: true`).
+  - Interactive Step-by-Step Execution Call Flow with line-level source citations and participant source links.
+  - Fallback error boundary preventing malformed Mermaid syntax from crashing the application.
+- ✅ Source Code Navigation (`client/src/pages/ProjectWorkspace.jsx`, `client/src/components/project/editor/CodeEditorViewer.jsx`):
+  - Enhanced `CodeEditorViewer` to support line ranges (`highlightLine` to `highlightEndLine`) with animated pulse indicators and automatic smooth-scroll to startLine.
+  - Single centralized source file retrieval endpoint (`GET /api/projects/:id/file?path=<path>`) reused without code duplication.
+- ✅ Race Condition Guards & Monotonic State (`client/src/components/project/api/ApiExplorerTab.jsx`):
+  - Monotonic request tracking and `AbortController` guards for route list, route details, and sequence diagrams. Rapid route switching prevents stale in-flight requests from overwriting newer user selections.
+- ✅ Verification:
+  - 10/10 Phase 2 Frontend assertions passed (`client/test-phase2-frontend.js`).
+  - 52/52 total test assertions passed across backend and frontend test suites.
+  - `npm --prefix client run lint` passed with 0 errors and 0 warnings.
+  - `npm --prefix client run build` completed production build in 9.55s.
+
+### ZIP Upload Stabilization & Watcher Fix (Completed)
+- ✅ Root Cause Identified:
+  - Ephemeral runtime storage was previously inside `server/src/storage/extracted/`, causing Nodemon to detect extracted files and restart mid-upload with `SIGUSR2` (`ERR_CONNECTION_REFUSED`).
+  - After moving storage outside `src/`, a runtime identifier mismatch occurred in `server/src/controllers/project.controller.js`: the scoped variable was named `extractedPath`, but line 315 passed `extractionPath` (shorthand for `{ extractionPath: extractionPath }`) into `executeRiePipeline`, throwing `ReferenceError: extractionPath is not defined` as an HTTP 500 error.
+- ✅ Resolved:
+  - Moved ephemeral runtime storage to `server/storage/` (outside `src/`).
+  - Configured `server/nodemon.json` to explicitly ignore `storage/**` and `src/storage/**`.
+  - Configured dual-stack listening in `server/src/server.js` so both IPv6 `::1` and IPv4 `127.0.0.1` are supported.
+  - Standardized variable naming in `server/src/controllers/project.controller.js` to `extractionPath` across extraction, scanning, pipeline execution, and `finally` cleanup.
+  - Added stage-by-stage diagnostic logging (`[UPLOAD] Request received`, `Authentication passed`, `Multipart middleware completed`, `Controller started`, `ZIP extraction started`, `ZIP extraction completed`, `Analysis started`, `Upload pipeline failed`) and global exception handlers.
+  - Cleaned up abandoned extraction directories and added `.gitignore` entries.
+  - Verified with new automated test suite (`server/test-zip-upload-pipeline.js`) covering isolation, nodemon config, extraction, error states, Zip Slip rejection, and full end-to-end pipeline execution with `extractionPath`. All 8 tests passed.
+  - Full regression test run: 60/60 assertions passed across 11 test suites.
+  - `npm --prefix client run lint` passed with 0 errors and 0 warnings.
+  - `npm --prefix client run build` completed production build in 1.77s.
 
 ### Backend Implementation (After Dashboard UI)
 1. MongoDB Atlas connection and models setup

@@ -300,6 +300,7 @@ export const fetchRepoTree = async (owner, repo, defaultBranch = "main") => {
 
   return {
     tree: filteredTree,
+    treeSha: data.sha || null,
     isTruncated,
     stats: {
       totalFiles,

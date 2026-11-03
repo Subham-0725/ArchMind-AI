@@ -18,7 +18,7 @@ export default function TopologyCanvas({ topology }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const nodeTypes = useMemo(() => ({ customService: ServiceNode }), []);
+  const nodeTypes = useMemo(() => ({ customService: ServiceNode, custom: ServiceNode }), []);
 
   const layoutGraph = useCallback((direction = "LR") => {
     const rawNodes = (topology?.nodes || []).map((n) => ({

@@ -42,6 +42,7 @@ function shouldParseFile(relPath, size = 0) {
 
   const ext = path.extname(normalized).toLowerCase();
   if (!PARSABLE_EXTENSIONS.has(ext)) return false;
+  if (normalized.endsWith(".min.js") || normalized.endsWith(".bundle.js")) return false;
   if (size > MAX_FILE_SIZE) return false;
 
   return true;

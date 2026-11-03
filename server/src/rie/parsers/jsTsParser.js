@@ -86,6 +86,11 @@ export function parseJsTsFile(filePath, code) {
     // 3. Export Statement: export default ..., export const x = ...
     else if (type === "export_statement") {
       extractExport(node, code, filePath, result);
+      extractJsModel(node, code, filePath, result);
+    }
+    // 3.5 Expression Statement: module.exports = mongoose.model('User', schema)
+    else if (type === "expression_statement") {
+      extractJsModel(node, code, filePath, result);
     }
     // 4. Function Declaration: function foo(...) {}
     else if (type === "function_declaration" || type === "generator_function_declaration") {

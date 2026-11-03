@@ -47,8 +47,8 @@ export default function ProjectOverviewCard({ project }) {
           Project Overview
         </h3>
         {confidence > 0 && (
-          <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
-            {confidence}% Detection Confidence
+          <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20" title="Calculated confidence of primary language detection based on file extensions and manifests">
+            Language: {confidence}% Conf.
           </span>
         )}
       </div>

@@ -238,6 +238,31 @@ const projectSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: null,
     },
+
+    // Analysis Versioning & Source Fingerprinting (Phase 1 RIE)
+    sourceFingerprint: {
+      type: String,
+      default: null,
+      index: true,
+    },
+    analysisVersion: {
+      type: Number,
+      default: 1,
+    },
+    lastAnalyzedAt: {
+      type: Date,
+      default: null,
+    },
+
+    // Static Secret & Security Findings (Phase 1 RIE)
+    securityFindings: {
+      type: Array,
+      default: [],
+    },
+    securitySummary: {
+      type: Object,
+      default: {},
+    },
   },
   {
     timestamps: true,
@@ -294,6 +319,11 @@ projectSchema.methods.toSafeObject = function () {
       devops: analysis.devops || defaultModuleStatus,
     },
     errorDetails: this.errorDetails?.message ? this.errorDetails : null,
+    sourceFingerprint: this.sourceFingerprint || null,
+    analysisVersion: this.analysisVersion || 1,
+    lastAnalyzedAt: this.lastAnalyzedAt || null,
+    securityFindings: this.securityFindings || [],
+    securitySummary: this.securitySummary || {},
     treeCount: this.tree?.length || 0,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,

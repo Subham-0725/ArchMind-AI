@@ -3,13 +3,22 @@ import { Link } from "react-router-dom";
 import { UserButton } from "@clerk/clerk-react";
 import { WORKSPACE_TABS, isTabEnabled, getTabDetails } from "../../constants/workspaceTabs";
 
-export default function ProjectHeader({ project, activeTab, onTabChange }) {
+export default function ProjectHeader({
+  project,
+  activeTab,
+  onTabChange,
+  onForceReanalyze,
+  isReanalyzing = false,
+  onToggleChat,
+}) {
   const isGithub = project?.source === "github";
   const name = project?.name || "Untitled Project";
   const status = project?.status || "uploaded";
   const branch = project?.github?.defaultBranch || "main";
   const fullName = project?.github?.fullName || name;
   const capabilities = project?.capabilities || {};
+  const analysisVersion = project?.analysisVersion || 1;
+  const fingerprint = project?.sourceFingerprint;
 
   return (
     <header className="sticky top-0 z-30 flex flex-col border-b border-white/[0.08] archmind-glass bg-[#060a12]/90 backdrop-blur-md">
@@ -32,7 +41,7 @@ export default function ProjectHeader({ project, activeTab, onTabChange }) {
 
           {/* Project Title & Badges */}
           <div className="flex items-center gap-2 min-w-0">
-            <h1 className="text-sm font-semibold text-slate-100 truncate max-w-[200px] sm:max-w-[320px]">
+            <h1 className="text-sm font-semibold text-slate-100 truncate max-w-[180px] sm:max-w-[280px]">
               {fullName}
             </h1>
 
@@ -55,11 +64,62 @@ export default function ProjectHeader({ project, activeTab, onTabChange }) {
                 </>
               )}
             </span>
+
+            {/* Analysis Version Pill */}
+            <span
+              className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 shrink-0"
+              title={`Analysis Version ${analysisVersion}${fingerprint ? ` • Fingerprint: ${fingerprint}` : ""}`}
+            >
+              <span>v{analysisVersion}</span>
+              {fingerprint && (
+                <span className="text-slate-500 hidden md:inline">
+                  ({fingerprint.slice(0, 7)})
+                </span>
+              )}
+            </span>
           </div>
         </div>
 
-        {/* Right: Status & User */}
-        <div className="flex items-center gap-3">
+        {/* Right: Actions, Status & User */}
+        <div className="flex items-center gap-2.5">
+          {onToggleChat && (
+            <button
+              type="button"
+              onClick={onToggleChat}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold text-cyan-200 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/35 transition-all cursor-pointer shadow-sm shadow-cyan-500/10 group"
+              title="Open Repository AI Chat"
+              aria-label="Open Repository AI Chat"
+            >
+              <svg
+                className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                />
+              </svg>
+              <span>Ask AI</span>
+            </button>
+          )}
+
+          {onForceReanalyze && (
+            <button
+              type="button"
+              onClick={onForceReanalyze}
+              disabled={isReanalyzing}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono text-slate-300 hover:text-cyan-300 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition-colors cursor-pointer disabled:opacity-50"
+              title="Force re-run repository analysis pipeline"
+            >
+              <span className={isReanalyzing ? "animate-spin inline-block" : ""}>↻</span>
+              <span className="hidden sm:inline">{isReanalyzing ? "Re-analyzing..." : "Force Re-analyze"}</span>
+            </button>
+          )}
+
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             {status}

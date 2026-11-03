@@ -103,10 +103,18 @@ export const buildTopology = (projectData = {}) => {
   };
   const primaryLanguage = projectData.primaryLanguage || null;
   const secondaryLanguages = projectData.secondaryLanguages || [];
+  const database = projectData.database || null;
+  const apiRoutes = Array.isArray(projectData.apiRoutes) ? projectData.apiRoutes : [];
 
   const filePaths = new Set(tree.map((node) => (node.path || "").toLowerCase()));
-  const allFrameworks = new Set(techStack.frameworks || []);
-  const allDatabases = new Set(techStack.databases || []);
+  const allFrameworks = new Set([
+    ...(techStack.frameworks || []),
+    ...(projectData.apiFrameworks || []),
+  ]);
+  const allDatabases = new Set([
+    ...(techStack.databases || []),
+    ...(database?.type ? [database.type] : []),
+  ]);
   const allDevops = new Set(techStack.devops || []);
   const allLanguages = new Set([
     ...(primaryLanguage ? [primaryLanguage] : []),
@@ -159,8 +167,9 @@ export const buildTopology = (projectData = {}) => {
   if (detectedBackendFrameworks.length > 0) {
     hasBackend = true;
     const mainFw = detectedBackendFrameworks[0];
-    backendLabel = `${mainFw} API`;
-    backendTech = `${primaryLanguage || "Node.js"} / ${mainFw}`;
+    backendLabel = `${mainFw} API Server`;
+    const routesSuffix = apiRoutes.length > 0 ? ` (${apiRoutes.length} routes)` : "";
+    backendTech = `${primaryLanguage || "Node.js"} / ${mainFw}${routesSuffix}`;
   } else {
     // Structural inspection
     const hasBackendFolder = [...filePaths].some(
@@ -181,7 +190,8 @@ export const buildTopology = (projectData = {}) => {
     if (hasBackendFolder || hasServerFiles) {
       hasBackend = true;
       backendLabel = `${primaryLanguage || "Backend"} Service`;
-      backendTech = primaryLanguage || "Node.js";
+      const routesSuffix = apiRoutes.length > 0 ? ` (${apiRoutes.length} routes)` : "";
+      backendTech = `${primaryLanguage || "Node.js"}${routesSuffix}`;
     }
   }
 
@@ -197,7 +207,14 @@ export const buildTopology = (projectData = {}) => {
   const detectedDatabases = [...allDatabases].filter((db) => DATABASE_TECH.has(db));
   const detectedCaches = [...allDatabases].filter((db) => CACHE_TECH.has(db));
 
-  if (detectedDatabases.length > 0) {
+  if (database && Array.isArray(database.entities) && database.entities.length > 0) {
+    hasDatabase = true;
+    const dbType = database.type || "Database";
+    databaseLabel = `${dbType} Database`;
+    const entityNames = database.entities.map((e) => e.name).filter(Boolean);
+    const namesPreview = entityNames.slice(0, 3).join(", ");
+    databaseTech = `${dbType} (${database.entities.length} models: ${namesPreview}${entityNames.length > 3 ? "..." : ""})`;
+  } else if (detectedDatabases.length > 0) {
     hasDatabase = true;
     const mainDb = detectedDatabases[0];
     databaseLabel = `${mainDb} Database`;
@@ -220,7 +237,21 @@ export const buildTopology = (projectData = {}) => {
     cacheTech = detectedCaches.join(" + ");
   }
 
-  // 4. Detect DevOps / Infrastructure Tier
+  // 4. Detect Specific Subsystems / Controllers based on repository evidence
+  const hasAiService = [...filePaths].some(
+    (p) => p.includes("ai.controller") || p.includes("ai.routes") || p.includes("ai.service")
+  );
+  const hasAtsService = [...filePaths].some(
+    (p) => p.includes("ats.controller") || p.includes("ats.routes") || p.includes("ats.service")
+  );
+  const hasDocExportService = [...filePaths].some(
+    (p) => p.includes("document.controller") || p.includes("export.controller") || p.includes("documents.js")
+  );
+  const hasResumeService = [...filePaths].some(
+    (p) => p.includes("resume.controller") || p.includes("resumes.js")
+  );
+
+  // 5. Detect DevOps / Infrastructure Tier
   let hasDevops = false;
   let devopsLabel = "";
   let devopsTech = "";
@@ -251,7 +282,6 @@ export const buildTopology = (projectData = {}) => {
 
   // ── Node Construction ────────────────────────────────────────────────────────
 
-  // Fallback: If no tier was detected at all, build a default service node
   if (!hasFrontend && !hasBackend && !hasDatabase && !hasDevops) {
     nodes.push({
       id: "app-service",
@@ -283,7 +313,7 @@ export const buildTopology = (projectData = {}) => {
     nodes.push({
       id: "frontend",
       type: "customService",
-      position: { x: 250, y: hasDevops ? 180 : 100 },
+      position: { x: 250, y: 120 },
       data: {
         label: frontendLabel,
         technology: frontendTech,
@@ -296,7 +326,7 @@ export const buildTopology = (projectData = {}) => {
     nodes.push({
       id: "backend",
       type: "customService",
-      position: { x: 250, y: hasDevops ? (hasFrontend ? 310 : 180) : (hasFrontend ? 250 : 100) },
+      position: { x: 250, y: 240 },
       data: {
         label: backendLabel,
         technology: backendTech,
@@ -305,15 +335,75 @@ export const buildTopology = (projectData = {}) => {
     });
   }
 
-  if (hasDatabase) {
-    let dbY = 400;
-    if (hasBackend && hasFrontend) dbY = 440;
-    else if (hasBackend || hasFrontend) dbY = 280;
+  // Evidence-grounded internal sub-services
+  if (hasResumeService && hasBackend) {
+    nodes.push({
+      id: "svc-resume",
+      type: "customService",
+      position: { x: 100, y: 360 },
+      data: {
+        label: "Resume Management",
+        technology: "Resume Engine",
+        tier: "Backend",
+      },
+    });
+  }
 
+  if (hasAiService && hasBackend) {
+    nodes.push({
+      id: "svc-ai",
+      type: "customService",
+      position: { x: 300, y: 360 },
+      data: {
+        label: "AI Generation Service",
+        technology: "Groq / OpenAI LLM",
+        tier: "Backend",
+      },
+    });
+    // External AI integration
+    nodes.push({
+      id: "ext-ai",
+      type: "customService",
+      position: { x: 500, y: 360 },
+      data: {
+        label: "External AI Provider",
+        technology: "Groq / OpenAI API",
+        tier: "DevOps",
+      },
+    });
+  }
+
+  if (hasAtsService && hasBackend) {
+    nodes.push({
+      id: "svc-ats",
+      type: "customService",
+      position: { x: 100, y: 480 },
+      data: {
+        label: "ATS Scoring Service",
+        technology: "Resume Scoring & Parser",
+        tier: "Backend",
+      },
+    });
+  }
+
+  if (hasDocExportService && hasBackend) {
+    nodes.push({
+      id: "svc-doc",
+      type: "customService",
+      position: { x: 300, y: 480 },
+      data: {
+        label: "Document & Export Service",
+        technology: "PDF / DOCX Generation",
+        tier: "Backend",
+      },
+    });
+  }
+
+  if (hasDatabase) {
     nodes.push({
       id: "database",
       type: "customService",
-      position: { x: 250, y: dbY },
+      position: { x: 250, y: 600 },
       data: {
         label: databaseLabel,
         technology: databaseTech,
@@ -323,14 +413,10 @@ export const buildTopology = (projectData = {}) => {
   }
 
   if (hasCache) {
-    let cacheY = 400;
-    if (hasBackend && hasFrontend) cacheY = 440;
-    else if (hasBackend || hasFrontend) cacheY = 280;
-
     nodes.push({
       id: "cache",
       type: "customService",
-      position: { x: 500, y: cacheY },
+      position: { x: 500, y: 600 },
       data: {
         label: cacheLabel,
         technology: cacheTech,
@@ -351,14 +437,85 @@ export const buildTopology = (projectData = {}) => {
     });
   }
 
-  if (hasBackend && hasDatabase) {
+  // Connect backend to sub-services if present
+  const subServices = [];
+  if (hasResumeService && hasBackend) {
+    subServices.push("svc-resume");
     edges.push({
-      id: "e-backend-database",
+      id: "e-backend-svc-resume",
       source: "backend",
-      target: "database",
+      target: "svc-resume",
       animated: true,
-      label: "ORM / Queries",
+      label: "/api/v1/resumes",
     });
+  }
+  if (hasAiService && hasBackend) {
+    subServices.push("svc-ai");
+    edges.push({
+      id: "e-backend-svc-ai",
+      source: "backend",
+      target: "svc-ai",
+      animated: true,
+      label: "/api/ai",
+    });
+    edges.push({
+      id: "e-svc-ai-ext-ai",
+      source: "svc-ai",
+      target: "ext-ai",
+      animated: true,
+      label: "LLM API Calls",
+    });
+  }
+  if (hasAtsService && hasBackend) {
+    subServices.push("svc-ats");
+    edges.push({
+      id: "e-backend-svc-ats",
+      source: "backend",
+      target: "svc-ats",
+      animated: true,
+      label: "/api/v1/ats",
+    });
+  }
+  if (hasDocExportService && hasBackend) {
+    subServices.push("svc-doc");
+    edges.push({
+      id: "e-backend-svc-doc",
+      source: "backend",
+      target: "svc-doc",
+      animated: true,
+      label: "/api/v1/documents",
+    });
+  }
+
+  // Connect to database
+  if (hasDatabase) {
+    if (subServices.length > 0) {
+      for (const sId of subServices) {
+        edges.push({
+          id: `e-${sId}-database`,
+          source: sId,
+          target: "database",
+          animated: true,
+          label: "Mongoose / Queries",
+        });
+      }
+    } else if (hasBackend) {
+      edges.push({
+        id: "e-backend-database",
+        source: "backend",
+        target: "database",
+        animated: true,
+        label: "ORM / Queries",
+      });
+    } else if (hasFrontend) {
+      edges.push({
+        id: "e-frontend-database",
+        source: "frontend",
+        target: "database",
+        animated: true,
+        label: "Direct Database Access",
+      });
+    }
   }
 
   if (hasBackend && hasCache) {
@@ -368,16 +525,6 @@ export const buildTopology = (projectData = {}) => {
       target: "cache",
       animated: true,
       label: "Cache Reads / Writes",
-    });
-  }
-
-  if (hasFrontend && hasDatabase && !hasBackend) {
-    edges.push({
-      id: "e-frontend-database",
-      source: "frontend",
-      target: "database",
-      animated: true,
-      label: "Direct Database Access",
     });
   }
 

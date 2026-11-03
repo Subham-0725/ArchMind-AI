@@ -3,10 +3,12 @@
 // Repository Intelligence Engine — Repository Blueprint Aggregator
 //
 // Combines static intelligence outputs (File Tree, Language Detection, Tech Stack,
-// Capability Matrix, and Tree-sitter AST Structural Data) into a normalized,
+// Capability Matrix, Database Schema, and Tree-sitter AST Structural Data) into a normalized,
 // deduplicated, versioned JSON blueprint.
 //
-// Includes token-budget context optimization to fit downstream LLM context windows.
+// Includes token-budget context optimization and strict schema validation.
+
+import { validateBlueprint, isValidBlueprint } from "./validation/blueprintValidator.js";
 
 const DEFAULT_MAX_TOKENS = 8000;
 const CHARS_PER_TOKEN = 4;
@@ -37,29 +39,42 @@ function deduplicate(items, keyFn) {
 }
 
 /**
- * Aggregates all static RIE intelligence into a compact Repository Blueprint.
+ * Aggregates all static RIE intelligence into a compact, validated Repository Blueprint.
  *
  * @param {Object} projectData
- * @param {string} projectData.name - Project name
+ * @param {string} [projectData.projectId] - Project ID
+ * @param {string} [projectData.name] - Project name
  * @param {string} [projectData.source="zip"] - Ingestion source ("zip" | "github")
+ * @param {string} [projectData.repositoryUrl] - Repository URL
+ * @param {string} [projectData.branch="main"] - Branch name
+ * @param {string} [projectData.commitSha] - Commit SHA or content fingerprint
+ * @param {number} [projectData.analysisVersion=1] - Analysis version counter
  * @param {Array} [projectData.tree=[]] - File tree
  * @param {Object} [projectData.techStack={}] - Tech stack
  * @param {string} [projectData.primaryLanguage="Unknown"] - Primary language
  * @param {Array} [projectData.secondaryLanguages=[]] - Secondary languages
  * @param {Object} [projectData.capabilities={}] - Smart relevance capabilities
  * @param {Object} [projectData.ast={}] - Tree-sitter AST extraction
- * @param {Object} [projectData.database=null] - Extracted database schema (dbSchemaExtractor output)
+ * @param {Object} [projectData.database=null] - Extracted database schema
+ * @param {Array} [projectData.securityFindings=[]] - Masked secret scan findings
+ * @param {Object} [projectData.securitySummary={}] - Security findings summary
  * @param {Object} [options={}]
  * @param {number} [options.maxTokens=8000] - Token budget cap
- * @returns {Object} Normalized Repository Blueprint
+ * @param {boolean} [options.validate=true] - Run schema validation
+ * @returns {Object} Normalized, validated Repository Blueprint
  */
 export function aggregateBlueprint(projectData = {}, options = {}) {
   const maxTokens = options.maxTokens || DEFAULT_MAX_TOKENS;
   const maxChars = maxTokens * CHARS_PER_TOKEN;
 
   const {
+    projectId = null,
     name = "Unnamed Project",
     source = "unknown",
+    repositoryUrl = null,
+    branch = "main",
+    commitSha = null,
+    analysisVersion = 1,
     tree = [],
     techStack = { languages: [], frameworks: [], databases: [], devops: [] },
     primaryLanguage = "Unknown",
@@ -73,22 +88,38 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
     },
     ast = {},
     database = null,
+    securityFindings = [],
+    securitySummary = {},
   } = projectData;
 
   // 1. Process Structure (Filter noise directories and compact fields)
   const rawFiles = Array.isArray(tree) ? tree : [];
   const structure = rawFiles
     .filter((f) => f && f.path)
-    .map((f) => ({
-      path: normalizePath(f.path),
-      type: f.type || "file",
-      size: f.size || 0,
-    }));
+    .map((f) => {
+      const normPath = normalizePath(f.path);
+      const ext = normPath.includes(".") ? `.${normPath.split(".").pop().toLowerCase()}` : "";
+      const fileName = normPath.split("/").pop() || "";
+      return {
+        path: normPath,
+        filePath: normPath,
+        fileName,
+        extension: ext,
+        type: f.type || "file",
+        isDirectory: f.type === "dir",
+        size: typeof f.size === "number" ? f.size : 0,
+      };
+    });
 
   // 2. Process AST Data with Deduplication
   const astData = ast || {};
 
-  const entryPoints = deduplicate(astData.entryPoints || [], (e) => `${normalizePath(e.file)}:${e.type}`);
+  const entryPoints = deduplicate(astData.entryPoints || [], (e) => `${normalizePath(e.file)}:${e.type}`).map(
+    (e) => ({
+      file: normalizePath(e.file),
+      type: e.type || "entrypoint",
+    })
+  );
 
   const internalDeps = deduplicate(
     (astData.dependencies?.internal || []).map((d) => ({
@@ -106,24 +137,33 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
     (d) => `${d.from}:${d.package}`
   );
 
+  const rawRoutes = Array.isArray(projectData.apiRoutes) && projectData.apiRoutes.length > 0
+    ? projectData.apiRoutes
+    : (astData.routes || []);
+
   const routes = deduplicate(
-    (astData.routes || []).map((r) => ({
-      file: normalizePath(r.file),
-      framework: r.framework,
-      method: r.method,
-      path: r.path,
-      handler: r.handler || null,
-      line: r.line,
+    rawRoutes.map((r) => ({
+      routeId: r.routeId || null,
+      file: normalizePath(r.sourceFile || r.file),
+      framework: r.framework || "Express",
+      method: (r.method || "GET").toUpperCase(),
+      path: r.path || "/",
+      handler: r.handlerName || r.handler || null,
+      line: r.lineRange?.startLine || r.line || 1,
+      middleware: r.middleware || [],
+      params: r.params || [],
+      isAuthProtected: Boolean(r.isAuthProtected),
+      confidence: r.confidence || "high",
     })),
-    (r) => `${r.file}:${r.method}:${r.path}`
+    (r) => `${r.file}:${r.method}:${r.path}:${r.line}`
   );
 
   const models = deduplicate(
     (astData.models || []).map((m) => ({
       file: normalizePath(m.file),
       name: m.name,
-      framework: m.framework,
-      line: m.line,
+      framework: m.framework || "ORM",
+      line: m.line || 1,
     })),
     (m) => `${m.file}:${m.name}`
   );
@@ -134,7 +174,7 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
       name: c.name,
       superClass: c.superClass || null,
       methods: c.methods || [],
-      line: c.line,
+      line: c.line || 1,
     })),
     (c) => `${c.file}:${c.name}`
   );
@@ -145,7 +185,7 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
       name: f.name,
       params: f.params || [],
       isAsync: Boolean(f.isAsync),
-      line: f.line,
+      line: f.line || 1,
     })),
     (f) => `${f.file}:${f.name}`
   );
@@ -165,12 +205,21 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
   }
 
   // 4. Assemble Base Blueprint Object
+  const timestamp = new Date().toISOString();
   let blueprint = {
     version: 1,
-    generatedAt: new Date().toISOString(),
+    generatedAt: timestamp,
     metadata: {
+      projectId,
       name,
+      projectName: name,
       source,
+      sourceType: source,
+      repositoryUrl,
+      branch,
+      commitSha,
+      analysisVersion,
+      analyzedAt: timestamp,
       primaryLanguage: primaryLanguage || "Unknown",
       secondaryLanguages: secondaryLanguages || [],
       techStack,
@@ -187,6 +236,27 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
     classes,
     functions,
     database: databaseSchema,
+    api: {
+      routes,
+      httpMethods: Array.from(new Set(routes.map((r) => r.method))),
+      routePaths: Array.from(new Set(routes.map((r) => r.path))),
+      handlerFiles: Array.from(new Set(routes.map((r) => r.file))),
+      frameworks: Array.from(new Set(routes.map((r) => r.framework).filter(Boolean))),
+      authProtectedCount: routes.filter((r) => r.isAuthProtected).length,
+    },
+    architecture: {
+      entryPoints,
+      components: [
+        ...(entryPoints.length > 0 ? [{ name: "Entrypoint", files: entryPoints.map((e) => e.file) }] : []),
+        ...(models.length > 0 ? [{ name: "DatabaseModels", count: models.length }] : []),
+        ...(routes.length > 0 ? [{ name: "ApiRoutes", count: routes.length }] : []),
+      ],
+    },
+    security: {
+      findings: securityFindings || [],
+      totalFindings: (securityFindings || []).length,
+      summary: securitySummary || {},
+    },
     tokenEstimate: 0,
     isBudgetTruncated: false,
   };
@@ -237,6 +307,14 @@ export function aggregateBlueprint(projectData = {}, options = {}) {
 
   // Final Token Estimate
   blueprint.tokenEstimate = Math.ceil(JSON.stringify(blueprint).length / CHARS_PER_TOKEN);
+
+  // Optional Schema Validation check
+  if (options.validate !== false) {
+    const valResult = isValidBlueprint(blueprint);
+    if (!valResult.valid) {
+      console.warn("[blueprintAggregator] Blueprint validation warnings:", valResult.errors);
+    }
+  }
 
   return blueprint;
 }

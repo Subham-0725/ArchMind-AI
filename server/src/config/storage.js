@@ -10,11 +10,11 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/** Absolute path to the ephemeral uploads directory (staged ZIP files) */
-export const UPLOADS_DIR = path.resolve(__dirname, "../storage/uploads");
+/** Absolute path to the ephemeral uploads directory (staged ZIP files) - stored outside src/ to avoid watcher restarts */
+export const UPLOADS_DIR = path.resolve(__dirname, "../../storage/uploads");
 
-/** Absolute path to the ephemeral extracted/ workspace */
-export const EXTRACTED_DIR = path.resolve(__dirname, "../storage/extracted");
+/** Absolute path to the ephemeral extracted/ workspace - stored outside src/ to avoid watcher restarts */
+export const EXTRACTED_DIR = path.resolve(__dirname, "../../storage/extracted");
 
 /**
  * Initializes and guarantees storage directory availability.

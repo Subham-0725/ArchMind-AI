@@ -5,14 +5,20 @@
 // when already completed, and drives the status lifecycle:
 //   idle → queued → processing → completed | failed
 
+import fs from "fs";
 import mongoose from "mongoose";
 import { getAuth } from "@clerk/express";
 import { randomUUID } from "crypto";
 import Project from "../models/Project.js";
+import SourceFile from "../models/SourceFile.js";
 import { generateArchitecture, generateERD } from "../services/llmService.js";
+import { defaultSecurityAuditService } from "../services/security/securityAudit.service.js";
 import { aggregateBlueprint } from "../rie/blueprintAggregator.js";
 import { extractDatabaseSchema } from "../rie/dbSchemaExtractor.js";
 import { populateKeyFileContents } from "../services/githubService.js";
+import { extractApiRoutes } from "../rie/api/routeExtractor.js";
+import { generateRouteSequence } from "../rie/api/sequenceGenerator.js";
+import { triggerCodeReview, triggerTestGeneration } from "./security.controller.js";
 
 /**
  * Valid analysis module names and the capability key each one requires.
@@ -89,10 +95,29 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
     // If project has database capability, ensure database schema is fresh
     if (project.capabilities?.hasDatabase) {
       if (!project.database || !Array.isArray(project.database.entities) || project.database.entities.length === 0) {
+        let treeForDb = project.tree || [];
         if (project.source === "github" && project.github?.owner && project.github?.repo) {
-          await populateKeyFileContents(project.github.owner, project.github.repo, project.tree);
+          await populateKeyFileContents(project.github.owner, project.github.repo, treeForDb);
+        } else {
+          // Fallback to indexed SourceFiles in MongoDB if temporary extraction folder is gone
+          const sourceFiles = await SourceFile.find({
+            projectId: project._id,
+            isBinary: false,
+            content: { $ne: null },
+          }).select("filePath content").lean();
+
+          if (sourceFiles && sourceFiles.length > 0) {
+            const contentMap = new Map(sourceFiles.map((sf) => [sf.filePath, sf.content]));
+            treeForDb = treeForDb.map((node) => {
+              const nodeObj = node.toObject ? node.toObject() : { ...node };
+              if (contentMap.has(nodeObj.path)) {
+                nodeObj.content = contentMap.get(nodeObj.path);
+              }
+              return nodeObj;
+            });
+          }
         }
-        project.database = extractDatabaseSchema(project.tree, project.capabilities, project.techStack, null);
+        project.database = extractDatabaseSchema(treeForDb, project.capabilities, project.techStack, null);
       }
     }
 
@@ -116,6 +141,64 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
       resultPayload = await generateArchitecture(blueprint, options);
     } else if (moduleName === "erd") {
       resultPayload = await generateERD(blueprint, options);
+    } else if (moduleName === "api") {
+      let routes = project.analysisResults?.apiRoutes;
+      if (!Array.isArray(routes) || routes.length === 0) {
+        let treeForRoutes = project.tree || [];
+        const hasDiskAccess = project.extractionPath && fs.existsSync(project.extractionPath);
+        if (!hasDiskAccess) {
+          const sourceFiles = await SourceFile.find({
+            projectId: project._id,
+            isBinary: false,
+            content: { $ne: null },
+          }).select("filePath content").lean();
+
+          if (sourceFiles && sourceFiles.length > 0) {
+            const contentMap = new Map(sourceFiles.map((sf) => [sf.filePath, sf.content]));
+            treeForRoutes = treeForRoutes.map((node) => {
+              const nodeObj = node.toObject ? node.toObject() : { ...node };
+              if (contentMap.has(nodeObj.path)) {
+                nodeObj.content = contentMap.get(nodeObj.path);
+              }
+              return nodeObj;
+            });
+          }
+        }
+
+        const extraction = await extractApiRoutes(treeForRoutes, {
+          extractionPath: hasDiskAccess ? project.extractionPath : null,
+          ast: project.ast,
+        });
+        routes = extraction.routes;
+        project.set("analysisResults.apiRoutes", routes);
+      }
+
+      const sequences = {};
+      const targetRoutes = routes.slice(0, 10);
+      for (const r of targetRoutes) {
+        sequences[r.routeId] = generateRouteSequence(r, project, {
+          tree: project.tree,
+          ast: project.ast,
+        });
+      }
+
+      project.set("analysisResults.apiSequences", sequences);
+
+      resultPayload = {
+        routesCount: routes.length,
+        routes,
+        sequences,
+        generatedAt: new Date().toISOString(),
+      };
+    } else if (moduleName === "security") {
+      const scanRes = await defaultSecurityAuditService.runSecurityScan({ project });
+      resultPayload = {
+        totalFindings: scanRes.totalFindings,
+        severityCounts: scanRes.severityCounts,
+        filesScanned: scanRes.audit.filesScanned,
+        status: "completed",
+        generatedAt: new Date().toISOString(),
+      };
     } else {
       // Future modules stub
       resultPayload = { status: "stub", module: moduleName };
@@ -231,10 +314,27 @@ export const analyzeProject = async (req, res) => {
  */
 export const analyzeModule = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    let userId = null;
+    try {
+      const auth = getAuth(req);
+      userId = auth?.userId || null;
+    } catch {
+      userId = null;
+    }
+    if (!userId && req.auth?.userId) {
+      userId = req.auth.userId;
+    }
     if (!userId) return res.status(401).json({ success: false, error: "Unauthorized." });
 
     const { id, module: moduleName } = req.params;
+
+    // Defense-in-depth: if code-review or tests is invoked via :module route, delegate to dedicated controller
+    if (moduleName === "code-review") {
+      return triggerCodeReview(req, res);
+    }
+    if (moduleName === "tests") {
+      return triggerTestGeneration(req, res);
+    }
 
     if (!VALID_MODULES.includes(moduleName)) {
       return res.status(400).json({

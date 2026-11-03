@@ -1,15 +1,13 @@
 // server/test-live-groq.js
 //
-// Live API test for Groq LLM integration (llama-3.3-70b-versatile)
+// Live API test for Groq LLM integration (openai/gpt-oss-120b)
 
-import dotenv from "dotenv";
-dotenv.config();
-
+import "./src/config/env.js";
 import { generateArchitecture, generateERD } from "./src/services/llmService.js";
 
 async function main() {
   console.log("=========================================");
-  console.log("Testing Live Groq API (llama-3.3-70b)");
+  console.log("Testing Live Groq API (openai/gpt-oss-120b)");
   console.log("=========================================\n");
 
   const sampleBlueprint = {

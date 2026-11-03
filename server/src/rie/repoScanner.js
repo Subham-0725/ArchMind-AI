@@ -53,54 +53,128 @@ const IGNORED_EXTENSIONS = new Set([
   ".map", ".lock",
 ]);
 
-const IGNORED_FILENAMES = new Set([
+// Manifest and configuration files critical for technology detection
+export const METADATA_MANIFEST_FILES = new Set([
+  "package.json",
   "package-lock.json",
   "yarn.lock",
   "pnpm-lock.yaml",
   "bun.lockb",
-  "composer.lock",
+  "requirements.txt",
+  "pyproject.toml",
+  "pipfile",
+  "pipfile.lock",
+  "setup.py",
+  "go.mod",
+  "go.sum",
+  "cargo.toml",
   "cargo.lock",
+  "pom.xml",
+  "build.gradle",
+  "settings.gradle",
+  "composer.json",
+  "composer.lock",
+  "gemfile",
   "gemfile.lock",
-  "poetry.lock",
+  "dockerfile",
+  "docker-compose.yml",
+  "docker-compose.yaml",
+  "tsconfig.json",
+  ".env.example",
+]);
+
+const IGNORED_FILENAMES = new Set([
   ".ds_store",
   "thumbs.db",
 ]);
 
+/**
+ * Checks whether a file is a manifest or config file needed for tech stack detection.
+ * @param {string} relPath
+ * @returns {boolean}
+ */
+export const isMetadataDetectionFile = (relPath) => {
+  if (!relPath) return false;
+  const filename = path.basename(relPath).toLowerCase();
+  return METADATA_MANIFEST_FILES.has(filename);
+};
+
+/**
+ * Checks whether a file should be excluded from LLM context to prevent token exhaustion
+ * (e.g., massive lockfiles, minified bundles, or large non-code assets).
+ *
+ * @param {string} relPath
+ * @param {number} [size=0]
+ * @returns {boolean}
+ */
+export const isExcludableFromLlmContext = (relPath, size = 0) => {
+  if (!relPath) return true;
+  const norm = relPath.toLowerCase();
+  if (norm.endsWith(".min.js") || norm.endsWith(".min.css") || norm.endsWith(".bundle.js")) return true;
+  if (norm.endsWith(".map")) return true;
+  if (norm.endsWith(".lock") || norm.endsWith("-lock.json")) return true;
+  if (size > 150 * 1024) return true; // Files over 150KB excluded from raw LLM prompts
+  return false;
+};
+
 // ── Internal Helpers ──────────────────────────────────────────────────────────
 
 /**
- * Returns true if this path segment or file should be excluded from analysis.
+ * Returns true if this path segment or file should be excluded from the file tree entirely.
+ * Preserves manifest files (package-lock.json, Cargo.lock, etc.) for metadata detection.
  *
  * @param {string} relPath - Path relative to the repo root
+ * @param {boolean} [isDirectory=false] - Whether the path represents a directory entry
  * @returns {boolean}
  */
-const isNoisePath = (relPath) => {
+export const isNoisePath = (relPath, isDirectory = false) => {
   if (!relPath) return true;
 
   const normalized = relPath.replace(/\\/g, "/");
-  const segments = normalized.split("/");
+  const segments = normalized.split("/").filter(Boolean);
+  if (segments.length === 0) return true;
 
-  for (let i = 0; i < segments.length - 1; i++) {
-    const dir = segments[i].toLowerCase();
+  // Check parent and ancestor directory segments
+  const dirSegmentsToCheck = isDirectory ? segments : segments.slice(0, -1);
+  for (const seg of dirSegmentsToCheck) {
+    const dir = seg.toLowerCase();
     if (IGNORED_DIRECTORIES.has(dir) || (dir.startsWith(".") && !dir.startsWith(".github"))) {
       return true;
     }
   }
 
+  // If this is a directory entry and its leaf segment is an ignored directory, skip it immediately
+  if (isDirectory) {
+    const leafDir = segments[segments.length - 1].toLowerCase();
+    return IGNORED_DIRECTORIES.has(leafDir) || (leafDir.startsWith(".") && !leafDir.startsWith(".github"));
+  }
+
   const filename = segments[segments.length - 1].toLowerCase();
+
+  // If this is a recognized manifest/config file, preserve it!
+  if (METADATA_MANIFEST_FILES.has(filename)) {
+    return false;
+  }
 
   if (IGNORED_FILENAMES.has(filename)) return true;
 
-  // Hidden files — allow standard config files through
-  if (
-    filename.startsWith(".") &&
-    filename !== ".gitignore" &&
-    filename !== ".editorconfig" &&
-    filename !== ".eslintrc.json" &&
-    filename !== ".prettierrc" &&
-    filename !== ".env.example"
-  ) {
+  // Minified files
+  if (filename.endsWith(".min.js") || filename.endsWith(".min.css") || filename.endsWith(".bundle.js")) {
     return true;
+  }
+
+  // Hidden files — allow standard config and env files through for technology & secret scanning
+  if (filename.startsWith(".")) {
+    const isAllowedDotFile =
+      filename === ".gitignore" ||
+      filename === ".editorconfig" ||
+      filename === ".eslintrc.json" ||
+      filename === ".prettierrc" ||
+      filename.startsWith(".env");
+
+    if (!isAllowedDotFile) {
+      return true;
+    }
   }
 
   for (const ext of IGNORED_EXTENSIONS) {
@@ -130,7 +204,7 @@ const walkDir = (dirPath, rootPath, treeAcc, statsAcc) => {
     const absPath = path.join(dirPath, entry.name);
     const relPath = path.relative(rootPath, absPath).replace(/\\/g, "/");
 
-    if (isNoisePath(relPath)) continue;
+    if (isNoisePath(relPath, entry.isDirectory())) continue;
 
     if (entry.isDirectory()) {
       statsAcc.totalDirs++;
@@ -198,11 +272,17 @@ const detectTechStack = (repoRoot, fileTree) => {
   const devops = new Set();
 
   // ── Node.js / JavaScript / TypeScript ──────────────────────────────────────
-  if (filePaths.has("package.json")) {
-    const pkg = safeReadJson(path.join(repoRoot, "package.json"));
+  const packageJsonNodes = fileTree.filter(
+    (n) => n.path.toLowerCase() === "package.json" || n.path.toLowerCase().endsWith("/package.json")
+  );
+
+  for (const pkgNode of packageJsonNodes) {
+    const pkg = safeReadJson(path.join(repoRoot, pkgNode.path));
     if (pkg) {
       languages.add("JavaScript");
-      if (filePaths.has("tsconfig.json")) languages.add("TypeScript");
+      if (filePaths.has("tsconfig.json") || [...filePaths].some((p) => p.endsWith("/tsconfig.json"))) {
+        languages.add("TypeScript");
+      }
 
       const allDeps = {
         ...pkg.dependencies,
@@ -234,32 +314,31 @@ const detectTechStack = (repoRoot, fileTree) => {
       if (allDeps.sequelize) databases.add("Sequelize");
 
       // DevOps
-      if (allDeps.docker || filePaths.has("dockerfile")) devops.add("Docker");
+      if (allDeps.docker || filePaths.has("dockerfile") || [...filePaths].some((p) => p.endsWith("/dockerfile"))) {
+        devops.add("Docker");
+      }
     }
   }
 
   // ── Python ─────────────────────────────────────────────────────────────────
-  if (
-    filePaths.has("requirements.txt") ||
-    filePaths.has("pyproject.toml") ||
-    filePaths.has("setup.py") ||
-    filePaths.has("pipfile")
-  ) {
+  const pythonManifestNodes = fileTree.filter((n) => {
+    const base = n.path.split("/").pop().toLowerCase();
+    return base === "requirements.txt" || base === "pyproject.toml" || base === "setup.py" || base === "pipfile";
+  });
+
+  if (pythonManifestNodes.length > 0) {
     languages.add("Python");
 
-    const reqText = safeReadText(path.join(repoRoot, "requirements.txt")).toLowerCase();
-    if (reqText.includes("django")) frameworks.add("Django");
-    if (reqText.includes("flask")) frameworks.add("Flask");
-    if (reqText.includes("fastapi")) frameworks.add("FastAPI");
-    if (reqText.includes("sqlalchemy")) databases.add("SQLAlchemy");
-    if (reqText.includes("psycopg2")) databases.add("PostgreSQL");
-    if (reqText.includes("pymongo")) databases.add("MongoDB");
-    if (reqText.includes("redis")) databases.add("Redis");
-
-    const pyprojectText = safeReadText(path.join(repoRoot, "pyproject.toml")).toLowerCase();
-    if (pyprojectText.includes("fastapi")) frameworks.add("FastAPI");
-    if (pyprojectText.includes("django")) frameworks.add("Django");
-    if (pyprojectText.includes("flask")) frameworks.add("Flask");
+    for (const pNode of pythonManifestNodes) {
+      const text = safeReadText(path.join(repoRoot, pNode.path)).toLowerCase();
+      if (text.includes("django")) frameworks.add("Django");
+      if (text.includes("flask")) frameworks.add("Flask");
+      if (text.includes("fastapi")) frameworks.add("FastAPI");
+      if (text.includes("sqlalchemy")) databases.add("SQLAlchemy");
+      if (text.includes("psycopg2")) databases.add("PostgreSQL");
+      if (text.includes("pymongo")) databases.add("MongoDB");
+      if (text.includes("redis")) databases.add("Redis");
+    }
   }
 
   // ── Java / Kotlin ──────────────────────────────────────────────────────────
@@ -388,12 +467,16 @@ export const scanRepository = (repoRoot) => {
   // descend into it automatically so tree paths are relative to the real repo root.
   let scanRoot = repoRoot;
   try {
-    const entries = fs.readdirSync(repoRoot, { withFileTypes: true });
-    const dirs = entries.filter((e) => e.isDirectory());
-    const files = entries.filter((e) => e.isFile());
+    while (true) {
+      const entries = fs.readdirSync(scanRoot, { withFileTypes: true });
+      const dirs = entries.filter((e) => e.isDirectory() && !isNoisePath(e.name, true));
+      const files = entries.filter((e) => e.isFile() && !isNoisePath(e.name, false));
 
-    if (dirs.length === 1 && files.length === 0) {
-      scanRoot = path.join(repoRoot, dirs[0].name);
+      if (dirs.length === 1 && files.length === 0) {
+        scanRoot = path.join(scanRoot, dirs[0].name);
+      } else {
+        break;
+      }
     }
   } catch {
     // Keep scanRoot as-is
@@ -425,5 +508,5 @@ export const scanRepository = (repoRoot) => {
 
   const techStack = detectTechStack(scanRoot, tree);
 
-  return { tree, stats, techStack };
+  return { tree, stats, techStack, scanRoot };
 };

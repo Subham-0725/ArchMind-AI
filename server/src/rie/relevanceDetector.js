@@ -170,6 +170,7 @@ export const detectCapabilities = (fileTree = [], techStack = {}, repoRoot = nul
   const normalizedTree = fileTree.map((node) => ({
     path: (node.path || "").toLowerCase().replace(/\\/g, "/"),
     type: node.type || "file",
+    content: node.content || null,
   }));
 
   const pathSet = new Set(normalizedTree.map((n) => n.path));
@@ -179,9 +180,21 @@ export const detectCapabilities = (fileTree = [], techStack = {}, repoRoot = nul
   const detectedFws = new Set(techStack.frameworks || []);
   const detectedDevops = new Set(techStack.devops || []);
 
-  // ── SIGNAL 1: Manifest Inspection (if repoRoot available) ─────────────────
-  if (repoRoot && filenameSet.has("package.json")) {
-    const pkg = safeReadJson(path.join(repoRoot, "package.json"));
+  // ── SIGNAL 1: Manifest Inspection (disk or in-memory tree) ───────────────
+  const packageJsonNodes = normalizedTree.filter((n) => n.path === "package.json" || n.path.endsWith("/package.json"));
+
+  for (const pkgNode of packageJsonNodes) {
+    let pkg = null;
+    if (repoRoot) {
+      pkg = safeReadJson(path.join(repoRoot, pkgNode.path));
+    } else if (pkgNode.content) {
+      try {
+        pkg = typeof pkgNode.content === "string" ? JSON.parse(pkgNode.content) : pkgNode.content;
+      } catch {
+        pkg = null;
+      }
+    }
+
     if (pkg) {
       const allDeps = {
         ...pkg.dependencies,
@@ -202,7 +215,38 @@ export const detectCapabilities = (fileTree = [], techStack = {}, repoRoot = nul
           else if (lowerDep.includes("redis")) detectedDbs.add("Redis");
           else detectedDbs.add(dep);
         }
+
+        if (API_FRAMEWORKS.has(lowerDep)) {
+          if (lowerDep.includes("express")) detectedFws.add("Express");
+          else if (lowerDep.includes("fastify")) detectedFws.add("Fastify");
+          else if (lowerDep.includes("nest")) detectedFws.add("NestJS");
+          else detectedFws.add(dep);
+        }
       }
+    }
+  }
+
+  // Python manifests (requirements.txt / pyproject.toml / pipfile)
+  const pythonManifestNodes = normalizedTree.filter((n) => {
+    const base = n.path.split("/").pop().toLowerCase();
+    return base === "requirements.txt" || base === "pyproject.toml" || base === "pipfile" || base === "setup.py";
+  });
+
+  for (const pyNode of pythonManifestNodes) {
+    let reqText = "";
+    if (repoRoot) {
+      reqText = safeReadText(path.join(repoRoot, pyNode.path)).toLowerCase();
+    } else if (pyNode.content) {
+      reqText = String(pyNode.content).toLowerCase();
+    }
+
+    if (reqText) {
+      if (reqText.includes("sqlalchemy")) detectedDbs.add("SQLAlchemy");
+      if (reqText.includes("pymongo")) detectedDbs.add("MongoDB");
+      if (reqText.includes("psycopg")) detectedDbs.add("PostgreSQL");
+      if (reqText.includes("fastapi")) detectedFws.add("FastAPI");
+      if (reqText.includes("django")) detectedFws.add("Django");
+      if (reqText.includes("flask")) detectedFws.add("Flask");
     }
   }
 

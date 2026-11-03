@@ -11,7 +11,16 @@ import { getAuth } from "@clerk/express";
  * Use on every route that needs an authenticated user.
  */
 const requireAuth = (req, res, next) => {
-  const { userId } = getAuth(req);
+  let userId = null;
+  try {
+    const auth = getAuth(req);
+    userId = auth?.userId || null;
+  } catch {
+    userId = null;
+  }
+  if (!userId && req.auth?.userId) {
+    userId = req.auth.userId;
+  }
 
   if (!userId) {
     return res.status(401).json({

@@ -26,8 +26,10 @@ const TIER_STYLES = {
 };
 
 const ServiceNode = ({ data, targetPosition = Position.Left, sourcePosition = Position.Right }) => {
-  const tier = data.tier || "Backend";
+  const rawTier = data?.tier || "Backend";
+  const tier = rawTier.charAt(0).toUpperCase() + rawTier.slice(1).toLowerCase();
   const style = TIER_STYLES[tier] || TIER_STYLES.Backend;
+  const techText = data?.technology || (Array.isArray(data?.technologies) ? data.technologies.join(", ") : "");
 
   return (
     <div className={`relative px-4 py-3 rounded-xl border backdrop-blur-md transition-all duration-200 min-w-[220px] ${style.glow}`}>
@@ -44,12 +46,12 @@ const ServiceNode = ({ data, targetPosition = Position.Left, sourcePosition = Po
       </div>
 
       <div className="text-sm font-semibold text-slate-100 truncate">
-        {data.label || "Service Node"}
+        {data?.label || "Service Node"}
       </div>
 
-      {data.technology && (
+      {techText && (
         <div className="text-xs font-mono text-slate-400 mt-1 truncate">
-          {data.technology}
+          {techText}
         </div>
       )}
 

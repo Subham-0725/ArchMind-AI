@@ -3,12 +3,16 @@
 // Orchestrates project ingestion (ZIP archive uploads & GitHub repository imports)
 // and project retrieval with strict multi-tenant isolation.
 
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
 import mongoose from "mongoose";
 import { getAuth } from "@clerk/express";
 import { randomUUID } from "crypto";
 import Project from "../models/Project.js";
+import SourceFile from "../models/SourceFile.js";
 import { parseGithubUrl } from "../utils/githubUrl.js";
-import { fetchRepoMetadata, fetchRepoTree, populateKeyFileContents } from "../services/githubService.js";
+import { fetchRepoMetadata, fetchRepoTree, populateKeyFileContents, fetchFileBlob } from "../services/githubService.js";
 import { extractZip } from "../rie/zipExtractor.js";
 import { scanRepository } from "../rie/repoScanner.js";
 import { detectProjectLanguage } from "../services/languageDetector.js";
@@ -17,6 +21,9 @@ import { detectCapabilities } from "../rie/relevanceDetector.js";
 import { parseRepository } from "../rie/astParser.js";
 import { aggregateBlueprint } from "../rie/blueprintAggregator.js";
 import { extractDatabaseSchema } from "../rie/dbSchemaExtractor.js";
+import { executeRiePipeline } from "../rie/pipeline/analysisPipeline.js";
+import { isBinaryExtension } from "../rie/indexing/sourceIndexer.js";
+import { redactSecrets } from "../rie/security/secretRedactor.js";
 import { EXTRACTED_DIR, safeUnlink, safeRmDir } from "../config/storage.js";
 
 /**
@@ -24,7 +31,8 @@ import { EXTRACTED_DIR, safeUnlink, safeRmDir } from "../config/storage.js";
  *
  * Imports or refreshes a GitHub repository for the authenticated user.
  * Fetches metadata + recursive file tree from GitHub REST API,
- * applies RIE noise filters, and upserts the Project document in MongoDB.
+ * applies unified RIE analysis pipeline, checks source cache version,
+ * and upserts the Project document in MongoDB.
  */
 export const importGithub = async (req, res) => {
   try {
@@ -57,52 +65,66 @@ export const importGithub = async (req, res) => {
 
     // 3. Fetch recursive tree from GitHub Git Trees API
     const treeData = await fetchRepoTree(owner, repo, metadata.defaultBranch);
+    const sourceFingerprint = treeData.treeSha || `${metadata.pushedAt || metadata.updatedAt}`;
 
-    // 3.2 Populate contents for model/schema/architecture files
+    // 3.1 Check Cache Invalidation & Analysis Versioning
+    const forceReanalyze = req.query.force === "true";
+    const existingProject = await Project.findOne({
+      userId,
+      "github.fullName": metadata.fullName,
+      source: "github",
+    });
+
+    if (
+      existingProject &&
+      !forceReanalyze &&
+      existingProject.sourceFingerprint === sourceFingerprint &&
+      existingProject.blueprint?.version &&
+      existingProject.status === "completed"
+    ) {
+      return res.status(200).json({
+        success: true,
+        message: `Repository '${metadata.fullName}' is up-to-date (using cached analysis version ${existingProject.analysisVersion}).`,
+        data: existingProject.toSafeObject(),
+      });
+    }
+
+    const nextVersion = existingProject ? (existingProject.analysisVersion || 1) + 1 : 1;
+    const targetProjectId = existingProject?._id || new mongoose.Types.ObjectId();
+
+    // 3.2 Populate contents for key model/schema/architecture files
     await populateKeyFileContents(owner, repo, treeData.tree);
 
-    // 3.5 Multi-signal language & framework static detection (Feature 08)
-    const langResult = detectProjectLanguage(treeData.tree, null);
-
-    const techStack = {
-      languages: langResult.primaryLanguage
-        ? [langResult.primaryLanguage, ...langResult.secondaryLanguages]
-        : [],
-      frameworks: langResult.frameworks,
-      databases: [],
-      devops: [],
-    };
-
-    // 3.6 Deterministic System Topology generation (Workspace)
-    const topology = buildTopology({
-      name: metadata.name,
-      tree: treeData.tree,
-      techStack,
-      primaryLanguage: langResult.primaryLanguage,
-      secondaryLanguages: langResult.secondaryLanguages,
-    });
-
-    // 3.7 Smart Relevance Detection / Feature Capability Matrix
-    const capabilities = detectCapabilities(treeData.tree, techStack, null);
-
-    // 3.8 Tree-sitter AST Parsing (Feature 12)
-    const ast = await parseRepository(treeData.tree, {});
-
-    // 3.85 Database Schema Extraction (Feature 15)
-    const database = extractDatabaseSchema(treeData.tree, capabilities, techStack, null);
-
-    // 3.9 Repository Blueprint Aggregator (Feature 13)
-    const blueprint = aggregateBlueprint({
+    // 3.3 Execute Unified RIE Analysis Pipeline
+    const rieOutput = await executeRiePipeline({
       name: metadata.name,
       source: "github",
+      userId,
+      projectId: targetProjectId,
       tree: treeData.tree,
-      techStack,
-      primaryLanguage: langResult.primaryLanguage,
-      secondaryLanguages: langResult.secondaryLanguages,
-      capabilities,
-      ast,
-      database,
+      stats: {
+        totalFiles: treeData.stats.totalFiles,
+        totalDirs: treeData.stats.totalDirs,
+        totalBytes: treeData.stats.totalBytes,
+        isTruncated: treeData.isTruncated,
+        topExtensions: treeData.stats.topExtensions,
+      },
+      sourceFingerprint,
+      analysisVersion: nextVersion,
+      fileFetcher: (p, sha) => fetchFileBlob(owner, repo, sha),
+      extraMetadata: {
+        repositoryUrl: metadata.htmlUrl,
+        branch: metadata.defaultBranch,
+      },
     });
+
+    // 3.4 Purge outdated SourceFile records if version bumped
+    if (existingProject) {
+      await SourceFile.deleteMany({
+        projectId: existingProject._id,
+        analysisVersion: { $lt: nextVersion },
+      }).catch((e) => console.warn("[importGithub] SourceFile cleanup warning:", e.message));
+    }
 
     // 4. Atomic upsert into MongoDB
     const project = await Project.findOneAndUpdate(
@@ -117,6 +139,9 @@ export const importGithub = async (req, res) => {
           name: metadata.name,
           source: "github",
           status: "uploaded",
+          sourceFingerprint,
+          analysisVersion: nextVersion,
+          lastAnalyzedAt: new Date(),
           github: {
             githubId: metadata.githubId,
             owner: metadata.owner.login,
@@ -135,23 +160,22 @@ export const importGithub = async (req, res) => {
             size: metadata.size,
             license: metadata.license,
           },
-          tree: treeData.tree,
-          stats: {
-            totalFiles: treeData.stats.totalFiles,
-            totalDirs: treeData.stats.totalDirs,
-            totalBytes: treeData.stats.totalBytes,
-            isTruncated: treeData.isTruncated,
-            topExtensions: treeData.stats.topExtensions,
+          tree: rieOutput.tree,
+          stats: rieOutput.stats,
+          primaryLanguage: rieOutput.primaryLanguage,
+          secondaryLanguages: rieOutput.secondaryLanguages,
+          languageDetectionConfidence: rieOutput.languageDetectionConfidence,
+          techStack: rieOutput.techStack,
+          topology: rieOutput.topology,
+          capabilities: rieOutput.capabilities,
+          ast: rieOutput.ast,
+          blueprint: rieOutput.blueprint,
+          database: rieOutput.database,
+          securityFindings: rieOutput.securityFindings,
+          securitySummary: rieOutput.securitySummary,
+          analysisResults: {
+            apiRoutes: rieOutput.apiRoutes || [],
           },
-          primaryLanguage: langResult.primaryLanguage,
-          secondaryLanguages: langResult.secondaryLanguages,
-          languageDetectionConfidence: langResult.confidence,
-          techStack,
-          topology,
-          capabilities,
-          ast,
-          blueprint,
-          database,
         },
       },
       {
@@ -226,64 +250,82 @@ export const uploadZip = async (req, res) => {
 
   const zipFilePath = req.file.path;
   const jobId = randomUUID();
-  let extractedPath = null;
+  let extractionPath = null;
+
+  console.log("[UPLOAD] Controller started");
 
   try {
-    // 1. Safe extraction
-    const { extractedPath: ep } = await extractZip(zipFilePath, EXTRACTED_DIR, jobId);
-    extractedPath = ep;
+    // 1. Calculate archive fingerprint for cache invalidation & version tracking
+    let sourceFingerprint = "";
+    try {
+      sourceFingerprint = crypto.createHash("sha256").update(fs.readFileSync(zipFilePath)).digest("hex");
+    } catch {
+      sourceFingerprint = `zip-${Date.now()}`;
+    }
 
-    // 2. Scan extracted codebase
-    const { tree, stats, techStack } = scanRepository(extractedPath);
+    // Check existing project cache
+    const forceReanalyze = req.query.force === "true";
+    const existingProject = await Project.findOne({
+      userId,
+      "zip.originalName": req.file.originalname,
+      source: "zip",
+    });
 
-    // 2.5 Multi-signal language & framework static detection (Feature 08)
-    const langResult = detectProjectLanguage(tree, extractedPath);
+    if (
+      existingProject &&
+      !forceReanalyze &&
+      existingProject.sourceFingerprint === sourceFingerprint &&
+      existingProject.blueprint?.version &&
+      existingProject.status === "completed"
+    ) {
+      return res.status(200).json({
+        success: true,
+        message: `Repository '${existingProject.name}' is up-to-date (using cached analysis version ${existingProject.analysisVersion}).`,
+        data: existingProject.toSafeObject(),
+      });
+    }
 
-    // Derive a clean project name from the original filename
+    const nextVersion = existingProject ? (existingProject.analysisVersion || 1) + 1 : 1;
+    const targetProjectId = existingProject?._id || new mongoose.Types.ObjectId();
+
+    // 2. Safe extraction with Zip Slip defense
+    console.log("[UPLOAD] ZIP extraction started");
+    const { extractedPath } = await extractZip(zipFilePath, EXTRACTED_DIR, jobId);
+    extractionPath = extractedPath;
+    console.log(`[UPLOAD] ZIP extraction completed`);
+
+    // 3. Scan extracted codebase
+    const { tree, stats, scanRoot } = scanRepository(extractionPath);
+    const codebasePath = scanRoot || extractionPath;
+
+    // Clean project name
     const rawName = req.file.originalname.replace(/\.zip$/i, "").replace(/[_-]+/g, " ").trim();
     const projectName = rawName || "Unnamed Repository";
 
-    const mergedTechStack = {
-      languages: langResult.primaryLanguage
-        ? Array.from(new Set([langResult.primaryLanguage, ...langResult.secondaryLanguages, ...(techStack.languages || [])]))
-        : (techStack.languages || []),
-      frameworks: Array.from(new Set([...(techStack.frameworks || []), ...langResult.frameworks])),
-      databases: techStack.databases || [],
-      devops: techStack.devops || [],
-    };
-
-    // 2.6 Deterministic System Topology generation (Workspace)
-    const topology = buildTopology({
-      name: projectName,
-      tree,
-      techStack: mergedTechStack,
-      primaryLanguage: langResult.primaryLanguage,
-      secondaryLanguages: langResult.secondaryLanguages,
-    });
-
-    // 2.7 Smart Relevance Detection / Feature Capability Matrix
-    const capabilities = detectCapabilities(tree, mergedTechStack, extractedPath);
-
-    // 2.8 Tree-sitter AST Parsing (Feature 12)
-    const ast = await parseRepository(tree, { extractionPath: extractedPath });
-
-    // 2.85 Database Schema Extraction (Feature 15)
-    const database = extractDatabaseSchema(tree, capabilities, mergedTechStack, extractedPath);
-
-    // 2.9 Repository Blueprint Aggregator (Feature 13)
-    const blueprint = aggregateBlueprint({
+    // 4. Unified RIE Analysis Pipeline Execution
+    console.log("[UPLOAD] Analysis started");
+    const rieOutput = await executeRiePipeline({
       name: projectName,
       source: "zip",
+      userId,
+      projectId: targetProjectId,
       tree,
-      techStack: mergedTechStack,
-      primaryLanguage: langResult.primaryLanguage,
-      secondaryLanguages: langResult.secondaryLanguages,
-      capabilities,
-      ast,
-      database,
+      stats,
+      sourceFingerprint,
+      analysisVersion: nextVersion,
+      extractionPath: codebasePath,
+      extraMetadata: { branch: "main" },
     });
 
-    // 3. Persist to MongoDB (indexed on userId + zip.originalName)
+    // 5. Purge outdated SourceFile records if version bumped
+    if (existingProject) {
+      await SourceFile.deleteMany({
+        projectId: existingProject._id,
+        analysisVersion: { $lt: nextVersion },
+      }).catch((e) => console.warn("[uploadZip] SourceFile cleanup warning:", e.message));
+    }
+
+    // 6. Persist to MongoDB (indexed on userId + zip.originalName)
     const project = await Project.findOneAndUpdate(
       {
         userId,
@@ -295,20 +337,28 @@ export const uploadZip = async (req, res) => {
           userId,
           name: projectName,
           source: "zip",
-          status: "uploaded",
+          status: "completed",
+          sourceFingerprint,
+          analysisVersion: nextVersion,
+          lastAnalyzedAt: new Date(),
           "zip.originalName": req.file.originalname,
           "zip.sizeBytes": req.file.size,
-          tree,
-          stats,
-          primaryLanguage: langResult.primaryLanguage,
-          secondaryLanguages: langResult.secondaryLanguages,
-          languageDetectionConfidence: langResult.confidence,
-          techStack: mergedTechStack,
-          topology,
-          capabilities,
-          ast,
-          blueprint,
-          database,
+          tree: rieOutput.tree,
+          stats: rieOutput.stats,
+          primaryLanguage: rieOutput.primaryLanguage,
+          secondaryLanguages: rieOutput.secondaryLanguages,
+          languageDetectionConfidence: rieOutput.languageDetectionConfidence,
+          techStack: rieOutput.techStack,
+          topology: rieOutput.topology,
+          capabilities: rieOutput.capabilities,
+          ast: rieOutput.ast,
+          blueprint: rieOutput.blueprint,
+          database: rieOutput.database,
+          securityFindings: rieOutput.securityFindings,
+          securitySummary: rieOutput.securitySummary,
+          analysisResults: {
+            apiRoutes: rieOutput.apiRoutes || [],
+          },
         },
       },
       {
@@ -327,10 +377,11 @@ export const uploadZip = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `Repository '${projectName}' uploaded and scanned successfully.`,
+      message: `Repository '${projectName}' uploaded and scanned successfully (analysis version ${nextVersion}).`,
       data: project.toSafeObject(),
     });
   } catch (error) {
+    console.error("[UPLOAD] Upload pipeline failed:", error.message);
     console.error("[project.controller] uploadZip error:", error);
 
     if (error.code === "INVALID_ZIP") {
@@ -361,7 +412,7 @@ export const uploadZip = async (req, res) => {
   } finally {
     // Guaranteed cleanup
     safeUnlink(zipFilePath);
-    safeRmDir(extractedPath);
+    safeRmDir(extractionPath);
   }
 };
 
@@ -564,7 +615,13 @@ export const getProjectById = async (req, res) => {
           };
         })(),
         analysisResults: project.analysisResults || null,
+        blueprint: project.blueprint || null,
         database: project.database || null,
+        sourceFingerprint: project.sourceFingerprint || null,
+        analysisVersion: project.analysisVersion || 1,
+        lastAnalyzedAt: project.lastAnalyzedAt || null,
+        securityFindings: project.securityFindings || [],
+        securitySummary: project.securitySummary || {},
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
       },
@@ -699,6 +756,192 @@ export const getProjectBlueprint = async (req, res) => {
     return res.status(500).json({
       success: false,
       error: "Failed to retrieve repository blueprint.",
+    });
+  }
+};
+
+/**
+ * GET /api/projects/:id/file?path=<filePath>
+ *
+ * Retrieves the content and metadata of a specific file in a project.
+ * Implements strict path traversal defense, project ownership check,
+ * and seamless fallback across SourceFile cache, disk storage, and GitHub Git Blobs API.
+ */
+export const getProjectFile = async (req, res) => {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) {
+      return res.status(401).json({ success: false, error: "Unauthorized." });
+    }
+
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: "Invalid project ID." });
+    }
+
+    const project = await Project.findOne({ _id: id, userId });
+    if (!project) {
+      return res.status(404).json({ success: false, error: "Project not found or access denied." });
+    }
+
+    const requestedPath = req.query.path;
+    if (!requestedPath || typeof requestedPath !== "string") {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required query parameter: path",
+      });
+    }
+
+    // Path Traversal Security Checks
+    const normalizedPath = requestedPath.trim().replace(/\\/g, "/").replace(/^\.\//, "");
+    if (
+      normalizedPath.includes("..") ||
+      normalizedPath.includes("\0") ||
+      normalizedPath.startsWith("/") ||
+      normalizedPath.includes("://")
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid file path. Path traversal is strictly prohibited.",
+        code: "INVALID_PATH",
+      });
+    }
+
+    // Check if file is part of the project's sanitized tree
+    const treeNode = (project.tree || []).find((f) => f.path === normalizedPath && f.type !== "dir");
+    if (!treeNode) {
+      return res.status(404).json({
+        success: false,
+        error: `File '${normalizedPath}' does not exist in the repository tree.`,
+        code: "FILE_NOT_FOUND",
+      });
+    }
+
+    const ext = path.extname(normalizedPath).toLowerCase();
+    const isBinary = isBinaryExtension(ext);
+
+    if (isBinary) {
+      return res.status(200).json({
+        success: true,
+        file: {
+          path: normalizedPath,
+          language: ext.replace(".", "") || "binary",
+          size: treeNode.size || 0,
+          isBinary: true,
+          content: null,
+          message: "Binary file content cannot be displayed as text.",
+        },
+      });
+    }
+
+    // 1. Check SourceFile index in MongoDB
+    const currentVersion = project.analysisVersion || 1;
+    let sourceDoc = await SourceFile.findOne({
+      projectId: project._id,
+      filePath: normalizedPath,
+      analysisVersion: currentVersion,
+    });
+
+    if (sourceDoc) {
+      if (sourceDoc.isBinary) {
+        return res.status(200).json({
+          success: true,
+          file: {
+            path: sourceDoc.filePath,
+            language: sourceDoc.language || "binary",
+            size: sourceDoc.size || 0,
+            isBinary: true,
+            content: null,
+            message: "Binary file content cannot be displayed as text.",
+          },
+        });
+      }
+
+      if (sourceDoc.content !== null) {
+        return res.status(200).json({
+          success: true,
+          file: {
+            path: sourceDoc.filePath,
+            language: sourceDoc.language,
+            content: sourceDoc.content,
+            size: sourceDoc.size,
+            lineCount: sourceDoc.lineCount,
+            symbols: sourceDoc.symbols || [],
+            sourceLocations: sourceDoc.sourceLocations || [],
+          },
+        });
+      }
+    }
+
+    // 2. Fallback for GitHub projects: on-demand blob retrieval
+    if (project.source === "github" && project.github?.owner && project.github?.repo && treeNode.sha) {
+      const rawContent = await fetchFileBlob(project.github.owner, project.github.repo, treeNode.sha);
+      if (rawContent !== null) {
+        const sanitized = redactSecrets(rawContent);
+        const lines = sanitized.split(/\r?\n/).length;
+
+        // Cache in SourceFile for future instant retrieval
+        await SourceFile.findOneAndUpdate(
+          { projectId: project._id, filePath: normalizedPath, analysisVersion: currentVersion },
+          {
+            $set: {
+              userId,
+              fileName: path.basename(normalizedPath),
+              extension: ext,
+              language: ext.replace(".", "") || "text",
+              size: treeNode.size || sanitized.length,
+              lineCount: lines,
+              content: sanitized,
+              isBinary: false,
+            },
+          },
+          { upsert: true }
+        ).catch((e) => console.warn("[getProjectFile] Cache save warning:", e.message));
+
+        return res.status(200).json({
+          success: true,
+          file: {
+            path: normalizedPath,
+            language: ext.replace(".", "") || "text",
+            content: sanitized,
+            size: treeNode.size || sanitized.length,
+            lineCount: lines,
+          },
+        });
+      }
+    }
+
+    // 3. Fallback for ZIP projects: check if extractionPath is still mounted
+    if (project.source === "zip" && project.extractionPath && fs.existsSync(project.extractionPath)) {
+      const absPath = path.resolve(project.extractionPath, normalizedPath);
+      if (absPath.startsWith(path.resolve(project.extractionPath)) && fs.existsSync(absPath)) {
+        const rawContent = fs.readFileSync(absPath, "utf8");
+        const sanitized = redactSecrets(rawContent);
+        const lines = sanitized.split(/\r?\n/).length;
+
+        return res.status(200).json({
+          success: true,
+          file: {
+            path: normalizedPath,
+            language: ext.replace(".", "") || "text",
+            content: sanitized,
+            size: treeNode.size || sanitized.length,
+            lineCount: lines,
+          },
+        });
+      }
+    }
+
+    return res.status(404).json({
+      success: false,
+      error: `Content for file '${normalizedPath}' is not available in storage cache.`,
+      code: "CONTENT_UNAVAILABLE",
+    });
+  } catch (error) {
+    console.error("[project.controller] getProjectFile error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to retrieve source file content.",
     });
   }
 };

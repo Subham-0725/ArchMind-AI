@@ -50,28 +50,55 @@ const formatSize = (bytes) => {
 };
 
 // Recursive Tree Node Item
-function TreeNodeItem({ node, depth = 0, searchTerm = "" }) {
-  const [isOpen, setIsOpen] = useState(depth < 1); // Expand top-level by default
-
+function TreeNodeItem({
+  node,
+  depth = 0,
+  searchTerm = "",
+  selectedFilePath = null,
+  onSelectFile = null,
+}) {
   const isDir = node.type === "dir";
   const hasChildren = isDir && node.children && node.children.length > 0;
+  const isSelected = !isDir && selectedFilePath === node.path;
+  const isAncestorOfSelected =
+    isDir && selectedFilePath && selectedFilePath.startsWith(node.path + "/");
+
+  const [userToggled, setUserToggled] = useState(null);
+  const isOpen =
+    userToggled !== null ? userToggled : depth < 1 || Boolean(isAncestorOfSelected);
 
   // Filter check
   const matchesSearch =
     !searchTerm || node.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-  if (!matchesSearch && isDir && !node.children.some((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))) {
+  if (
+    !matchesSearch &&
+    isDir &&
+    !node.children.some((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  ) {
     return null;
   }
+
+  const handleClick = () => {
+    if (isDir) {
+      setUserToggled(!isOpen);
+    } else {
+      onSelectFile?.(node.path);
+    }
+  };
 
   return (
     <div className="select-none text-xs">
       <div
-        onClick={() => isDir && setIsOpen(!isOpen)}
+        onClick={handleClick}
         style={{ paddingLeft: `${depth * 14 + 8}px` }}
         className={[
-          "flex items-center justify-between py-1 px-2 rounded-md transition-colors cursor-pointer",
-          isDir ? "hover:bg-white/[0.04] text-slate-300 font-medium" : "hover:bg-white/[0.03] text-slate-400 font-mono",
+          "flex items-center justify-between py-1 px-2 rounded-md transition-colors cursor-pointer group",
+          isSelected
+            ? "bg-cyan-500/20 text-cyan-200 border-l-2 border-cyan-400 font-semibold shadow-sm"
+            : isDir
+            ? "hover:bg-white/[0.04] text-slate-300 font-medium"
+            : "hover:bg-white/[0.03] text-slate-400 font-mono",
         ].join(" ")}
       >
         <div className="flex items-center gap-1.5 min-w-0">
@@ -86,12 +113,35 @@ function TreeNodeItem({ node, depth = 0, searchTerm = "" }) {
 
           {/* Icon */}
           {isDir ? (
-            <svg className="w-3.5 h-3.5 text-cyan-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            <svg
+              className="w-3.5 h-3.5 text-cyan-400 shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+              />
             </svg>
           ) : (
-            <svg className="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            <svg
+              className={[
+                "w-3.5 h-3.5 shrink-0 transition-colors",
+                isSelected ? "text-cyan-400" : "text-slate-500 group-hover:text-slate-300",
+              ].join(" ")}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+              />
             </svg>
           )}
 
@@ -113,6 +163,8 @@ function TreeNodeItem({ node, depth = 0, searchTerm = "" }) {
               node={child}
               depth={depth + 1}
               searchTerm={searchTerm}
+              selectedFilePath={selectedFilePath}
+              onSelectFile={onSelectFile}
             />
           ))}
         </div>
@@ -121,7 +173,11 @@ function TreeNodeItem({ node, depth = 0, searchTerm = "" }) {
   );
 }
 
-export default function FileTreeExplorer({ tree = [] }) {
+export default function FileTreeExplorer({
+  tree = [],
+  selectedFilePath = null,
+  onSelectFile = null,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const nestedTree = useMemo(() => buildNestedTree(tree), [tree]);
 
@@ -147,7 +203,7 @@ export default function FileTreeExplorer({ tree = [] }) {
           <button
             type="button"
             onClick={() => setSearchTerm("")}
-            className="absolute right-2 top-1.5 text-xs text-slate-600 hover:text-slate-400"
+            className="absolute right-2 top-1.5 text-xs text-slate-600 hover:text-slate-400 cursor-pointer"
           >
             ✕
           </button>
@@ -165,6 +221,8 @@ export default function FileTreeExplorer({ tree = [] }) {
               node={node}
               depth={0}
               searchTerm={searchTerm}
+              selectedFilePath={selectedFilePath}
+              onSelectFile={onSelectFile}
             />
           ))
         )}

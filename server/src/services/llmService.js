@@ -7,6 +7,7 @@
 
 import { GoogleGenAI } from "@google/genai";
 import Groq from "groq-sdk";
+import { redactSecrets } from "../rie/security/secretRedactor.js";
 
 /**
  * Detects and returns configured LLM provider client.
@@ -248,14 +249,17 @@ Rules:
 4. Output ONLY valid JSON inside a json code block.
 `;
 
+  const sanitizedPrompt = redactSecrets(prompt);
+
   try {
     if (provider.type === "groq") {
+      const groqModel = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
       const completion = await provider.client.chat.completions.create({
         messages: [
           { role: "system", content: systemInstruction },
-          { role: "user", content: prompt },
+          { role: "user", content: sanitizedPrompt },
         ],
-        model: "openai/gpt-oss-20b",
+        model: groqModel,
         response_format: { type: "json_object" },
       });
       const text = completion.choices[0]?.message?.content;
@@ -263,7 +267,7 @@ Rules:
     } else if (provider.type === "gemini") {
       const response = await provider.client.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: prompt,
+        contents: sanitizedPrompt,
       });
       return parseAndValidateJson(response.text, "architecture");
     } else {
@@ -420,14 +424,16 @@ CRITICAL RULES:
 `;
 
   let llmResult = null;
+  const sanitizedPrompt = redactSecrets(prompt);
   try {
     if (provider.type === "groq") {
+      const groqModel = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
       const completion = await provider.client.chat.completions.create({
         messages: [
           { role: "system", content: systemInstruction },
-          { role: "user", content: prompt },
+          { role: "user", content: sanitizedPrompt },
         ],
-        model: "openai/gpt-oss-20b",
+        model: groqModel,
         response_format: { type: "json_object" },
       });
       const text = completion.choices[0]?.message?.content;
@@ -435,7 +441,7 @@ CRITICAL RULES:
     } else if (provider.type === "gemini") {
       const response = await provider.client.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: prompt,
+        contents: sanitizedPrompt,
       });
       llmResult = parseAndValidateJson(response.text, "erd", blueprint);
     }

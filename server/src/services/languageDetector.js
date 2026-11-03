@@ -136,6 +136,7 @@ const normalizeTree = (fileTree = []) => {
       filename: filename.toLowerCase(),
       ext,
       size: node.size || 0,
+      content: node.content || null,
     });
   }
   return result;
@@ -188,15 +189,26 @@ export const detectProjectLanguage = (fileTree = [], repoRoot = null) => {
   const detectedFrameworks = new Set();
 
   // JavaScript / TypeScript Manifests
-  if (filenameSet.has("package.json")) {
+  const packageFiles = files.filter((f) => f.filename === "package.json");
+  if (packageFiles.length > 0) {
     manifestSignals.add("JavaScript");
 
-    if (filenameSet.has("tsconfig.json") || pathSet.has("tsconfig.json")) {
+    if (filenameSet.has("tsconfig.json") || pathSet.has("tsconfig.json") || files.some((f) => f.ext === ".ts" || f.ext === ".tsx")) {
       manifestSignals.add("TypeScript");
     }
 
-    if (repoRoot) {
-      const pkg = safeReadJson(path.join(repoRoot, "package.json"));
+    for (const pkgFile of packageFiles) {
+      let pkg = null;
+      if (repoRoot) {
+        pkg = safeReadJson(path.join(repoRoot, pkgFile.path));
+      } else if (pkgFile.content) {
+        try {
+          pkg = typeof pkgFile.content === "string" ? JSON.parse(pkgFile.content) : pkgFile.content;
+        } catch {
+          pkg = null;
+        }
+      }
+
       if (pkg) {
         const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
@@ -208,32 +220,35 @@ export const detectProjectLanguage = (fileTree = [], repoRoot = null) => {
         if (allDeps.nuxt) detectedFrameworks.add("Nuxt");
         if (allDeps["@angular/core"]) detectedFrameworks.add("Angular");
         if (allDeps.svelte) detectedFrameworks.add("Svelte");
-        if (allDeps.express) detectedFrameworks.add("Express.js");
+        if (allDeps.express) detectedFrameworks.add("Express");
         if (allDeps.fastify) detectedFrameworks.add("Fastify");
         if (allDeps.nestjs || allDeps["@nestjs/core"]) detectedFrameworks.add("NestJS");
       }
-    } else {
-      // Inferred from file tree paths when repoRoot is null (e.g. GitHub API tree)
-      if (files.some((f) => f.ext === ".ts" || f.ext === ".tsx")) manifestSignals.add("TypeScript");
-      if (files.some((f) => f.ext === ".jsx" || f.ext === ".tsx")) detectedFrameworks.add("React");
     }
+
+    // Inferred from file tree extensions if dependencies were not explicit
+    if (files.some((f) => f.ext === ".ts" || f.ext === ".tsx")) manifestSignals.add("TypeScript");
+    if (files.some((f) => f.ext === ".jsx" || f.ext === ".tsx")) detectedFrameworks.add("React");
   }
 
   // Python Manifests
-  if (
-    filenameSet.has("requirements.txt") ||
-    filenameSet.has("pyproject.toml") ||
-    filenameSet.has("pipfile") ||
-    filenameSet.has("setup.py")
-  ) {
+  const pythonFiles = files.filter(
+    (f) =>
+      f.filename === "requirements.txt" ||
+      f.filename === "pyproject.toml" ||
+      f.filename === "pipfile" ||
+      f.filename === "setup.py"
+  );
+  if (pythonFiles.length > 0) {
     manifestSignals.add("Python");
 
-    if (repoRoot) {
-      const reqText = (
-        safeReadText(path.join(repoRoot, "requirements.txt")) +
-        "\n" +
-        safeReadText(path.join(repoRoot, "pyproject.toml"))
-      ).toLowerCase();
+    for (const pyFile of pythonFiles) {
+      let reqText = "";
+      if (repoRoot) {
+        reqText = safeReadText(path.join(repoRoot, pyFile.path)).toLowerCase();
+      } else if (pyFile.content) {
+        reqText = String(pyFile.content).toLowerCase();
+      }
 
       if (reqText.includes("django")) detectedFrameworks.add("Django");
       if (reqText.includes("flask")) detectedFrameworks.add("Flask");
