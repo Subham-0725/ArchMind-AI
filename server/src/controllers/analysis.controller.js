@@ -19,6 +19,7 @@ import { populateKeyFileContents } from "../services/githubService.js";
 import { extractApiRoutes } from "../rie/api/routeExtractor.js";
 import { generateRouteSequence } from "../rie/api/sequenceGenerator.js";
 import { triggerCodeReview, triggerTestGeneration } from "./security.controller.js";
+import { defaultDevOpsService } from "../devops/devops.service.js";
 
 /**
  * Valid analysis module names and the capability key each one requires.
@@ -196,6 +197,22 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
         totalFindings: scanRes.totalFindings,
         severityCounts: scanRes.severityCounts,
         filesScanned: scanRes.audit.filesScanned,
+        status: "completed",
+        generatedAt: new Date().toISOString(),
+      };
+    } else if (moduleName === "devops") {
+      const artifacts = await defaultDevOpsService.generateArtifacts({
+        project,
+        userId: project.userId,
+      });
+      resultPayload = {
+        artifactsCount: artifacts.length,
+        artifactsSummary: artifacts.map((a) => ({
+          id: a.id,
+          artifactType: a.artifactType,
+          filePath: a.filePath,
+          valid: a.validation?.valid,
+        })),
         status: "completed",
         generatedAt: new Date().toISOString(),
       };

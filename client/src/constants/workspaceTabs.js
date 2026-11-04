@@ -47,6 +47,7 @@ export const WORKSPACE_TABS = [
     id: "devops",
     label: "DevOps & CI/CD",
     icon: "⚙",
+    alwaysEnabled: true,
     capabilityKey: "hasDevops",
     detailKey: "devops",
     analysisModule: "devops",

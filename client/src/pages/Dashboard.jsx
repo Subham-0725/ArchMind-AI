@@ -3,7 +3,8 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useUser, useAuth, UserButton } from "@clerk/clerk-react";
 import { Link, useNavigate } from "react-router-dom";
 import useUserSync from "../hooks/useUserSync.js";
-import { importGithubProject, fetchRecentProjects, uploadZipRepository } from "../services/projectService.js";
+import { importGithubProject, uploadZipRepository } from "../services/projectService.js";
+import ProjectManagementPanel from "../components/project/management/ProjectManagementPanel.jsx";
 
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -590,179 +591,6 @@ function AnalyzeButton({ disabled, isLoading, statusText, activeTab, onClick }) 
   );
 }
 
-// ─── Language Badge Helper ───────────────────────────────────────────────────
-
-const LANGUAGE_COLORS = {
-  JavaScript: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  TypeScript: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  Python: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  Go: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
-  Rust: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  Java: "bg-red-500/10 text-red-400 border-red-500/20",
-  "C++": "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  Ruby: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-  PHP: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-};
-
-function formatTimeAgo(dateString) {
-  if (!dateString) return "";
-  const now = new Date();
-  const date = new Date(dateString);
-  const seconds = Math.floor((now - date) / 1000);
-
-  if (seconds < 60) return "just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
-// ─── Recent Projects ──────────────────────────────────────────────────────────
-
-function RecentProjects({ projects = [], isLoading = false, onSelectProject }) {
-  return (
-    <motion.div
-      variants={fadeUp}
-      custom={0.55}
-      initial="hidden"
-      animate="visible"
-      className="w-full max-w-lg mt-8"
-    >
-      <div className="flex items-center justify-between mb-3 px-1">
-        <h2 className="text-xs font-semibold text-slate-500 tracking-wider uppercase">
-          Recent Projects
-        </h2>
-        <span className="text-[10px] text-slate-600 font-mono">
-          {isLoading ? "loading..." : `${projects.length} ${projects.length === 1 ? "project" : "projects"}`}
-        </span>
-      </div>
-
-      {isLoading ? (
-        <div className="rounded-xl border border-white/[0.05] bg-[#060a12]/60 p-4 flex items-center justify-center gap-2">
-          <div className="w-3.5 h-3.5 border-2 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin" />
-          <span className="text-xs text-slate-500 font-mono">Loading projects...</span>
-        </div>
-      ) : projects.length === 0 ? (
-        /* Empty state */
-        <div className="rounded-xl border border-white/[0.05] bg-[#060a12]/60 px-5 py-7 flex flex-col items-center gap-2 text-center">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-            <IconFolder className="w-4 h-4 text-slate-600" />
-          </div>
-          <p className="text-xs font-medium text-slate-400 mt-1">No projects analyzed yet</p>
-          <p className="text-[11px] text-slate-600 max-w-[260px] leading-relaxed">
-            Enter a GitHub repository URL above to generate architecture diagrams and security audits.
-          </p>
-        </div>
-      ) : (
-        /* Project list */
-        <div className="flex flex-col gap-2">
-          {projects.map((project) => {
-            const primary = project.primaryLanguage || project.github?.language || "Unknown";
-            const langClass =
-              LANGUAGE_COLORS[primary] ||
-              "bg-white/[0.04] text-slate-400 border-white/10";
-            const confidencePct = Math.round((project.languageDetectionConfidence || 0) * 100);
-            const secondaryLangs = project.secondaryLanguages || [];
-            const frameworks = project.techStack?.frameworks || [];
-
-            return (
-              <motion.div
-                key={project.id || project._id}
-                onClick={() => {
-                  const pid = project.id || project._id;
-                  if (pid && onSelectProject) onSelectProject(pid);
-                }}
-                whileHover={{ y: -1, borderColor: "rgba(6,182,212,0.35)" }}
-                transition={{ duration: 0.15 }}
-                className="group relative flex items-center justify-between p-3.5 rounded-xl border border-white/[0.06] bg-[#070c16]/80 hover:bg-[#09101f] transition-all duration-200 cursor-pointer"
-              >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  {/* Icon */}
-                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.06] group-hover:border-cyan-500/30 group-hover:bg-cyan-500/[0.05] transition-colors shrink-0">
-                    {project.source === "github" ? (
-                      <IconGithub className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-colors" />
-                    ) : (
-                      <IconFileZip className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-colors" />
-                    )}
-                  </div>
-
-                  {/* Title and metadata */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium text-slate-200 truncate group-hover:text-cyan-300 transition-colors">
-                        {project.github?.fullName || project.name}
-                      </span>
-                      {project.github?.isPrivate && (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-white/[0.05] text-slate-500 border border-white/10">
-                          private
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-2 mt-1">
-                      {primary && primary !== "Unknown" && (
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium border ${langClass}`}>
-                          {primary}
-                        </span>
-                      )}
-
-                      {secondaryLangs.map((sec) => (
-                        <span
-                          key={sec}
-                          className="px-1.5 py-0.5 rounded text-[10px] font-normal border bg-white/[0.02] text-slate-400 border-white/[0.08]"
-                        >
-                          {sec}
-                        </span>
-                      ))}
-
-                      {frameworks.map((fw) => (
-                        <span
-                          key={fw}
-                          className="px-1.5 py-0.5 rounded text-[10px] font-medium border bg-cyan-500/10 text-cyan-300 border-cyan-500/20"
-                        >
-                          {fw}
-                        </span>
-                      ))}
-
-                      {confidencePct > 0 && (
-                        <span className="text-[9px] font-mono text-slate-500 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.06]">
-                          {confidencePct}% conf
-                        </span>
-                      )}
-
-                      {project.stats?.totalFiles > 0 && (
-                        <span className="text-[10px] text-slate-500 font-mono">
-                          {project.stats.totalFiles} files
-                        </span>
-                      )}
-
-                      <span className="text-[10px] text-slate-600">
-                        {formatTimeAgo(project.updatedAt)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Status pill / Action */}
-                <div className="flex items-center gap-2 shrink-0 ml-3">
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-mono font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    {project.status || "imported"}
-                  </span>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      )}
-    </motion.div>
-  );
-}
-
-
 // ─── Corner Brackets ──────────────────────────────────────────────────────────
 
 function CornerBrackets() {
@@ -784,6 +612,26 @@ export default function Dashboard() {
   const { getToken } = useAuth();
   const navigate = useNavigate();
 
+  // Clerk authentication token state for management panels
+  const [authToken, setAuthToken] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    async function initToken() {
+      if (!isLoaded || !user) return;
+      try {
+        const t = await getToken();
+        if (active) setAuthToken(t);
+      } catch (err) {
+        console.error("[Dashboard] Error fetching auth token:", err);
+      }
+    }
+    initToken();
+    return () => {
+      active = false;
+    };
+  }, [isLoaded, user, getToken]);
+
   // Sync Clerk profile to MongoDB on first load — fires once per session
   const { syncError } = useUserSync();
   const [syncBannerDismissed, setSyncBannerDismissed] = useState(false);
@@ -794,52 +642,14 @@ export default function Dashboard() {
   const [isDragging, setIsDragging] = useState(false);
   const dragCounter = useRef(0);
 
-  // Projects state
-  const [projects, setProjects] = useState([]);
-  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+  // Trigger to signal ProjectManagementPanel to refetch
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Analysis submission state
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeStatus, setAnalyzeStatus] = useState("");
   const [analyzeError, setAnalyzeError] = useState(null);
   const [analyzeSuccess, setAnalyzeSuccess] = useState(null);
-
-  // Fetch recent projects from MongoDB
-  const loadRecentProjects = useCallback(async () => {
-    if (!isLoaded || !user) return;
-    try {
-      setIsLoadingProjects(true);
-      const token = await getToken();
-      if (token) {
-        const data = await fetchRecentProjects(token);
-        setProjects(data);
-      }
-    } catch (err) {
-      console.error("[Dashboard] Failed to load recent projects:", err);
-    } finally {
-      setIsLoadingProjects(false);
-    }
-  }, [isLoaded, user, getToken]);
-
-  useEffect(() => {
-    let ignore = false;
-    async function init() {
-      if (!isLoaded || !user) return;
-      try {
-        setIsLoadingProjects(true);
-        const token = await getToken();
-        if (!token) return;
-        const data = await fetchRecentProjects(token);
-        if (!ignore) setProjects(data);
-      } catch (err) {
-        if (!ignore) console.error("[Dashboard] Failed to load recent projects:", err);
-      } finally {
-        if (!ignore) setIsLoadingProjects(false);
-      }
-    }
-    init();
-    return () => { ignore = true; };
-  }, [isLoaded, user, getToken]);
 
   const handleDragEnter = useCallback((e) => {
     e.preventDefault();
@@ -927,8 +737,8 @@ export default function Dashboard() {
           );
         }
 
-        // Reload user's recent projects
-        await loadRecentProjects();
+        // Trigger ProjectManagementPanel to refetch
+        setRefreshTrigger((prev) => prev + 1);
 
         // Navigate to project workspace
         const targetId = result.id || result._id;
@@ -981,8 +791,8 @@ export default function Dashboard() {
         }
         setZipFile(null);
 
-        // Reload user's recent projects
-        await loadRecentProjects();
+        // Trigger ProjectManagementPanel to refetch
+        setRefreshTrigger((prev) => prev + 1);
 
         // Navigate to project workspace
         const targetId = result.id || result._id;
@@ -1230,10 +1040,10 @@ export default function Dashboard() {
         {/* Stats strip */}
         <StatsStrip />
 
-        {/* Recent projects */}
-        <RecentProjects
-          projects={projects}
-          isLoading={isLoadingProjects}
+        {/* Repository Intelligence & Workspace Management */}
+        <ProjectManagementPanel
+          token={authToken}
+          refreshTrigger={refreshTrigger}
           onSelectProject={(projectId) => navigate(`/project/${projectId}`)}
         />
       </main>

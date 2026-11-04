@@ -14,7 +14,11 @@ import {
   updateProjectStatus,
   getProjectBlueprint,
   getProjectFile,
+  deleteProject,
+  updateProjectMetadata,
+  reanalyzeProject,
 } from "../controllers/project.controller.js";
+import { exportProjectPdfReport } from "../controllers/report.controller.js";
 import {
   analyzeProject,
   analyzeModule,
@@ -27,6 +31,7 @@ import {
 } from "../controllers/apiRoute.controller.js";
 import chatRoutes from "./chat.routes.js";
 import securityRoutes from "./security.routes.js";
+import devopsRoutes from "../devops/devops.routes.js";
 import {
   triggerCodeReview,
   triggerTestGeneration,
@@ -98,8 +103,16 @@ router.get("/", requireAuth, getProjects);
 // POST /api/projects/:id/analyze — run full analysis (queues all relevant modules)
 router.post("/:id/analyze", requireAuth, analyzeProject);
 
+// POST /api/projects/:id/reanalyze — reanalyze repository (version increment, cache reset, RIE rerun)
+router.post("/:id/reanalyze", requireAuth, reanalyzeProject);
+router.post("/:projectId/reanalyze", requireAuth, reanalyzeProject);
+
 // GET /api/projects/:id/analysis — get analysis status for all modules
 router.get("/:id/analysis", requireAuth, getAnalysisStatus);
+
+// GET /api/projects/:id/report/pdf — export comprehensive architecture PDF report
+router.get("/:id/report/pdf", requireAuth, exportProjectPdfReport);
+router.get("/:projectId/report/pdf", requireAuth, exportProjectPdfReport);
 
 // GET /api/projects/:id/blueprint — get compiled repository blueprint
 router.get("/:id/blueprint", requireAuth, getProjectBlueprint);
@@ -130,10 +143,20 @@ router.post("/:id/tests/generate", requireAuth, triggerTestGeneration);
 router.use("/:projectId/chat", chatRoutes);
 router.use("/:id/chat", chatRoutes);
 
+// ── DevOps Artifact Generation endpoints (Phase 5) ──────────────────────────
+router.use("/:projectId/devops", devopsRoutes);
+router.use("/:id/devops", devopsRoutes);
+
 // ── Project detail endpoints ─────────────────────────────────────────────────
 
 // GET /api/projects/:id — get project details with file tree
 router.get("/:id", requireAuth, getProjectById);
+
+// PATCH /api/projects/:id — update permitted project metadata (name, description)
+router.patch("/:id", requireAuth, updateProjectMetadata);
+
+// DELETE /api/projects/:id — delete project and cascade cleanup all child collections/files
+router.delete("/:id", requireAuth, deleteProject);
 
 // PATCH /api/projects/:id/status — update processing status and error details
 router.patch("/:id/status", requireAuth, updateProjectStatus);

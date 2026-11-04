@@ -4,6 +4,7 @@ import cors from "cors";
 import clerk from "./config/clerk.js";
 import userRoutes from "./routes/userRoutes.js";
 import projectRoutes from "./routes/project.routes.js";
+import { notFoundHandler, globalErrorHandler } from "./middleware/errorHandler.middleware.js";
 
 const app = express();
 
@@ -55,19 +56,8 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// ── 404 Handler ───────────────────────────────────────────────────────────────
-
-app.use((req, res) => {
-  res.status(404).json({ success: false, error: "Route not found." });
-});
-
-// ── Global Error Handler ──────────────────────────────────────────────────────
-
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  console.error("[app] Unhandled error:", err);
-  res.status(500).json({ success: false, error: err?.message || "An unexpected error occurred." });
-});
+// ── 404 & Centralized Error Handlers ──────────────────────────────────────────
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
 
 export default app;
-

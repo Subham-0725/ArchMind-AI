@@ -11,6 +11,7 @@ import { runModuleAnalysis } from "../../services/projectService";
 import ErdCanvas from "./erd/ErdCanvas";
 import SecurityAuditTab from "./security/SecurityAuditTab";
 import ApiExplorerTab from "./api/ApiExplorerTab";
+import DevOpsCenterTab from "./devops/DevOpsCenterTab";
 
 /**
  * Status configuration for visual rendering
@@ -81,6 +82,16 @@ export default function CapabilityTabPanel({ tab, project, onAnalysisUpdate }) {
     return (
       <ApiExplorerTab
         project={project}
+      />
+    );
+  }
+
+  // If tab is DevOps, render DevOpsCenterTab
+  if (tab?.id === "devops") {
+    return (
+      <DevOpsCenterTab
+        project={project}
+        onAnalysisUpdate={onAnalysisUpdate}
       />
     );
   }

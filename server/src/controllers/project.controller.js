@@ -11,6 +11,11 @@ import { getAuth } from "@clerk/express";
 import { randomUUID } from "crypto";
 import Project from "../models/Project.js";
 import SourceFile from "../models/SourceFile.js";
+import SecurityFinding from "../models/SecurityFinding.js";
+import SecurityAudit from "../models/SecurityAudit.js";
+import DevOpsArtifact from "../models/DevOpsArtifact.js";
+import Conversation from "../models/Conversation.js";
+import { executeModuleAnalysis } from "./analysis.controller.js";
 import { parseGithubUrl } from "../utils/githubUrl.js";
 import { fetchRepoMetadata, fetchRepoTree, populateKeyFileContents, fetchFileBlob } from "../services/githubService.js";
 import { extractZip } from "../rie/zipExtractor.js";
@@ -27,6 +32,26 @@ import { redactSecrets } from "../rie/security/secretRedactor.js";
 import { EXTRACTED_DIR, safeUnlink, safeRmDir } from "../config/storage.js";
 
 /**
+ * Robustly extracts the authenticated userId from Clerk or the auth middleware.
+ *
+ * @param {import('express').Request} req
+ * @returns {string|null}
+ */
+export function extractUserId(req) {
+  let userId = null;
+  try {
+    const auth = getAuth(req);
+    userId = auth?.userId || null;
+  } catch {
+    userId = null;
+  }
+  if (!userId && req.auth?.userId) {
+    userId = req.auth.userId;
+  }
+  return userId;
+}
+
+/**
  * POST /api/projects/github
  *
  * Imports or refreshes a GitHub repository for the authenticated user.
@@ -36,7 +61,7 @@ import { EXTRACTED_DIR, safeUnlink, safeRmDir } from "../config/storage.js";
  */
 export const importGithub = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = extractUserId(req);
     if (!userId) {
       return res.status(401).json({ success: false, error: "Unauthorized." });
     }
@@ -235,7 +260,7 @@ export const importGithub = async (req, res) => {
  *   7. Return safe project payload
  */
 export const uploadZip = async (req, res) => {
-  const { userId } = getAuth(req);
+  const userId = extractUserId(req);
 
   if (!userId) {
     return res.status(401).json({ success: false, error: "Unauthorized." });
@@ -419,19 +444,42 @@ export const uploadZip = async (req, res) => {
 /**
  * GET /api/projects
  *
- * Returns recent projects for the currently authenticated user.
+ * Returns projects for the currently authenticated user with pagination,
+ * sorting, and search filtering.
  */
 export const getProjects = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = extractUserId(req);
     if (!userId) {
       return res.status(401).json({ success: false, error: "Unauthorized." });
     }
 
-    const projects = await Project.find({ userId })
-      .sort({ updatedAt: -1 })
-      .limit(20)
-      .select("-tree -analysis") // Omit large tree payloads for list view
+    // Pagination & query options
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+    const skip = (page - 1) * limit;
+
+    const allowedSortFields = ["updatedAt", "createdAt", "name", "status"];
+    const requestedSortBy = req.query.sortBy || "updatedAt";
+    const sortBy = allowedSortFields.includes(requestedSortBy) ? requestedSortBy : "updatedAt";
+    const sortOrder = req.query.order === "asc" ? 1 : -1;
+
+    const filter = { userId };
+    if (req.query.search && typeof req.query.search === "string" && req.query.search.trim()) {
+      const term = req.query.search.trim();
+      filter.$or = [
+        { name: { $regex: term, $options: "i" } },
+        { "github.fullName": { $regex: term, $options: "i" } },
+      ];
+    }
+
+    const total = await Project.countDocuments(filter);
+
+    const projects = await Project.find(filter)
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .select("-tree -analysis -analysisResults -ast -blueprint -topology")
       .lean();
 
     const formatted = projects.map((p) => ({
@@ -446,6 +494,9 @@ export const getProjects = async (req, res) => {
       primaryLanguage: p.primaryLanguage || null,
       secondaryLanguages: p.secondaryLanguages || [],
       languageDetectionConfidence: p.languageDetectionConfidence || 0,
+      analysisVersion: p.analysisVersion || 1,
+      sourceFingerprint: p.sourceFingerprint || null,
+      lastAnalyzedAt: p.lastAnalyzedAt || null,
       errorDetails: p.errorDetails?.message ? p.errorDetails : null,
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
@@ -454,6 +505,12 @@ export const getProjects = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: formatted,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit) || 1,
+      },
     });
   } catch (error) {
     console.error("[project.controller] getProjects error:", error);
@@ -472,7 +529,7 @@ export const getProjects = async (req, res) => {
  */
 export const getProjectById = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = extractUserId(req);
     if (!userId) {
       return res.status(401).json({ success: false, error: "Unauthorized." });
     }
@@ -642,7 +699,7 @@ export const getProjectById = async (req, res) => {
  */
 export const updateProjectStatus = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = extractUserId(req);
     if (!userId) {
       return res.status(401).json({ success: false, error: "Unauthorized." });
     }
@@ -716,7 +773,7 @@ export const updateProjectStatus = async (req, res) => {
  */
 export const getProjectBlueprint = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = extractUserId(req);
     if (!userId) {
       return res.status(401).json({ success: false, error: "Unauthorized." });
     }
@@ -769,7 +826,7 @@ export const getProjectBlueprint = async (req, res) => {
  */
 export const getProjectFile = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = extractUserId(req);
     if (!userId) {
       return res.status(401).json({ success: false, error: "Unauthorized." });
     }
@@ -945,3 +1002,330 @@ export const getProjectFile = async (req, res) => {
     });
   }
 };
+
+/**
+ * DELETE /api/projects/:id
+ *
+ * Permanently deletes a project and cascade cleans all associated data:
+ * SourceFiles, SecurityFindings, SecurityAudits, DevOpsArtifacts, Conversations,
+ * and temporary extracted directories on disk.
+ */
+export const deleteProject = async (req, res) => {
+  try {
+    const userId = extractUserId(req);
+    if (!userId) {
+      return res.status(401).json({ success: false, error: "Unauthorized." });
+    }
+
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: "Invalid project ID." });
+    }
+
+    const project = await Project.findOne({ _id: id, userId });
+    if (!project) {
+      return res.status(404).json({ success: false, error: "Project not found." });
+    }
+
+    // 1. Cascade cleanup related MongoDB collections
+    await Promise.allSettled([
+      SourceFile.deleteMany({ projectId: id }),
+      SecurityFinding.deleteMany({ projectId: id }),
+      SecurityAudit.deleteMany({ projectId: id }),
+      DevOpsArtifact.deleteMany({ projectId: id }),
+      Conversation.deleteMany({ projectId: id }),
+    ]);
+
+    // 2. Cleanup local extraction directory if exists
+    if (project.extractionPath) {
+      safeRmDir(project.extractionPath);
+    }
+
+    // 3. Delete Project document
+    await Project.deleteOne({ _id: id, userId });
+
+    return res.status(200).json({
+      success: true,
+      message: "Project and all associated artifacts deleted successfully.",
+    });
+  } catch (error) {
+    console.error("[project.controller] deleteProject error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to delete project.",
+    });
+  }
+};
+
+/**
+ * PATCH /api/projects/:id
+ *
+ * Updates user-permitted project metadata (e.g. name, description).
+ * Strictly forbids modifying protected internal fields (status, userId, analysis, blueprint, etc.).
+ */
+export const updateProjectMetadata = async (req, res) => {
+  try {
+    const userId = extractUserId(req);
+    if (!userId) {
+      return res.status(401).json({ success: false, error: "Unauthorized." });
+    }
+
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: "Invalid project ID." });
+    }
+
+    const body = req.body || {};
+
+    // Reject protected fields
+    const PROTECTED_FIELDS = [
+      "_id",
+      "id",
+      "userId",
+      "status",
+      "analysis",
+      "analysisResults",
+      "blueprint",
+      "source",
+      "sourceFingerprint",
+      "analysisVersion",
+      "tree",
+      "stats",
+      "ast",
+      "topology",
+      "capabilities",
+      "database",
+      "apiRoutes",
+    ];
+
+    for (const field of PROTECTED_FIELDS) {
+      if (body[field] !== undefined) {
+        return res.status(400).json({
+          success: false,
+          error: `Modifying protected field '${field}' is not permitted.`,
+          code: "PROTECTED_FIELD_MODIFICATION",
+        });
+      }
+    }
+
+    const updateFields = {};
+    if (body.name !== undefined) {
+      const trimmed = String(body.name).trim();
+      if (!trimmed) {
+        return res.status(400).json({
+          success: false,
+          error: "Project name cannot be empty.",
+          code: "VALIDATION_ERROR",
+        });
+      }
+      updateFields.name = trimmed;
+    }
+
+    if (body.description !== undefined) {
+      updateFields.description = String(body.description).trim();
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "No valid editable fields provided (allowed: name, description).",
+        code: "VALIDATION_ERROR",
+      });
+    }
+
+    const project = await Project.findOneAndUpdate(
+      { _id: id, userId },
+      { $set: updateFields },
+      { returnDocument: "after", runValidators: true }
+    );
+
+    if (!project) {
+      return res.status(404).json({ success: false, error: "Project not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Project metadata updated successfully.",
+      data: project.toSafeObject(),
+    });
+  } catch (error) {
+    console.error("[project.controller] updateProjectMetadata error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to update project metadata.",
+    });
+  }
+};
+
+/**
+ * POST /api/projects/:id/reanalyze
+ *
+ * Starts a fresh analysis on an existing project using the unified RIE pipeline.
+ * Evaluates fresh repository source, invalidates stale cache, increments analysisVersion,
+ * and cascades downstream module analyses.
+ */
+export const reanalyzeProject = async (req, res) => {
+  try {
+    const userId = extractUserId(req);
+    if (!userId) {
+      return res.status(401).json({ success: false, error: "Unauthorized." });
+    }
+
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: "Invalid project ID." });
+    }
+
+    const project = await Project.findOne({ _id: id, userId });
+    if (!project) {
+      return res.status(404).json({ success: false, error: "Project not found." });
+    }
+
+    // Concurrency lock: prevent duplicate concurrent analysis runs
+    if (project.status === "processing") {
+      return res.status(409).json({
+        success: false,
+        error: "An analysis job is already in progress for this repository.",
+        code: "ANALYSIS_IN_PROGRESS",
+      });
+    }
+
+    // 1. Fetch fresh source data
+    let freshTree = project.tree || [];
+    let sourceFingerprint = project.sourceFingerprint;
+    let extractionPath = project.extractionPath;
+    let fileFetcher = null;
+
+    if (project.source === "github") {
+      const owner = project.github?.owner;
+      const repo = project.github?.repo;
+      const branch = project.github?.defaultBranch || "main";
+
+      if (!owner || !repo) {
+        return res.status(400).json({
+          success: false,
+          error: "GitHub repository owner and name are missing.",
+          code: "SOURCE_UNAVAILABLE",
+        });
+      }
+
+      try {
+        const metadata = await fetchRepoMetadata(owner, repo);
+        const treeData = await fetchRepoTree(owner, repo, metadata.defaultBranch || branch);
+        freshTree = treeData.tree;
+        sourceFingerprint = treeData.treeSha || `${metadata.pushedAt || metadata.updatedAt}`;
+
+        await populateKeyFileContents(owner, repo, freshTree);
+
+        fileFetcher = async (filePath, sha) => {
+          return await fetchFileBlob(owner, repo, sha, filePath);
+        };
+      } catch (ghErr) {
+        return res.status(502).json({
+          success: false,
+          error: `Failed to fetch repository from GitHub: ${ghErr.message}`,
+          code: "SOURCE_UNAVAILABLE",
+        });
+      }
+    } else if (project.source === "zip") {
+      // For ZIP, recompute fingerprint to ensure cache invalidation
+      sourceFingerprint = crypto.createHash("sha256").update(Date.now().toString()).digest("hex");
+    }
+
+    // 2. Incremental Versioning & Cache Invalidation
+    const nextVersion = (project.analysisVersion || 1) + 1;
+
+    // Immediately mark as processing and reset cached analysis results
+    project.status = "processing";
+    project.analysisVersion = nextVersion;
+    project.sourceFingerprint = sourceFingerprint;
+    project.errorDetails = { message: null, code: null, at: null };
+    project.analysis = {
+      architecture: { status: "queued", analysisId: null, completedAt: null, errorMessage: null },
+      erd: { status: "queued", analysisId: null, completedAt: null, errorMessage: null },
+      api: { status: "queued", analysisId: null, completedAt: null, errorMessage: null },
+      security: { status: "queued", analysisId: null, completedAt: null, errorMessage: null },
+      devops: { status: "queued", analysisId: null, completedAt: null, errorMessage: null },
+    };
+    project.analysisResults = {};
+    await project.save();
+
+    try {
+      // 3. Execute Unified RIE Pipeline with nextVersion
+      const rieOutput = await executeRiePipeline({
+        name: project.name,
+        source: project.source,
+        userId,
+        projectId: project._id,
+        tree: freshTree,
+        stats: project.stats,
+        sourceFingerprint,
+        analysisVersion: nextVersion,
+        extractionPath,
+        fileFetcher,
+        extraMetadata: {
+          repositoryUrl: project.github?.url || null,
+          branch: project.github?.defaultBranch || "main",
+        },
+      });
+
+      // Update project with fresh RIE intelligence
+      project.tree = rieOutput.tree;
+      project.primaryLanguage = rieOutput.primaryLanguage;
+      project.secondaryLanguages = rieOutput.secondaryLanguages;
+      project.languageDetectionConfidence = rieOutput.languageDetectionConfidence;
+      project.techStack = rieOutput.techStack;
+      project.topology = rieOutput.topology;
+      project.capabilities = rieOutput.capabilities;
+      project.ast = rieOutput.ast;
+      project.database = rieOutput.database;
+      project.blueprint = rieOutput.blueprint;
+      project.securityFindings = rieOutput.securityFindings;
+      project.securitySummary = rieOutput.securitySummary;
+      project.lastAnalyzedAt = new Date();
+      project.status = "completed";
+
+      await project.save();
+
+      // 4. Cascade execution of downstream modules
+      const modulesToRun = ["architecture", "erd", "api", "security", "devops"];
+      for (const mod of modulesToRun) {
+        try {
+          await executeModuleAnalysis(project._id, mod);
+        } catch (modErr) {
+          console.warn(`[reanalyzeProject] Downstream module '${mod}' execution warning:`, modErr.message);
+        }
+      }
+
+      const refreshed = await Project.findById(project._id);
+
+      return res.status(200).json({
+        success: true,
+        message: `Reanalysis completed successfully (version ${nextVersion}).`,
+        data: refreshed.toSafeObject(),
+      });
+    } catch (pipelineErr) {
+      console.error("[project.controller] Reanalysis pipeline failed:", pipelineErr);
+      project.status = "failed";
+      project.errorDetails = {
+        message: pipelineErr.message || "Reanalysis failed during RIE pipeline execution.",
+        code: "REANALYSIS_FAILED",
+        at: new Date(),
+      };
+      await project.save();
+
+      return res.status(500).json({
+        success: false,
+        error: pipelineErr.message || "Reanalysis failed during RIE pipeline execution.",
+        code: "ANALYSIS_FAILED",
+      });
+    }
+  } catch (error) {
+    console.error("[project.controller] reanalyzeProject error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to reanalyze project.",
+    });
+  }
+};
+

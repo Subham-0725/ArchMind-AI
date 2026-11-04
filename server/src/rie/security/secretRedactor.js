@@ -53,6 +53,7 @@ export function redactSecrets(text) {
 export function redactDeep(target) {
   if (target === null || target === undefined) return target;
   if (typeof target === "string") return redactSecrets(target);
+  if (target instanceof Date) return new Date(target.getTime());
   if (typeof target !== "object") return target;
 
   if (Array.isArray(target)) {

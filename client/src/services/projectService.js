@@ -114,17 +114,247 @@ export const getProjectFile = fetchProjectFile;
 
 
 /**
- * Fetch the authenticated user's recent projects.
+ * Normalizes backend error responses into a consistent UI error object.
+ * Format: { message: string, code: string, status: number, details: any }
+ *
+ * @param {Error|any} err
+ * @returns {{ message: string, code: string, status: number, details: any }}
+ */
+export const normalizeApiError = (err) => {
+  if (!err) {
+    return {
+      message: "An unexpected error occurred.",
+      code: "UNKNOWN_ERROR",
+      status: 500,
+      details: null,
+    };
+  }
+
+  // Network / Timeout
+  if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+    return {
+      message: "Request timed out. The server took too long to respond.",
+      code: "REQUEST_TIMEOUT",
+      status: 408,
+      details: null,
+    };
+  }
+  if (!err.response) {
+    return {
+      message: err.message || "Network error. Please check your internet connection.",
+      code: "NETWORK_ERROR",
+      status: 0,
+      details: null,
+    };
+  }
+
+  const { status, data } = err.response;
+  let message = "An unexpected server error occurred.";
+  let code = "SERVER_ERROR";
+  let details = null;
+
+  if (typeof data === "string") {
+    message = data;
+  } else if (data) {
+    if (typeof data.error === "string") {
+      message = data.error;
+    } else if (data.error && typeof data.error.message === "string") {
+      message = data.error.message;
+      if (data.error.code) code = data.error.code;
+    }
+
+    if (data.errorDetail) {
+      if (data.errorDetail.message) message = data.errorDetail.message;
+      if (data.errorDetail.code) code = data.errorDetail.code;
+      if (data.errorDetail.details) details = data.errorDetail.details;
+    } else if (data.code) {
+      code = data.code;
+    }
+  }
+
+  // Sanitize message: strip server filesystem paths (e.g. C:\... or /home/...)
+  message = message.replace(/[A-Z]:\\[^:\s]+/gi, "[REDACTED_PATH]");
+
+  return { message, code, status, details };
+};
+
+/**
+ * Fetch the authenticated user's projects with pagination, sorting, and search.
+ *
+ * @param {string} token          - Clerk JWT from useAuth().getToken()
+ * @param {Object} [options]      - Query options
+ * @param {number} [options.page=1]
+ * @param {number} [options.limit=10]
+ * @param {string} [options.sortBy="updatedAt"]
+ * @param {string} [options.order="desc"]
+ * @param {string} [options.search=""]
+ * @param {AbortSignal} [signal]  - Optional AbortSignal for request cancellation
+ * @returns {Promise<{ projects: Array<Object>, pagination: { total: number, page: number, limit: number, totalPages: number } }>}
+ */
+export const fetchProjects = async (token, options = {}, signal) => {
+  const { page = 1, limit = 10, sortBy = "updatedAt", order = "desc", search = "" } = options;
+  const params = { page, limit, sortBy, order };
+  if (search && typeof search === "string" && search.trim()) {
+    params.search = search.trim();
+  }
+
+  const { data } = await api.get("/api/projects", {
+    params,
+    headers: { Authorization: `Bearer ${token}` },
+    signal,
+  });
+
+  const projects = data.data || [];
+  const pagination = data.pagination || {
+    total: projects.length,
+    page,
+    limit,
+    totalPages: Math.ceil(projects.length / limit) || 1,
+  };
+
+  return { projects, pagination };
+};
+
+/**
+ * Fetch the authenticated user's recent projects (backward-compatible).
  *
  * @param {string} token - Clerk JWT from useAuth().getToken()
  * @returns {Promise<Array<Object>>} List of projects (without large trees)
  */
 export const fetchRecentProjects = async (token) => {
-  const { data } = await api.get("/api/projects", {
+  const { projects } = await fetchProjects(token, { page: 1, limit: 20 });
+  return projects;
+};
+
+/**
+ * Updates user-permitted metadata for an existing project.
+ *
+ * @param {string} token      - Clerk JWT
+ * @param {string} projectId  - Project ObjectId
+ * @param {Object} metadata   - Allowed fields: { name, description }
+ * @returns {Promise<Object>} Updated project object
+ */
+export const updateProjectMetadata = async (token, projectId, metadata = {}) => {
+  const trimmedName = String(metadata.name || "").trim();
+  if (!trimmedName) {
+    const err = new Error("Project name cannot be empty.");
+    err.code = "VALIDATION_ERROR";
+    throw err;
+  }
+
+  // Whitelist editable fields strictly (never pass status, userId, blueprint, etc.)
+  const payload = { name: trimmedName };
+  if (metadata.description !== undefined) {
+    payload.description = String(metadata.description).trim();
+  }
+
+  const { data } = await api.patch(`/api/projects/${projectId}`, payload, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  return data.data || [];
+  return data.data;
+};
+
+/**
+ * Permanently deletes a project and cascade cleans all child resources on server.
+ *
+ * @param {string} token     - Clerk JWT
+ * @param {string} projectId - Project ObjectId
+ * @returns {Promise<{ success: boolean, message: string }>}
+ */
+export const deleteProject = async (token, projectId) => {
+  const { data } = await api.delete(`/api/projects/${projectId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return data;
+};
+
+/**
+ * Reanalyzes an existing project repository.
+ * Increments analysis version, pulls fresh source, flushes cache, and runs RIE pipeline.
+ *
+ * @param {string} token     - Clerk JWT
+ * @param {string} projectId - Project ObjectId
+ * @returns {Promise<Object>} Reanalysis result with safe updated project data
+ */
+export const reanalyzeProject = async (token, projectId) => {
+  const { data } = await api.post(
+    `/api/projects/${projectId}/reanalyze`,
+    {},
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 180000, // 3 minutes for full reanalysis pipeline
+    }
+  );
+
+  return data;
+};
+
+/**
+ * Downloads a comprehensive repository architecture & security PDF report.
+ * Streams as binary Blob and triggers browser download.
+ *
+ * @param {string} token       - Clerk JWT
+ * @param {string} projectId   - Project ObjectId
+ * @param {string} projectName - Project name for filename formatting
+ * @returns {Promise<{ success: boolean, filename: string, blob: Blob }>}
+ */
+export const downloadProjectPdfReport = async (token, projectId, projectName = "repository") => {
+  try {
+    const response = await api.get(`/api/projects/${projectId}/report/pdf`, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: "blob",
+      timeout: 60000,
+    });
+
+    // Check if error JSON was returned inside a Blob
+    if (response.data.type === "application/json") {
+      const text = await response.data.text();
+      let parsed = {};
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        parsed = { error: text };
+      }
+      const err = new Error(parsed.error?.message || parsed.error || "Failed to generate PDF report.");
+      err.response = { status: response.status, data: parsed };
+      throw err;
+    }
+
+    const sanitized = (projectName || "repository")
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 50);
+    const filename = `ArchMind-Report-${sanitized}.pdf`;
+
+    const blob = new Blob([response.data], { type: "application/pdf" });
+
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    }
+
+    return { success: true, filename, blob };
+  } catch (err) {
+    if (err.response?.data instanceof Blob) {
+      try {
+        const text = await err.response.data.text();
+        const parsed = JSON.parse(text);
+        err.response.data = parsed;
+      } catch {
+        // ignore JSON parse error
+      }
+    }
+    throw normalizeApiError(err);
+  }
 };
 
 /**
@@ -580,6 +810,128 @@ export const triggerTestGeneration = async (token, projectId, filePath) => {
   );
   return data.data;
 };
+
+// ── Phase 5: DevOps Artifact Generation Services ──────────────────────────────
+
+/**
+ * Generates DevOps deployment artifacts for a project.
+ *
+ * @param {string} token - Clerk JWT
+ * @param {string} projectId - MongoDB Project ObjectId
+ * @param {string[]} [artifactTypes] - Array of "dockerfile" | "cicd" | "kubernetes"
+ * @param {Object} [options] - Options (e.g. { includeKubernetesIngress: false })
+ * @returns {Promise<Array<Object>>} List of generated DevOps artifacts
+ */
+export const generateDevOpsArtifacts = async (token, projectId, artifactTypes = null, options = {}) => {
+  const { data } = await api.post(
+    `/api/projects/${projectId}/devops/generate`,
+    { artifactTypes, options },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 120000, // 2m for multi-artifact Groq generation
+    }
+  );
+  return data?.data?.artifacts || [];
+};
+
+/**
+ * Lists all active (non-superseded) DevOps artifacts for a project.
+ *
+ * @param {string} token - Clerk JWT
+ * @param {string} projectId - MongoDB Project ObjectId
+ * @returns {Promise<Array<Object>>} List of artifacts
+ */
+export const fetchDevOpsArtifacts = async (token, projectId) => {
+  const { data } = await api.get(
+    `/api/projects/${projectId}/devops/artifacts`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 30000,
+    }
+  );
+  return data?.data?.artifacts || [];
+};
+
+/**
+ * Retrieves full details and content for a single DevOps artifact.
+ *
+ * @param {string} token - Clerk JWT
+ * @param {string} projectId - MongoDB Project ObjectId
+ * @param {string} artifactId - MongoDB DevOpsArtifact ObjectId
+ * @returns {Promise<Object>} DevOps artifact detail
+ */
+export const fetchDevOpsArtifact = async (token, projectId, artifactId) => {
+  const { data } = await api.get(
+    `/api/projects/${projectId}/devops/artifacts/${artifactId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 30000,
+    }
+  );
+  return data?.data?.artifact || null;
+};
+
+/**
+ * Regenerates a specific DevOps artifact using latest repository analysis.
+ * Preserves history and increments version on the backend.
+ *
+ * @param {string} token - Clerk JWT
+ * @param {string} projectId - MongoDB Project ObjectId
+ * @param {string} artifactId - MongoDB DevOpsArtifact ObjectId
+ * @param {Object} [options] - Regeneration options
+ * @returns {Promise<Object>} Updated DevOps artifact
+ */
+export const regenerateDevOpsArtifact = async (token, projectId, artifactId, options = {}) => {
+  const { data } = await api.post(
+    `/api/projects/${projectId}/devops/artifacts/${artifactId}/regenerate`,
+    { options },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 90000,
+    }
+  );
+  return data?.data?.artifact || null;
+};
+
+/**
+ * Re-runs deterministic validation against a stored DevOps artifact.
+ *
+ * @param {string} token - Clerk JWT
+ * @param {string} projectId - MongoDB Project ObjectId
+ * @param {string} artifactId - MongoDB DevOpsArtifact ObjectId
+ * @returns {Promise<Object>} Artifact with updated validation report
+ */
+export const validateDevOpsArtifact = async (token, projectId, artifactId) => {
+  const { data } = await api.post(
+    `/api/projects/${projectId}/devops/artifacts/${artifactId}/validate`,
+    {},
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 30000,
+    }
+  );
+  return data?.data?.artifact || null;
+};
+
+/**
+ * Deletes a DevOps artifact from ArchMind AI.
+ *
+ * @param {string} token - Clerk JWT
+ * @param {string} projectId - MongoDB Project ObjectId
+ * @param {string} artifactId - MongoDB DevOpsArtifact ObjectId
+ * @returns {Promise<boolean>} Success confirmation
+ */
+export const deleteDevOpsArtifact = async (token, projectId, artifactId) => {
+  const { data } = await api.delete(
+    `/api/projects/${projectId}/devops/artifacts/${artifactId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 30000,
+    }
+  );
+  return data?.success === true;
+};
+
 
 
 

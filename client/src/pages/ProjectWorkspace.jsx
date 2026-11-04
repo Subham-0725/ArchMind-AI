@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
-import { fetchProjectById, runFullAnalysis } from "../services/projectService";
+import { fetchProjectById, downloadProjectPdfReport } from "../services/projectService";
 import ProjectHeader from "../components/project/ProjectHeader";
 import ProjectOverviewCard from "../components/project/ProjectOverviewCard";
 import TechStackCard from "../components/project/TechStackCard";
@@ -10,6 +10,7 @@ import TopologyCanvas from "../components/project/topology/TopologyCanvas";
 import CapabilityTabPanel from "../components/project/CapabilityTabPanel";
 import AnalysisPanel from "../components/project/AnalysisPanel";
 import RepositoryChatDrawer from "../components/project/chat/RepositoryChatDrawer";
+import ReanalyzeConfirmModal from "../components/project/management/ReanalyzeConfirmModal";
 import { WORKSPACE_TABS } from "../constants/workspaceTabs";
 
 export default function ProjectWorkspace() {
@@ -20,13 +21,36 @@ export default function ProjectWorkspace() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("topology");
-  const [isReanalyzing, setIsReanalyzing] = useState(false);
+  const [isReanalyzeModalOpen, setIsReanalyzeModalOpen] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [workspaceBanner, setWorkspaceBanner] = useState(null);
+  const [authToken, setAuthToken] = useState(null);
+
+  const isReanalyzing = project?.status === "processing";
 
   // Repository AI Chat Drawer State
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Selected file path in File Tree Explorer
   const [selectedFilePath, setSelectedFilePath] = useState(null);
+
+  // Load auth token
+  useEffect(() => {
+    let active = true;
+    async function loadToken() {
+      if (!isLoaded) return;
+      try {
+        const t = await getToken();
+        if (active) setAuthToken(t);
+      } catch (err) {
+        console.error("[ProjectWorkspace] Token error:", err);
+      }
+    }
+    loadToken();
+    return () => {
+      active = false;
+    };
+  }, [isLoaded, getToken]);
 
   // Load project workspace data
   const loadProject = useCallback(async () => {
@@ -103,22 +127,53 @@ export default function ProjectWorkspace() {
   }, []);
 
   /**
-   * Explicitly force re-analysis on demand (?force=true)
+   * PDF Report Export Handler
    */
-  const handleForceReanalyze = useCallback(async () => {
-    if (!id) return;
+  const handleExportPdf = useCallback(async () => {
+    if (isExportingPdf) return;
+
+    if (project?.status !== "completed") {
+      setWorkspaceBanner({
+        type: "error",
+        message:
+          "Repository analysis is still incomplete. Please wait for the analysis to finish before exporting a PDF report.",
+      });
+      return;
+    }
+
     try {
-      setIsReanalyzing(true);
+      setIsExportingPdf(true);
       const token = await getToken();
       if (!token) throw new Error("Authentication session expired.");
-      await runFullAnalysis(token, id, { force: true });
-      await handleAnalysisUpdate();
+      await downloadProjectPdfReport(token, id, project?.name);
+      setWorkspaceBanner({
+        type: "success",
+        message: `PDF architecture report for '${project?.name || "repository"}' downloaded successfully.`,
+      });
     } catch (err) {
-      console.error("[ProjectWorkspace] Force re-analyze error:", err);
+      setWorkspaceBanner({
+        type: "error",
+        message: err.message || "Failed to download PDF report.",
+      });
     } finally {
-      setIsReanalyzing(false);
+      setIsExportingPdf(false);
     }
-  }, [id, getToken, handleAnalysisUpdate]);
+  }, [id, project, isExportingPdf, getToken]);
+
+  /**
+   * Handler when reanalysis succeeds from modal
+   */
+  const handleReanalyzeSuccess = useCallback(
+    (refreshedData) => {
+      setProject(refreshedData);
+      setWorkspaceBanner({
+        type: "success",
+        message: `Reanalysis completed successfully (version ${refreshedData.analysisVersion || 1}). Workspace refreshed with latest intelligence.`,
+      });
+      handleAnalysisUpdate();
+    },
+    [handleAnalysisUpdate]
+  );
 
   // Auto-poll project state every 2.5 seconds while any module is queued or processing
   useEffect(() => {
@@ -207,10 +262,36 @@ export default function ProjectWorkspace() {
         project={project}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        onForceReanalyze={handleForceReanalyze}
+        onForceReanalyze={() => setIsReanalyzeModalOpen(true)}
         isReanalyzing={isReanalyzing}
         onToggleChat={() => setIsChatOpen((prev) => !prev)}
+        onExportPdf={handleExportPdf}
+        isExportingPdf={isExportingPdf}
       />
+
+      {/* Global Workspace Notification Banner */}
+      {workspaceBanner && (
+        <div
+          className={`px-4 sm:px-6 py-2.5 text-xs font-medium flex items-center justify-between border-b ${
+            workspaceBanner.type === "success"
+              ? "bg-emerald-500/10 border-emerald-500/25 text-emerald-300"
+              : "bg-red-500/10 border-red-500/25 text-red-300"
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <span>{workspaceBanner.type === "success" ? "✓" : "⚠"}</span>
+            <span>{workspaceBanner.message}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setWorkspaceBanner(null)}
+            className="text-slate-400 hover:text-white p-1 cursor-pointer"
+            aria-label="Dismiss banner"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Main Workspace Grid (30% Sidebar, 70% Canvas) */}
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 sm:p-6 max-w-[1920px] mx-auto w-full">
@@ -279,6 +360,15 @@ export default function ProjectWorkspace() {
         onClose={() => setIsChatOpen(false)}
         projectId={id}
         project={project}
+      />
+
+      {/* Reanalyze Confirmation Modal */}
+      <ReanalyzeConfirmModal
+        isOpen={isReanalyzeModalOpen}
+        onClose={() => setIsReanalyzeModalOpen(false)}
+        project={project}
+        token={authToken}
+        onReanalyzeSuccess={handleReanalyzeSuccess}
       />
     </div>
   );
