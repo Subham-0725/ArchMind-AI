@@ -1,32 +1,42 @@
+<div align="center">
+
 # ArchMind AI
 
-A full-stack repository intelligence platform that analyzes software codebases and produces structured technical insights, interactive system topologies, database ER diagrams, API sequence flows, AST security audits, DevOps infrastructure manifests, and downloadable engineering PDF reports.
+### **AI-Powered Repository Intelligence Platform**
 
-[![Language](https://img.shields.io/badge/Language-JavaScript%20%2F%20JSX-F7DF1E?logo=javascript&logoColor=black)](#technology-stack)
-[![Node.js](https://img.shields.io/badge/Node.js-v18%2B%20%2F%20v20%2B-339933?logo=node.js&logoColor=white)](#prerequisites)
-[![React](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite-61DAFB?logo=react&logoColor=black)](#technology-stack)
-[![Express](https://img.shields.io/badge/Backend-Express.js%205-000000?logo=express&logoColor=white)](#technology-stack)
-[![MongoDB](https://img.shields.io/badge/Database-MongoDB%20Mongoose-47A248?logo=mongodb&logoColor=white)](#technology-stack)
-[![Groq](https://img.shields.io/badge/LLM-Groq%20SDK-F55036)](#technology-stack)
-[![Clerk](https://img.shields.io/badge/Auth-Clerk-6C47FF?logo=clerk&logoColor=white)](#authentication)
+Transform any software repository into interactive system topologies, database ER diagrams, API sequence flows, AST security audits, and deployable DevOps manifests — in seconds.
+
+[![React 19](https://img.shields.io/badge/Frontend-React%2019%20%7C%20Vite%208-61DAFB?logo=react&logoColor=black)](#technology-stack)
+[![Express 5](https://img.shields.io/badge/Backend-Express.js%205-000000?logo=express&logoColor=white)](#technology-stack)
+[![Node.js](https://img.shields.io/badge/Runtime-Node.js%20v18%2B-339933?logo=node.js&logoColor=white)](#prerequisites)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB%20%7C%20Mongoose-47A248?logo=mongodb&logoColor=white)](#technology-stack)
+[![Groq Cloud](https://img.shields.io/badge/LLM-Groq%20Cloud%20(gpt--oss--120b)-F55036)](#technology-stack)
+[![Clerk Auth](https://img.shields.io/badge/Auth-Clerk-6C47FF?logo=clerk&logoColor=white)](#security-and-safe-development)
+[![License](https://img.shields.io/badge/License-ISC-blue.svg)](#license)
+
+<br/>
+
+[**Explore Features**](#key-features) • [**Quickstart Guide**](#quickstart-in-3-steps) • [**Architecture**](#architecture-overview) • [**API Reference**](#api-documentation) • [**Testing Suite**](#automated-testing)
+
+</div>
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Why ArchMind AI?](#why-archmind-ai)
 - [Key Features](#key-features)
-- [Screenshots and Demo](#screenshots-and-demo)
+- [Workspace Preview](#workspace-preview)
 - [Technology Stack](#technology-stack)
 - [Architecture Overview](#architecture-overview)
-- [Repository Structure](#repository-structure)
 - [Prerequisites](#prerequisites)
-- [Installation and Setup](#installation-and-setup)
+- [Quickstart in 3 Steps](#quickstart-in-3-steps)
 - [Environment Variables](#environment-variables)
-- [Running the Application](#running-the-application)
-- [User Workflow](#user-workflow)
+- [User Walkthrough](#user-walkthrough)
 - [API Documentation](#api-documentation)
 - [Automated Testing](#automated-testing)
+- [Repository Structure](#repository-structure)
 - [Troubleshooting](#troubleshooting)
 - [Security and Safe Development](#security-and-safe-development)
 - [Contributing](#contributing)
@@ -37,189 +47,392 @@ A full-stack repository intelligence platform that analyzes software codebases a
 
 ## Overview
 
-**ArchMind AI** eliminates manual codebase onboarding by converting imported repositories into an intelligent, interactive workspace. Instead of inspecting large directory trees file-by-file, developers, software architects, and engineering teams can ingest any codebase via **ZIP archive upload** or **GitHub URL import**.
+**ArchMind AI** eliminates manual codebase onboarding by converting imported repositories into an intelligent, interactive workspace. Instead of navigating thousands of lines of unfamiliar code across nested directories, developers and engineering teams ingest any repository via **ZIP archive upload** or **GitHub URL**.
 
-The platform's **Repository Intelligence Engine (RIE)** processes the repository through a multi-stage static analysis pipeline:
-1. Strips build artifacts and dependency noise (`node_modules`, `.git`, `dist`, `venv`).
-2. Scans for exposed credentials and secrets with zero raw secret persistence.
-3. Automatically detects languages, package manifests, and frameworks with weighted confidence scoring.
-4. Parses Abstract Syntax Trees (AST) using **Tree-sitter** for JavaScript, TypeScript, and Python.
-5. Extracts API routes, parameter signatures, and database schemas (Mongoose, Prisma, SQL, Django).
-6. Compiles a versioned, token-budgeted **Repository Blueprint**.
-7. Orchestrates **Groq LLM** inference for topology refinement, ER diagrams, context-grounded AI chat with line-level source citations, code reviews, test generation, and DevOps synthesis.
-8. Streams downloadable, production-grade **PDF engineering reports** generated server-side with **PDFKit**.
+The platform combines deterministic static analysis with high-speed LLM inference:
+1. **Sanitizes & Normalizes**: Automatically excludes dependency noise (`node_modules`, `.git`, `dist`, `venv`).
+2. **Parses ASTs**: Extracts imports, exports, functions, routes, and models via **Tree-sitter** (JavaScript, TypeScript, Python).
+3. **Compiles a Blueprint**: Assembles a versioned, token-budgeted Repository Blueprint with cryptographic source fingerprinting.
+4. **Synthesizes & Visualizes**: Generates interactive React Flow topology graphs, database ERDs, API sequence flows, and validated DevOps manifests using **Groq Cloud**.
+5. **Generates Reports**: Streams production-ready, multi-page PDF engineering dossiers built with **PDFKit**.
+
+---
+
+## Why ArchMind AI?
+
+| The Traditional Way | The ArchMind AI Way |
+|---|---|
+| ⏳ **Hours spent reading directories**: Exploring folders to figure out how services connect. | ⚡ **Instant System Topology**: Auto-generated React Flow graph displaying Frontend, Backend, DB, and DevOps tiers. |
+| 🪓 **Broken, hallucinated AI answers**: Generic LLMs make up file paths and outdated dependencies. | 🎯 **Grounded with Line Citations**: Repository chat cites exact file paths and line ranges (`L12–L34`). |
+| 🔍 **Hidden vulnerabilities & leaked keys**: Committing secrets or insecure `eval()` calls by accident. | 🛡️ **Zero-Leak Security Audits**: High-entropy secret redaction and Tree-sitter AST vulnerability scanning. |
+| 📝 **Writing Docker & K8s boilerplate from scratch**: Guessing versions and misconfiguring ports. | ⚙️ **Validated DevOps Manifests**: Pre-validated multi-stage Dockerfiles, GitHub Actions, and K8s manifests. |
 
 ---
 
 ## Key Features
 
-### Repository Ingestion & Noise Filtering
-- **Dual Ingestion Paths**: Upload compressed `.zip` archives (up to 50 MB with disk isolation and Zip Slip protection) or import public/private repositories via GitHub REST API.
-- **Automated Noise Exclusion**: Ignores lockfiles, test fixtures, build outputs, virtual environments, and binary assets to keep analysis payloads lean.
-- **Source Fingerprinting & Invalidation**: Cryptographic SHA hashing detects codebase changes, tracks analysis versions (`analysisVersion`), and prevents stale cache re-use.
+### 1. Dual Ingestion & Noise Filtering
+- **Drag-and-Drop ZIP Upload**: Supports archives up to 50 MB with disk isolation and Zip Slip protection.
+- **GitHub URL Import**: Fetches repository trees via GitHub REST API with rate-limit handling.
+- **Smart Noise Filtering**: Automatically ignores lockfiles, test fixtures, compiled bundles, and binaries.
+- **Cryptographic Fingerprinting**: Tracks `sourceFingerprint` and `analysisVersion` to invalidate cache accurately.
 
-### Static Code Analysis & AST Parsing
-- **Tree-sitter Parsing Engine**: Multi-language AST parsing across JavaScript, TypeScript, and Python.
-- **Schema & Model Extraction**: Automatic detection and structure extraction for Mongoose schemas, Prisma schemas, SQL DDL definitions, and Django/SQLAlchemy models.
-- **Multi-Signal Language Detection**: Evaluates manifest files (`package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`, etc.), file extensions, and byte-size ratios to identify primary and secondary languages.
+### 2. Interactive Visualizations
+- **System Topology Canvas**: Interactive React Flow canvas with Dagre layout management (Left-to-Right and Top-to-Bottom orientations).
+- **Database ER Diagram Visualizer**: Zoomable ERD canvas showing entities, columns, primary keys, and relationships (Mongoose, Prisma, SQL, Django).
+- **Capability Matrix Engine**: Automatically activates module tabs (`hasDatabase`, `hasApis`, `hasDevops`, `hasSecuritySensitiveCode`) without false server errors.
 
-### Interactive System Visualizations
-- **System Topology Canvas**: Interactive React Flow diagram displaying service tiers (Frontend, Backend, Database, DevOps) with Dagre layout management (Left-to-Right and Top-to-Bottom orientations).
-- **Database ER Diagram Visualizer**: Dedicated zoomable canvas mapping database entities, fields, data types, primary keys, and cross-entity relationships.
-- **Capability Matrix Detection**: Dynamically toggles workspace tabs based on detected project capabilities (`hasDatabase`, `hasApis`, `hasDevops`, `hasSecuritySensitiveCode`).
+### 3. API Route Explorer & Sequence Flows
+- **Static Route Extraction**: Discovers endpoints across Express, Fastify, NestJS, FastAPI, Flask, and Django.
+- **Multi-Field Filtering**: Filter routes by HTTP verb (`GET`, `POST`, `PUT`, `DELETE`), framework, or auth status.
+- **Mermaid Request Sequences**: Generates sandboxed sequence diagrams tracing `Client → Middleware → Controller → Service → Database → Response`.
+- **Line-Level Citations**: Direct links from route cards to exact source code line numbers.
 
-### API Route Intelligence & Sequence Diagrams
-- **Static Route Discovery**: Scans controllers and route declarations across Express, Fastify, NestJS, FastAPI, Flask, and Django.
-- **Route Filtering**: Filter endpoints by HTTP verb (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`), framework, authentication requirement, or path keyword.
-- **Sequence Diagram Synthesis**: Sandboxed Mermaid sequence diagram generator modeling request lifecycle flows (`Client -> Router -> Middleware -> Controller -> Service -> Database -> Response`) with strict depth bounds.
-- **Line-Level Citations**: Direct mapping from extracted route records to specific source code line numbers.
+### 4. Zero-Leak Security Audit
+- **Deterministic Secret Scanner**: Scans for AWS keys, GitHub tokens, Stripe secrets, and passwords with automatic masking.
+- **AST Vulnerability Scanner**: Tree-sitter detection of code injection, unsafe deserialization, path traversal, and dangerous `exec` calls.
+- **AI-Assisted Code Reviews**: Categorized review recommendations (Architecture, Performance, Maintainability).
+- **Automated Test Generation**: Generates unit and API test boilerplate (Jest / Pytest) without modifying project files.
 
-### Security Audits & Code Quality
-- **Deterministic Secret Scanner**: High-entropy regex pattern matching for AWS keys, GitHub tokens, Stripe secrets, private keys, and passwords with automatic redaction.
-- **AST Vulnerability Scanner**: Detects dangerous function calls (`eval`, unsafe `exec`, path traversal, prototype pollution, unsafe deserialization) with exact line citations.
-- **AI-Assisted Code Reviews**: Groq-powered review generating categorized findings (Architecture, Performance, Maintainability, Security) with remediation advice.
-- **Automated Test Generation**: Generates Jest or Pytest test suite boilerplate without modifying project files.
+### 5. Automated DevOps & CI/CD Synthesis
+- **Multi-Stage Dockerfiles**: Generated with non-root security standards and aligned runtime versions.
+- **GitHub Actions Workflows**: Automatically mapped to existing `package.json` test/build scripts.
+- **Kubernetes Manifests**: Aligned `Deployment`, `Service`, and `ConfigMap` resources with health check probes.
+- **Pre-Flight Syntax Validation**: In-engine validator checks for label mismatches, missing ports, and raw secrets.
 
-### DevOps & Infrastructure Synthesis
-- **Automated Dockerfile Generation**: Produces multi-stage Dockerfiles tailored to detected package managers and runtimes with non-root security defaults.
-- **CI/CD Workflow Synthesis**: Generates GitHub Actions workflow manifests (`.github/workflows/ci.yml`) matching repository test and build scripts.
-- **Kubernetes Manifest Synthesis**: Produces Kubernetes `Deployment`, `Service`, and `ConfigMap` resources with health check probes and label alignment.
-- **Deterministic Syntax & Policy Validation**: In-engine validator checks generated manifests for missing required fields, label mismatches, and embedded secrets before saving.
+### 6. Context-Grounded Repository AI Chat
+- **Blueprint-Aware QA**: Queries answered with full context of repository dependencies, routes, and schemas.
+- **Verified Citations**: All answers cite real source files and line ranges.
+- **Global Shortcut**: Press <kbd>Ctrl</kbd> + <kbd>K</kbd> (or <kbd>Ctrl</kbd> + <kbd>/</kbd>) from anywhere in the workspace.
+- **Persistent History**: Multi-turn conversations saved in MongoDB with custom titling.
 
-### Grounded Repository AI Chat
-- **Context-Aware Retrieval**: Answers technical questions about the codebase using the compiled Repository Blueprint and indexed source files.
-- **Line-Level Source Citations**: AI responses cite exact file paths and line ranges (`path/to/file.js#L12-L34`).
-- **Persistent Conversation History**: Multi-turn chat sessions scoped per user and project, stored in MongoDB Atlas with title generation and conversation management.
-
-### Engineering PDF Report Generation
-- **Server-Side Streaming**: Generates multi-page engineering PDF reports using `pdfkit` without writing intermediate files to disk.
-- **Dossier Coverage**: Includes Executive Summary, Repository Metrics, Technology Stack Breakdown, Capability Matrix, API Route Catalog, Security Audit Findings, and DevOps Manifest Inventory.
-- **Automatic Secret Redaction**: Sanitizes all file paths and credentials before embedding into the PDF document.
+### 7. Engineering PDF Report Generator
+- **Server-Side Streaming**: Direct streaming via `pdfkit` without writing temporary files to disk.
+- **Comprehensive Dossier**: Executive summary, repository stats, tech stack, API route catalog, security audit findings, and DevOps inventory.
+- **Redacted Output**: Guarantees zero sensitive tokens or internal paths leak into exported documents.
 
 ---
 
-## Screenshots and Demo
-
-> *Note: UI screenshots and animated walkthroughs will be added in upcoming releases. To explore the interface locally, follow the [Installation and Setup](#installation-and-setup) instructions below.*
+## Workspace Preview
 
 ```
-+---------------------------------------------------------------------------------------+
-|  ArchMind AI — Interactive Repository Intelligence Workspace                          |
-+---------------------------------------------------------------------------------------+
-| [Overview]  [Tech Stack]  [Analysis Status]  |  [Topology] [ERD] [APIs] [DevOps] [Security] |
-|                                              |                                        |
-| 📁 src/                                      |   +---------------+     +------------+ |
-|   ├── controllers/                           |   | React Client  | --> | Express API | |
-|   ├── models/                                |   +---------------+     +------------+ |
-|   └── routes/                                |                               |        |
-|                                              |                               v        |
-| 📊 Metrics: 42 files, 8 APIs, 3 Models       |                       +--------------+ |
-| 🛡 Security: 0 Leaks, 2 Warnings             |                       | MongoDB Atlas| |
-| ⚙ DevOps: Dockerfile, K8s, CI/CD Validated   |                       +--------------+ |
-+---------------------------------------------------------------------------------------+
-| [Ask AI / Ctrl+K] [Export PDF Report]                                                 |
-+---------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------+
+|  ArchMind AI — Repository Intelligence Workspace                                [Export PDF]  |
++-----------------------------------------------------------------------------------------------+
+| [❖ Topology] [⬡ ER Diagram] [⇄ API Explorer] [⚙ DevOps & CI/CD] [🛡 Security Audit]          |
++-----------------------------------------------------------------------------------------------+
+| 📁 Repository Files            |  ❖ Interactive System Topology Canvas                        |
+|   ├── controllers/             |                                                              |
+|   │   ├── project.controller.js|       +-----------------+         +---------------------+    |
+|   │   └── chat.controller.js   |       |  React Client   | ------> | Express API Gateway |    |
+|   ├── models/                  |       +-----------------+         +---------------------+    |
+|   │   ├── Project.js           |                                              |               |
+|   │   └── User.js              |                                              v               |
+|   └── routes/                  |                                    +-------------------+     |
+|       └── project.routes.js    |                                    |   MongoDB Atlas   |     |
+|                                |                                    +-------------------+     |
+| 📊 Stats: 54 Files (1.2 MB)    |                                                              |
+| ⚡ Primary: JavaScript (94%)   |  [Orient: LR / TB]  [Fit View]  [Controls]  [Minimap]        |
++-----------------------------------------------------------------------------------------------+
+| 💬 Repository AI Assistant (Ctrl+K): "How does authentication middleware guard project routes?"|
+| > Clerk JWT verification is enforced via requireAuth middleware in server/src/app.js#L43       |
++-----------------------------------------------------------------------------------------------+
 ```
 
 ---
 
 ## Technology Stack
 
-### Frontend
-- **Framework**: [React 19](https://react.dev/) with [Vite 8](https://vitejs.dev/)
-- **Routing**: [React Router DOM v7](https://reactrouter.com/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Graph & Diagramming**: [@xyflow/react (React Flow)](https://reactflow.dev/) and [Dagre](https://github.com/dagrejs/dagre)
-- **Diagram Rendering**: [Mermaid](https://mermaid.js.org/) (strict client-side rendering)
-- **Animation & Scrolling**: [Framer Motion](https://www.framer.com/motion/) and [Lenis](https://lenis.darkroom.engineering/)
-- **HTTP Client**: [Axios](https://axios-http.com/)
+<div align="center">
 
-### Backend
-- **Runtime**: [Node.js](https://nodejs.org/) (v18+ / v20+ / v24) with native ES Modules (`"type": "module"`)
-- **Server Framework**: [Express.js 5](https://expressjs.com/)
-- **Database ODM**: [Mongoose 9](https://mongoosejs.com/)
-- **Authentication**: [@clerk/express](https://clerk.com/) (JWT verification middleware)
-- **Archive Extraction**: [Adm-Zip](https://github.com/cthackers/adm-zip) and [Multer 2](https://github.com/expressjs/multer)
-- **AST Code Parsing**: [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) (`tree-sitter-javascript`, `tree-sitter-typescript`, `tree-sitter-python`)
-- **Report Generation**: [PDFKit](https://pdfkit.org/) (Node.js streaming PDF builder)
+| Tier | Technologies |
+|---|---|
+| **Frontend UI** | **React 19**, **Vite 8**, **Tailwind CSS v4**, **Framer Motion**, **Lenis** |
+| **Interactive Canvas** | **@xyflow/react (React Flow)**, **Dagre** layout engine, **Mermaid.js** |
+| **Backend API** | **Node.js** (ES Modules), **Express.js 5**, **Multer 2**, **Adm-Zip** |
+| **Static Code Parsing** | **Tree-sitter** (`tree-sitter-javascript`, `tree-sitter-typescript`, `tree-sitter-python`) |
+| **Database & ODM** | **MongoDB Atlas**, **Mongoose 9** |
+| **Authentication** | **Clerk** (`@clerk/clerk-react`, `@clerk/express` JWT verification) |
+| **LLM Inference** | **Groq Cloud SDK** (`groq-sdk`, model: `openai/gpt-oss-120b`) |
+| **Report Generation** | **PDFKit** (Node.js native streaming document builder) |
 
-### Database
-- **Primary Datastore**: [MongoDB](https://www.mongodb.com/) (Atlas or local instance)
-- **Collections**: `users`, `projects`, `sourcefiles`, `conversations`, `securityfindings`, `securityaudits`, `devopsartifacts`
-
-### AI & LLM Inference
-- **Inference SDK**: [Groq SDK](https://github.com/groq/groq-typescript) (`groq-sdk`)
-- **Configured Model**: `openai/gpt-oss-120b` (customizable via `GROQ_MODEL`)
-- **LLM Responsibilities**: Architecture synthesis, ERD structuring, grounded repository chat, AST code review, test case synthesis, and DevOps manifest generation.
+</div>
 
 ---
 
 ## Architecture Overview
 
-ArchMind AI operates on a layered architecture separating deterministic static analysis from AI-assisted inference.
+The platform cleanly separates **deterministic static analysis** (Tree-sitter, regex scanning, manifest extraction) from **probabilistic AI features** (Groq LLM).
 
 ```mermaid
 flowchart TD
-    subgraph Client["Client Tier (React 19 + Vite)"]
-        UI["Web UI Dashboard & Workspace"]
-        AuthClerk["Clerk React Auth Provider"]
-        ReactFlowView["Topology & ERD Canvas (React Flow + Dagre)"]
-        MermaidView["API Sequence Viewer (Mermaid)"]
-        ChatDrawer["Repository AI Chat (Ctrl+K)"]
+    subgraph Client["Frontend Client (React 19 + Vite)"]
+        UI["Web Dashboard & Workspace"]
+        AuthClient["Clerk Auth Provider"]
+        ReactFlowView["Topology & ERD Canvas (React Flow)"]
+        SeqViewer["Mermaid Sequence Viewer"]
+        ChatDrawer["Repository AI Chat Drawer (Ctrl+K)"]
     end
 
-    subgraph API["Backend API Gateway (Express 5)"]
+    subgraph Server["Backend API Gateway (Express 5)"]
         ClerkAuth["Clerk JWT Authentication Guard"]
-        UploadHandler["Multer ZIP Ingestion (50MB Limit)"]
-        GHHandler["GitHub REST API Tree Ingestion"]
-        ProjectRouter["Project & Workspace Controllers"]
-        AnalysisRouter["Analysis & Module Controllers"]
-        DevOpsRouter["DevOps Artifact Controllers"]
-        ReportRouter["PDFKit Report Streamer"]
+        UploadCtrl["Multer ZIP Ingestion (50 MB)"]
+        GHCtrl["GitHub REST Ingestion"]
+        ProjectCtrl["Project Management Controller"]
+        DevOpsCtrl["DevOps Generators & Validators"]
+        PDFCtrl["PDFKit Report Streamer"]
     end
 
     subgraph RIE["Repository Intelligence Engine (RIE)"]
-        NoiseFilter["Noise & Path Sanitization"]
-        SecretScan["Deterministic Secret & Entropy Scanner"]
-        LangDetect["Language & Framework Detector"]
-        TreeSitter["Tree-sitter AST Parser (JS/TS/Python)"]
-        ApiExtract["API Route & Sequence Extractor"]
-        DbExtract["Database Schema Extractor"]
+        Noise["Noise Filter (.git, node_modules, dist)"]
+        SecretScan["Deterministic Secret Scanner"]
+        LangDetector["Multi-Signal Language Detector"]
+        TreeSitter["Tree-sitter AST Parser (JS/TS/Py)"]
+        ApiScanner["API Route & Sequence Extractor"]
+        DbScanner["Database Schema Extractor"]
         BlueprintAgg["Repository Blueprint Aggregator"]
     end
 
-    subgraph Storage["Persistence & External Services"]
-        MongoDB[("MongoDB Atlas Database")]
-        GroqAPI["Groq Cloud LLM API (openai/gpt-oss-120b)"]
+    subgraph External["Persistence & Cloud Services"]
+        MongoDB[("MongoDB Atlas")]
+        GroqAPI["Groq Cloud LLM (openai/gpt-oss-120b)"]
         GitHubAPI["GitHub REST API"]
     end
 
-    UI -->|JWT Auth Requests| ClerkAuth
-    ClerkAuth --> UploadHandler
-    ClerkAuth --> GHHandler
-    ClerkAuth --> ProjectRouter
+    UI -->|JWT Authenticated Requests| ClerkAuth
+    ClerkAuth --> UploadCtrl
+    ClerkAuth --> GHCtrl
+    ClerkAuth --> ProjectCtrl
 
-    UploadHandler --> RIE
-    GHHandler --> RIE
+    UploadCtrl --> RIE
+    GHCtrl --> RIE
 
-    RIE --> NoiseFilter
-    NoiseFilter --> SecretScan
-    SecretScan --> LangDetect
-    LangDetect --> TreeSitter
-    TreeSitter --> ApiExtract
-    TreeSitter --> DbExtract
-    ApiExtract --> BlueprintAgg
-    DbExtract --> BlueprintAgg
+    RIE --> Noise
+    Noise --> SecretScan
+    SecretScan --> LangDetector
+    LangDetector --> TreeSitter
+    TreeSitter --> ApiScanner
+    TreeSitter --> DbScanner
+    ApiScanner --> BlueprintAgg
+    DbScanner --> BlueprintAgg
 
-    BlueprintAgg -->|Persist Blueprint & Index| MongoDB
-    ProjectRouter -->|Read/Write Operations| MongoDB
+    BlueprintAgg -->|Persist Blueprint & Indexed Files| MongoDB
+    ProjectCtrl -->|Read / Write| MongoDB
 
-    AnalysisRouter -->|Grounding Context Payload| GroqAPI
-    DevOpsRouter -->|Manifest Generation| GroqAPI
-    ChatDrawer -->|Grounded Queries + Citations| GroqAPI
+    ProjectCtrl -->|Grounded Context Payload| GroqAPI
+    DevOpsCtrl -->|Synthesize Manifests| GroqAPI
+    ChatDrawer -->|Repository Context + User Query| GroqAPI
 
-    ReportRouter -->|Stream PDF Stream| UI
-    GroqAPI -->|Structured JSON / Answers| ProjectRouter
+    PDFCtrl -->|Stream Binary PDF| UI
+    GroqAPI -->|Structured JSON & Citations| ProjectCtrl
+```
+
+---
+
+## Prerequisites
+
+- **Node.js**: `v18.0.0` or higher (tested on Node.js v20 and v24 with native ES Modules).
+- **MongoDB**: MongoDB Atlas database connection string or a local MongoDB instance.
+- **Clerk Account**: Free API keys from [clerk.com](https://clerk.com/).
+- **Groq API Key**: Free API key from [console.groq.com](https://console.groq.com/).
+
+---
+
+## Quickstart in 3 Steps
+
+### Step 1: Clone Repository
+```bash
+git clone https://github.com/Subham-0725/ArchMind-AI.git
+cd ArchMind-AI
+```
+
+### Step 2: Configure & Start Backend Server
+```bash
+cd server
+cp .env.example .env
+npm install
+npm run dev
+```
+*Backend runs on `http://localhost:5000`.*
+
+### Step 3: Configure & Start Frontend Client
+Open a second terminal:
+```bash
+cd client
+npm install
+npm run dev
+```
+*Frontend runs on `http://localhost:5173`.*
+
+---
+
+## Environment Variables
+
+<details open>
+<summary><b>Server Configuration (<code>server/.env</code>)</b></summary>
+<br/>
+
+| Variable | Required | Default | Description |
+|---|:---:|---|---|
+| `PORT` | No | `5000` | HTTP port for the Express backend. |
+| `MONGODB_URI` | **Yes** | — | MongoDB Atlas connection string (`mongodb+srv://...`). |
+| `CLERK_PUBLISHABLE_KEY` | **Yes** | — | Clerk publishable key from your Clerk Dashboard. |
+| `CLERK_SECRET_KEY` | **Yes** | — | Clerk secret key for validating JWTs in middleware. |
+| `GROQ_API_KEY` | **Yes** | — | Groq Cloud API key for LLM completions. |
+| `GROQ_MODEL` | No | `openai/gpt-oss-120b` | Groq model identifier for completions. |
+| `CLIENT_URL` | No | `http://localhost:5173` | Allowed frontend origin for CORS. |
+| `HOST` | No | Dual-stack (`::`) | Network interface to bind. |
+
+</details>
+
+<details open>
+<summary><b>Client Configuration (<code>client/.env</code>)</b></summary>
+<br/>
+
+| Variable | Required | Default | Description |
+|---|:---:|---|---|
+| `VITE_CLERK_PUBLISHABLE_KEY` | **Yes** | — | Clerk Frontend Publishable Key for authentication. |
+| `VITE_API_BASE_URL` | No | `http://localhost:5000` | Base endpoint URL of the backend API. |
+
+</details>
+
+---
+
+## User Walkthrough
+
+```mermaid
+flowchart LR
+    A["1. Sign In via Clerk"] --> B["2. Upload ZIP or GitHub URL"]
+    B --> C["3. RIE Pipeline Ingestion"]
+    C --> D["4. Interactive Workspace"]
+    D --> E["5. Explore Topology & ERD"]
+    D --> F["6. Inspect APIs & Sequences"]
+    D --> G["7. Audit Security & Secrets"]
+    D --> H["8. Generate DevOps Manifests"]
+    D --> I["9. Ask AI (Ctrl+K)"]
+    D --> J["10. Export PDF Report"]
+```
+
+1. **Sign In**: Access the landing page and authenticate securely with Clerk.
+2. **Ingest Repository**: Drag and drop a project `.zip` file (up to 50 MB) or enter a GitHub repository link.
+3. **Automated Pipeline**: The Repository Intelligence Engine filters noise, scans secrets, identifies frameworks, parses AST trees, and indexes source files.
+4. **Interactive Exploration**:
+   - **Topology Canvas**: Zoom, pan, and switch layout orientations (LR/TB).
+   - **ER Diagram**: Inspect entity columns, types, and foreign key relations.
+   - **API Explorer**: Filter REST endpoints and generate Mermaid sequence diagrams.
+   - **DevOps Center**: Generate and validate multi-stage Dockerfiles, GitHub Actions, and K8s manifests.
+   - **Security Audit**: Inspect masked secrets and AST vulnerabilities with line citations.
+5. **Chat with Codebase**: Open the AI drawer with <kbd>Ctrl</kbd> + <kbd>K</kbd> to ask technical questions with exact source citations.
+6. **Export Dossier**: Click **Export PDF** in the header to download a complete engineering report.
+
+---
+
+## API Documentation
+
+All protected endpoints require an `Authorization: Bearer <clerk_jwt>` header.
+
+<details>
+<summary><b>🔍 Click to expand complete API Endpoints Table</b></summary>
+<br/>
+
+### System & Users
+| Method | Endpoint | Description | Auth |
+|---|---|---|:---:|
+| `GET` | `/api/health` | Health check endpoint | Public |
+| `POST` | `/api/users/sync` | Sync Clerk user profile to MongoDB | Required |
+| `GET` | `/api/users/me` | Fetch authenticated user profile | Required |
+
+### Project Management & Ingestion
+| Method | Endpoint | Description | Auth |
+|---|---|---|:---:|
+| `POST` | `/api/projects/upload` | Upload `.zip` repository archive (Multer 50 MB limit) | Required |
+| `POST` | `/api/projects/github` | Import repository via GitHub REST API | Required |
+| `GET` | `/api/projects` | List user projects with pagination (`page`, `limit`) & search (`q`) | Required |
+| `GET` | `/api/projects/:id` | Get full project details with file tree | Required |
+| `PATCH` | `/api/projects/:id` | Update project metadata (`name`, `description`) | Required |
+| `DELETE` | `/api/projects/:id` | Cascade delete project and child collections | Required |
+| `PATCH` | `/api/projects/:id/status` | Update processing status (`uploaded`, `processing`, `completed`) | Required |
+| `GET` | `/api/projects/:id/blueprint` | Fetch compiled Repository Blueprint JSON | Required |
+| `GET` | `/api/projects/:id/file?path=...` | Retrieve indexed source file with secret masking | Required |
+
+### Analysis & Reports
+| Method | Endpoint | Description | Auth |
+|---|---|---|:---:|
+| `POST` | `/api/projects/:id/analyze` | Queue and trigger full multi-module analysis | Required |
+| `POST` | `/api/projects/:id/reanalyze` | Increment `analysisVersion`, clear cache, and re-run RIE | Required |
+| `GET` | `/api/projects/:id/analysis` | Fetch status of each individual analysis module | Required |
+| `POST` | `/api/projects/:id/:module` | Trigger single module (`architecture`, `erd`, `api`, `security`, `devops`) | Required |
+| `GET` | `/api/projects/:id/report/pdf` | Stream generated engineering PDF report via PDFKit | Required |
+
+### API Route Intelligence
+| Method | Endpoint | Description | Auth |
+|---|---|---|:---:|
+| `GET` | `/api/projects/:id/api-routes` | List extracted routes with query filters (`method`, `search`, `auth`) | Required |
+| `GET` | `/api/projects/:id/api-routes/:routeId` | Get detailed route information with line-level source citation | Required |
+| `GET` | `/api/projects/:id/api-routes/:routeId/sequence` | Generate Mermaid sequence diagram for route | Required |
+
+### Security & Code Quality
+| Method | Endpoint | Description | Auth |
+|---|---|---|:---:|
+| `POST` | `/api/projects/:projectId/security/scan` | Trigger deterministic secret & AST vulnerability scan | Required |
+| `GET` | `/api/projects/:projectId/security` | Get security metrics and finding counts | Required |
+| `GET` | `/api/projects/:projectId/security/findings` | List security findings with severity filters | Required |
+| `PATCH` | `/api/projects/:projectId/security/findings/:findingId` | Update finding status (`open`, `resolved`, `false_positive`) | Required |
+| `POST` | `/api/projects/:projectId/code-review` | Trigger AI-assisted code review via Groq | Required |
+| `POST` | `/api/projects/:projectId/tests/generate` | Generate Jest / Pytest test preview via Groq | Required |
+
+### Repository AI Chat
+| Method | Endpoint | Description | Auth |
+|---|---|---|:---:|
+| `POST` | `/api/projects/:projectId/chat/conversations` | Create a new conversation session | Required |
+| `GET` | `/api/projects/:projectId/chat/conversations` | List conversation sessions for project | Required |
+| `GET` | `/api/projects/:projectId/chat/conversations/:conversationId` | Get conversation history & messages | Required |
+| `POST` | `/api/projects/:projectId/chat/conversations/:conversationId/messages` | Send prompt & receive Groq answer with citations | Required |
+| `PATCH` | `/api/projects/:projectId/chat/conversations/:conversationId` | Update conversation title or pinned status | Required |
+| `DELETE` | `/api/projects/:projectId/chat/conversations/:conversationId` | Delete conversation session | Required |
+
+### DevOps Artifacts
+| Method | Endpoint | Description | Auth |
+|---|---|---|:---:|
+| `POST` | `/api/projects/:projectId/devops/generate` | Synthesize Dockerfile, CI/CD, and K8s manifests | Required |
+| `GET` | `/api/projects/:projectId/devops/artifacts` | List generated DevOps manifests | Required |
+| `GET` | `/api/projects/:projectId/devops/artifacts/:artifactId` | Retrieve specific manifest content | Required |
+| `POST` | `/api/projects/:projectId/devops/artifacts/:artifactId/regenerate` | Regenerate and supersede artifact | Required |
+| `POST` | `/api/projects/:projectId/devops/artifacts/:artifactId/validate` | Run deterministic syntax & policy validator | Required |
+| `DELETE` | `/api/projects/:projectId/devops/artifacts/:artifactId` | Remove DevOps artifact | Required |
+
+</details>
+
+---
+
+## Automated Testing
+
+ArchMind AI includes comprehensive test suites written using Node.js ES Modules with **zero third-party test framework overhead**.
+
+```bash
+# 🎯 Phase 6 Workspace & PDF Report Suite (20 Assertions)
+node server/test-phase6-suite.js
+
+# ⚙️ DevOps Artifact Generation & Validation Suite (29 Assertions)
+node server/test-devops-suite.js
+
+# 🛡️ Security Audit, Secret Scanner & Test Generator Suite (10 Assertions)
+node server/test-security-suite.js
+
+# 💬 Repository AI Chat & Citation Verification Suite (10 Assertions)
+node server/test-chat-service.js
+
+# ⇄ API Route Extractor & Sequence Generator Suite (6 Assertions)
+node server/test-api-routes-api.js
+
+# 📦 ZIP Ingestion Pipeline & Multer Isolation Suite (8 Assertions)
+node server/test-zip-upload-pipeline.js
+
+# 🖥️ Frontend Phase 6 Workspace Verification Suite (14 Assertions)
+node client/test-phase6-frontend.js
+
+# 🔍 Run Frontend ESLint
+npm --prefix client run lint
 ```
 
 ---
@@ -228,427 +441,98 @@ flowchart TD
 
 ```
 ArchMind AI/
-├── client/                           # Frontend React application
-│   ├── public/                       # Static assets and icons
+├── client/                     # Frontend Application (React 19, Vite 8, Tailwind v4)
 │   ├── src/
-│   │   ├── components/               # UI components
-│   │   │   ├── LandingPage/          # Public landing page sections
-│   │   │   ├── layout/               # Navbars and shell wrappers
-│   │   │   └── project/              # Project workspace components
-│   │   │       ├── api/              # API Explorer, filters, sequence diagram
-│   │   │       ├── chat/             # Repository AI chat drawer & citations
-│   │   │       ├── devops/           # DevOps Center, manifest viewer & modals
-│   │   │       ├── erd/              # Entity Relationship Diagram canvas & nodes
-│   │   │       ├── management/       # Project delete, rename, and reanalyze modals
-│   │   │       ├── security/         # Security Audit tab, review & test panels
-│   │   │       └── topology/         # React Flow architecture canvas & service nodes
-│   │   ├── constants/                # Tab definitions and configuration
-│   │   ├── pages/                    # LandingPage, Dashboard, ProjectWorkspace
-│   │   ├── routes/                   # AppRoutes, PrivateRoute, PublicOnlyRoute
-│   │   ├── services/                 # Axios API clients (projectService, userService)
-│   │   └── themes/                   # Color palettes and typography constants
-│   ├── package.json                  # Client dependencies and Vite scripts
-│   └── vite.config.js                # Vite build configuration
+│   │   ├── components/project/ # Workspace modules (topology, erd, apis, devops, security, chat)
+│   │   ├── pages/              # LandingPage, Dashboard, ProjectWorkspace
+│   │   ├── services/           # Axios API services (projectService, userService)
+│   │   └── constants/          # Workspace tabs and capability configuration
+│   └── package.json
 │
-├── server/                           # Backend Express application
+├── server/                     # Backend Application (Node.js, Express 5, Mongoose 9)
 │   ├── src/
-│   │   ├── app.js                    # Express app configuration & middleware pipeline
-│   │   ├── server.js                 # HTTP listener & process crash handlers
-│   │   ├── config/                   # Centralized env, db, clerk, and multer config
-│   │   ├── controllers/              # Route controllers (projects, chat, reports, etc.)
-│   │   ├── devops/                   # DevOps generators, validators, and routes
-│   │   │   ├── generators/           # Dockerfile, CI/CD, and Kubernetes generators
-│   │   │   └── validators/           # Syntax and policy validation rules
-│   │   ├── middleware/               # Auth guard (Clerk) and error handlers
-│   │   ├── models/                   # Mongoose data models
-│   │   ├── rie/                      # Repository Intelligence Engine
-│   │   │   ├── api/                  # Route extraction and sequence generator
-│   │   │   ├── indexing/             # Source file indexing
-│   │   │   ├── parsers/              # Tree-sitter AST parsers (JS/TS and Python)
-│   │   │   ├── pipeline/             # Unified analysis pipeline
-│   │   │   ├── security/             # Secret scanning & redaction
-│   │   │   └── validation/           # Blueprint schema validator
-│   │   ├── routes/                   # Express route definitions
-│   │   └── services/                 # Business logic (Groq chat, language detection, PDF)
-│   │       ├── chat/                 # Chat orchestration, context retrieval, citations
-│   │       ├── reports/              # PDFKit report generation and data collection
-│   │       └── security/             # Security audit, code review, test generator
-│   ├── storage/                      # Ephemeral upload and extraction directories
-│   ├── .env.example                  # Template server environment variables
-│   ├── nodemon.json                  # Nodemon configuration (ignores storage/)
-│   └── package.json                  # Server dependencies and scripts
+│   │   ├── controllers/        # Project, Analysis, Chat, Security, Report controllers
+│   │   ├── devops/             # Dockerfile, CI/CD, and K8s generators & validators
+│   │   ├── models/             # User, Project, SourceFile, Conversation, SecurityFinding, DevOpsArtifact
+│   │   ├── rie/                # Repository Intelligence Engine (AST, Routes, Schemas, Blueprint)
+│   │   └── services/           # Groq Chat, PDFKit Streaming, Language Detector
+│   ├── storage/                # Ephemeral ZIP upload staging (ignored by nodemon)
+│   └── package.json
 │
-├── context/                          # Architecture guides and project specifications
-│   ├── architecture.md               # System boundaries and invariant rules
-│   ├── code-standards.md             # Coding conventions and naming rules
-│   ├── progress-tracker.md           # Implementation phase tracker
-│   └── project-overview.md           # Product requirements and feature scope
-│
-├── Agent.md                          # AI agent reference and context roadmap
-└── README.md                         # Project documentation
-```
-
----
-
-## Prerequisites
-
-Before running ArchMind AI locally, ensure you have the following installed:
-
-1. **Node.js**: `v18.0.0` or higher (verified on `v20` and `v24` with native ES Modules).
-2. **Package Manager**: `npm` (v9+ / v11+).
-3. **MongoDB**: A running MongoDB instance (MongoDB Atlas cluster or local MongoDB daemon at `mongodb://localhost:27017/archmind`).
-4. **Clerk Account**: A free [Clerk](https://clerk.com/) account for user authentication.
-5. **Groq Cloud Account**: A free [Groq Cloud](https://console.groq.com/) API key for high-speed LLM inference.
-
----
-
-## Installation and Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Subham-0725/ArchMind-AI.git
-cd ArchMind-AI
-```
-
-### 2. Configure Backend Environment
-
-Navigate to the `server/` directory, copy the example environment file, and fill in the values:
-
-```bash
-cd server
-cp .env.example .env
-```
-
-Configure your `.env` file:
-```env
-PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/archmind
-CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key
-CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
-
-# Groq LLM Configuration
-GROQ_API_KEY=gsk_your_groq_api_key
-GROQ_MODEL=openai/gpt-oss-120b
-
-# Optional: Frontend URL for CORS (defaults to http://localhost:5173)
-CLIENT_URL=http://localhost:5173
-```
-
-Install backend dependencies:
-
-```bash
-npm install
-```
-
-### 3. Configure Frontend Environment
-
-Navigate to the `client/` directory and create a `.env` file:
-
-```bash
-cd ../client
-```
-
-Create `client/.env`:
-```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key
-VITE_API_BASE_URL=http://localhost:5000
-```
-
-Install frontend dependencies:
-
-```bash
-npm install
-```
-
----
-
-## Environment Variables
-
-### Backend (`server/.env`)
-
-| Variable | Used By | Purpose | Required | Default |
-|---|---|---|---|---|
-| `PORT` | `server/src/config/env.js` | Port number for Express HTTP server | No | `5000` |
-| `MONGODB_URI` | `server/src/config/db.js` | MongoDB connection connection string | **Yes** | — |
-| `CLERK_PUBLISHABLE_KEY` | `server/src/config/env.js` | Clerk publishable key | **Yes** | — |
-| `CLERK_SECRET_KEY` | `server/src/config/clerk.js` | Clerk secret key for validating incoming JWTs | **Yes** | — |
-| `GROQ_API_KEY` | `server/src/services/llmService.js`, `groqChat.service.js` | API key for Groq LLM inference | **Yes** | — |
-| `GROQ_MODEL` | `server/src/config/env.js`, `groqChat.service.js` | LLM model identifier on Groq | No | `openai/gpt-oss-120b` |
-| `CLIENT_URL` | `server/src/app.js` | Allowed CORS frontend origin | No | `http://localhost:5173` |
-| `HOST` | `server/src/server.js` | Network interface to bind HTTP listener | No | Dual-stack (`::`) |
-
-### Frontend (`client/.env`)
-
-| Variable | Used By | Purpose | Required | Default |
-|---|---|---|---|---|
-| `VITE_CLERK_PUBLISHABLE_KEY` | `client/src/main.jsx` | Initializes Clerk frontend authentication provider | **Yes** | — |
-| `VITE_API_BASE_URL` | `client/src/services/projectService.js` | Base URL of the ArchMind backend API | No | `http://localhost:5000` |
-
-> [!IMPORTANT]
-> Never commit actual `.env` files, API keys, or database credentials to version control. Both `server/.env` and `client/.env` are listed in `.gitignore`.
-
----
-
-## Running the Application
-
-The frontend and backend run as separate development servers. Open two terminal windows from the repository root:
-
-### Terminal 1: Backend Server
-
-```bash
-cd server
-npm run dev
-```
-
-*Starts Express on `http://localhost:5000` with Nodemon auto-reloading.*
-
-### Terminal 2: Frontend Client
-
-```bash
-cd client
-npm run dev
-```
-
-*Starts Vite development server on `http://localhost:5173`.*
-
-Open `http://localhost:5173` in your browser.
-
----
-
-## User Workflow
-
-1. **Authenticate**: Sign up or log in via Clerk on the landing page.
-2. **Access Dashboard**: Authenticated users are redirected to `/dashboard`.
-3. **Import a Codebase**:
-   - **Upload a ZIP file**: Drag and drop a `.zip` archive (up to 50 MB) into the upload dropzone.
-   - **Import from GitHub**: Enter a public or accessible GitHub repository URL (`https://github.com/owner/repo`).
-4. **Ingestion & Static Extraction**: The Repository Intelligence Engine (RIE) filters noise, checks for secrets, detects frameworks, extracts AST trees, indexes files, and compiles the Repository Blueprint.
-5. **Interactive Project Workspace (`/project/:id`)**:
-   - **Topology**: Explore the service graph with auto-layout and orientation controls.
-   - **ER Diagram**: Inspect detected database schemas, entities, and relationships.
-   - **API Explorer**: Filter endpoints by method, framework, and auth requirements; generate Mermaid request sequence diagrams.
-   - **DevOps Center**: Generate and validate Dockerfiles, GitHub Actions workflows, and Kubernetes manifests.
-   - **Security Audit**: Inspect detected secrets and static AST vulnerabilities with exact source code line citations; run AI-assisted code reviews and test generation.
-6. **Repository AI Chat**: Press `Ctrl+K` (or `Ctrl+/`) anywhere in the workspace to ask questions. Responses cite exact file paths and line ranges.
-7. **Export Engineering Report**: Click **Export PDF** in the workspace header to stream a structured, multi-page technical report generated server-side via PDFKit.
-
----
-
-## API Documentation
-
-All protected endpoints require a valid Clerk Bearer JWT passed in the `Authorization: Bearer <token>` header.
-
-### System & Health
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `GET` | `/api/health` | Server health check | Public (None) |
-
-### User Management
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `POST` | `/api/users/sync` | Syncs authenticated Clerk user profile to MongoDB | Required (Clerk) |
-| `GET` | `/api/users/me` | Returns current authenticated user record | Required (Clerk) |
-
-### Projects & Repository Ingestion
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `POST` | `/api/projects/upload` | Uploads and processes a `.zip` repository archive (Multer 50 MB) | Required (Clerk) |
-| `POST` | `/api/projects/github` | Imports and analyzes a repository via GitHub URL | Required (Clerk) |
-| `GET` | `/api/projects` | Lists user's projects with pagination (`page`, `limit`) and search query (`q`) | Required (Clerk) |
-| `GET` | `/api/projects/:id` | Returns complete project record including file tree and stats | Required (Clerk) |
-| `PATCH` | `/api/projects/:id` | Updates project display metadata (`name`, `description`) | Required (Clerk) |
-| `DELETE` | `/api/projects/:id` | Deletes project and cascades cleanup across all collections | Required (Clerk) |
-| `PATCH` | `/api/projects/:id/status`| Updates project processing status (`uploaded`, `processing`, `completed`, `failed`)| Required (Clerk) |
-| `GET` | `/api/projects/:id/blueprint` | Returns compiled Repository Blueprint JSON payload | Required (Clerk) |
-| `GET` | `/api/projects/:id/file?path=...` | Retrieves indexed source file contents with secret masking | Required (Clerk) |
-
-### Analysis Modules & Reports
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `POST` | `/api/projects/:id/analyze` | Queues and executes full multi-module analysis | Required (Clerk) |
-| `POST` | `/api/projects/:id/reanalyze` | Increments `analysisVersion`, resets cache, and reruns pipeline | Required (Clerk) |
-| `GET` | `/api/projects/:id/analysis` | Returns status (`idle`, `queued`, `processing`, `completed`, `failed`) for each module | Required (Clerk) |
-| `POST` | `/api/projects/:id/:module` | Triggers single module analysis (`architecture`, `erd`, `api`, `security`, `devops`) | Required (Clerk) |
-| `GET` | `/api/projects/:id/report/pdf` | Streams generated multi-page engineering PDF report | Required (Clerk) |
-
-### API Route Intelligence
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `GET` | `/api/projects/:id/api-routes` | Lists extracted routes with query filters (`method`, `framework`, `search`, `auth`) | Required (Clerk) |
-| `GET` | `/api/projects/:id/api-routes/:routeId` | Returns specific route details with line citations | Required (Clerk) |
-| `GET` | `/api/projects/:id/api-routes/:routeId/sequence` | Returns generated Mermaid sequence diagram for endpoint | Required (Clerk) |
-
-### Security & Quality Audits
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `POST` | `/api/projects/:projectId/security/scan` | Triggers deterministic secret and AST vulnerability scan | Required (Clerk) |
-| `GET` | `/api/projects/:projectId/security` | Returns security summary metrics, severities, and scan state | Required (Clerk) |
-| `GET` | `/api/projects/:projectId/security/findings` | Lists detailed findings with severity and rule filters | Required (Clerk) |
-| `GET` | `/api/projects/:projectId/security/findings/:findingId` | Returns specific security finding details | Required (Clerk) |
-| `PATCH` | `/api/projects/:projectId/security/findings/:findingId` | Updates finding review status (`open`, `resolved`, `false_positive`, `ignored`) | Required (Clerk) |
-| `POST` | `/api/projects/:projectId/code-review` | Triggers AI-assisted code review via Groq | Required (Clerk) |
-| `POST` | `/api/projects/:projectId/tests/generate` | Generates unit/integration test preview via Groq | Required (Clerk) |
-
-### Repository AI Chat
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `POST` | `/api/projects/:projectId/chat/conversations` | Creates a new chat conversation session | Required (Clerk) |
-| `GET` | `/api/projects/:projectId/chat/conversations` | Lists conversations for project | Required (Clerk) |
-| `GET` | `/api/projects/:projectId/chat/conversations/:conversationId` | Gets full conversation history and messages | Required (Clerk) |
-| `POST` | `/api/projects/:projectId/chat/conversations/:conversationId/messages` | Sends user query and receives Groq-grounded answer with citations | Required (Clerk) |
-| `PATCH` | `/api/projects/:projectId/chat/conversations/:conversationId` | Updates conversation title or pinned state | Required (Clerk) |
-| `DELETE` | `/api/projects/:projectId/chat/conversations/:conversationId` | Deletes conversation session | Required (Clerk) |
-
-### DevOps Artifact Management
-
-| Method | Endpoint | Purpose | Authentication |
-|---|---|---|---|
-| `POST` | `/api/projects/:projectId/devops/generate` | Generates Dockerfile, CI/CD, and Kubernetes manifests | Required (Clerk) |
-| `GET` | `/api/projects/:projectId/devops/artifacts` | Lists all generated artifacts with validation status | Required (Clerk) |
-| `GET` | `/api/projects/:projectId/devops/artifacts/:artifactId` | Retrieves specific manifest contents | Required (Clerk) |
-| `POST` | `/api/projects/:projectId/devops/artifacts/:artifactId/regenerate` | Regenerates single artifact and supersedes previous | Required (Clerk) |
-| `POST` | `/api/projects/:projectId/devops/artifacts/:artifactId/validate` | Runs deterministic syntax and policy validator on artifact | Required (Clerk) |
-| `DELETE` | `/api/projects/:projectId/devops/artifacts/:artifactId` | Deletes generated DevOps artifact | Required (Clerk) |
-
----
-
-## Automated Testing
-
-The repository uses native Node.js ES Module test suites with zero external test runner dependencies.
-
-### Running Backend Test Suites
-
-Run any test suite directly with Node:
-
-```bash
-# Complete Phase 6 Workspace & PDF Report Suite (20 assertions)
-node server/test-phase6-suite.js
-
-# Phase 5 DevOps Artifact Generation & Validation Suite (29 assertions)
-node server/test-devops-suite.js
-
-# Phase 4 Security Audit, Code Review & Test Generation Suite (10 assertions)
-node server/test-security-suite.js
-
-# Repository AI Chat & Context Grounding Suite (10 assertions)
-node server/test-chat-service.js
-
-# API Route Extractor, Validator & Sequence Diagram Suite (6 assertions)
-node server/test-api-routes-api.js
-
-# ZIP Ingestion, Multer & Extraction Isolation Suite (8 assertions)
-node server/test-zip-upload-pipeline.js
-
-# Tree-sitter AST Parser Suite (22 assertions)
-node server/test-ast-parser.js
-
-# Repository Blueprint Aggregator Suite (22 assertions)
-node server/test-blueprint-aggregator.js
-```
-
-### Running Frontend Test Suites & Verification
-
-```bash
-# Phase 6 Frontend Suite (Error normalizer, pagination, modals)
-node client/test-phase6-frontend.js
-
-# Phase 5 DevOps Frontend Suite
-node client/test-devops-frontend.js
-
-# Phase 4 Security Frontend Suite
-node client/test-security-frontend.js
-
-# Phase 3 Chat Frontend Suite
-node client/test-chat-frontend.js
-
-# Phase 2 API Explorer Frontend Suite
-node client/test-phase2-frontend.js
-
-# Run ESLint across frontend
-npm --prefix client run lint
-
-# Verify production Vite build
-npm --prefix client run build
+├── context/                    # Architecture guidelines, specifications & progress tracker
+└── README.md                   # You are here!
 ```
 
 ---
 
 ## Troubleshooting
 
-### 1. Backend Fails to Start (`GROQ_KEY_MISSING` or `503`)
-- **Cause**: `GROQ_API_KEY` is missing, empty, or set to a placeholder in `server/.env`.
-- **Solution**: Obtain a key from [Groq Console](https://console.groq.com/) and paste it into `server/.env`. Verify that `GROQ_MODEL=openai/gpt-oss-120b` is set.
+<details>
+<summary><b>1. Backend fails with <code>GROQ_KEY_MISSING</code> (503 Service Unavailable)</b></summary>
+<br/>
 
-### 2. MongoDB Connection Timeout / DNS Resolution Error
-- **Cause**: Invalid `MONGODB_URI` string, incorrect Atlas credentials, or IP address not whitelisted in MongoDB Atlas Network Access.
-- **Solution**: In MongoDB Atlas, verify that your current IP address (or `0.0.0.0/0` for development) is added to the IP Access List. Check that username and password are correctly URL-encoded.
+- **Cause**: `GROQ_API_KEY` is missing or contains placeholder text in `server/.env`.
+- **Solution**: Obtain a free API key from [Groq Console](https://console.groq.com/) and paste it into `server/.env`. Verify `GROQ_MODEL=openai/gpt-oss-120b`.
+</details>
 
-### 3. Missing Publishable Key in Frontend (`Uncaught Error: Missing Publishable Key`)
-- **Cause**: `client/.env` is missing or does not define `VITE_CLERK_PUBLISHABLE_KEY`.
-- **Solution**: Add `VITE_CLERK_PUBLISHABLE_KEY=pk_test_...` to `client/.env` and restart the Vite dev server (`npm run dev`).
+<details>
+<summary><b>2. MongoDB Connection Timeout</b></summary>
+<br/>
 
-### 4. ZIP Upload Fails with `LIMIT_FILE_SIZE` (413) or `UNSUPPORTED_FILE_TYPE` (422)
-- **Cause**: The uploaded file exceeds the 50 MB limit or is not a valid `.zip` MIME archive.
-- **Solution**: Verify that your archive is under 50 MB. Remove heavy compiled binaries or `.git` folders before archiving.
+- **Cause**: IP address not whitelisted in MongoDB Atlas Network Access.
+- **Solution**: Navigate to your MongoDB Atlas dashboard -> **Network Access** -> **Add IP Address** -> Select **Allow Access from Anywhere** (`0.0.0.0/0`) for local development.
+</details>
 
-### 5. Nodemon Restarts Mid-Upload During Extraction
-- **Cause**: Extracted files written to a watched directory trigger Nodemon file watchers.
-- **Solution**: Ephemeral storage is located in `server/storage/`, and `server/nodemon.json` explicitly ignores `storage/**`. If running with custom watch paths, ensure `storage/` is ignored.
+<details>
+<summary><b>3. Client shows <code>Missing Publishable Key in .env file</code></b></summary>
+<br/>
 
-### 6. CORS Policy Errors in Browser Console
-- **Cause**: Frontend origin does not match `CLIENT_URL` in `server/.env`.
-- **Solution**: Set `CLIENT_URL=http://localhost:5173` in `server/.env`. The backend allows `localhost:5173`, `127.0.0.1:5173`, and `CLIENT_URL` by default.
+- **Cause**: `client/.env` is missing `VITE_CLERK_PUBLISHABLE_KEY`.
+- **Solution**: Create `client/.env` and supply your `pk_test_...` key from Clerk. Restart the Vite development server.
+</details>
 
-### 7. PDF Report Download Fails with `ANALYSIS_INCOMPLETE` (400)
-- **Cause**: Attempting to generate a report before repository analysis has completed.
-- **Solution**: Wait until project status changes to `completed` in the workspace header before exporting.
+<details>
+<summary><b>4. Nodemon restarts mid-upload during ZIP extraction</b></summary>
+<br/>
+
+- **Cause**: Ephemeral files trigger Nodemon file watchers.
+- **Solution**: Extraction takes place in `server/storage/`, which is ignored in `server/nodemon.json`. If using custom directories, ensure extraction paths are excluded from watch rules.
+</details>
+
+<details>
+<summary><b>5. PDF download returns <code>ANALYSIS_INCOMPLETE</code> (400)</b></summary>
+<br/>
+
+- **Cause**: Requesting a PDF report while repository analysis is still processing.
+- **Solution**: Wait until project status pill in the workspace header displays **Completed** before exporting.
+</details>
 
 ---
 
 ## Security and Safe Development
 
-- **Zero Secret Commits**: Never commit `.env`, `.env.local`, API keys, or database credentials. Always use `server/.env.example` as a template.
-- **Secret Redaction**: The deterministic secret scanner scrubs detected API keys and secrets before saving source files to the database or passing context to Groq.
-- **Multi-Tenant Scoping**: All project and analysis routes verify `project.userId === req.auth.userId`. Attempts to access another user's project return `403 Forbidden`.
-- **Safe Static Analysis**: The Tree-sitter AST parser and secret scanners perform read-only static analysis without executing user-submitted code.
-- **Zip Slip Defense**: Archive extraction normalizes file paths and rejects archives attempting directory traversal (`../`).
+- **No Secrets in Version Control**: `.env` and `.env.local` are explicitly ignored by `.gitignore`.
+- **Automatic Secret Redaction**: The secret scanner masks API keys, passwords, and tokens before they reach the database or LLM prompts.
+- **Multi-Tenant Ownership Isolation**: Every project route enforces `project.userId === req.auth.userId`. Unrelated users receive `403 Forbidden`.
+- **Safe Static Analysis**: Tree-sitter parsers inspect AST structures statically without executing code.
+- **Zip Slip Defense**: Archive extraction normalizes paths and rejects directory traversal sequences (`../`).
 
 ---
 
 ## Contributing
 
-1. **Fork the Repository**: Click Fork on GitHub.
-2. **Create a Feature Branch**:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. **Make Your Changes**: Adhere to existing code conventions and formatting standards.
-4. **Run Verification & Tests**:
-   ```bash
-   # Run automated test suites
-   node server/test-phase6-suite.js
-   node client/test-phase6-frontend.js
+Contributions are welcome! Please follow these steps:
 
-   # Run frontend linting
+1. **Fork** the repository.
+2. **Create a branch**: `git checkout -b feature/amazing-feature`.
+3. **Commit your changes**: `git commit -m "feat: add support for new framework"`.
+4. **Run tests**:
+   ```bash
+   node server/test-phase6-suite.js
    npm --prefix client run lint
    ```
-5. **Commit Your Changes**:
-   ```bash
-   git commit -m "feat: add support for new framework detection"
-   ```
-6. **Push to Your Branch**:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-7. **Open a Pull Request**: Submit your pull request to the `Subham` branch with a clear description of changes.
+5. **Push to branch**: `git push origin feature/amazing-feature`.
+6. **Open a Pull Request** against the `Subham` branch.
 
 ---
 
@@ -660,10 +544,9 @@ No dedicated `LICENSE` file was found at the repository root. `server/package.js
 
 ## Acknowledgements
 
-- [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) for fast, robust AST parsing.
-- [@xyflow/react (React Flow)](https://reactflow.dev/) for interactive node-based architecture diagrams.
-- [Groq](https://groq.com/) for low-latency LLM inference.
-- [Clerk](https://clerk.com/) for streamlined user authentication and session management.
-- [PDFKit](https://pdfkit.org/) for server-side streaming PDF generation.
-- [Dagre](https://github.com/dagrejs/dagre) for directed graph layout computation.
-
+- [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) — Fast, robust multi-language AST parsing.
+- [React Flow (@xyflow/react)](https://reactflow.dev/) — Interactive node-based diagramming.
+- [Groq](https://groq.com/) — High-speed LLM inference engine.
+- [Clerk](https://clerk.com/) — Complete user authentication and session management.
+- [PDFKit](https://pdfkit.org/) — Server-side streaming PDF generation.
+- [Tailwind CSS](https://tailwindcss.com/) — Modern utility-first styling.
