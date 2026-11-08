@@ -17,7 +17,13 @@ import DevOpsArtifact from "../models/DevOpsArtifact.js";
 import Conversation from "../models/Conversation.js";
 import { executeModuleAnalysis } from "./analysis.controller.js";
 import { parseGithubUrl } from "../utils/githubUrl.js";
-import { fetchRepoMetadata, fetchRepoTree, populateKeyFileContents, fetchFileBlob } from "../services/githubService.js";
+import {
+  fetchRepoMetadata,
+  fetchRepoTree,
+  populateKeyFileContents,
+  fetchFileBlob,
+  downloadRepoArchive,
+} from "../services/githubService.js";
 import { extractZip } from "../rie/zipExtractor.js";
 import { scanRepository } from "../rie/repoScanner.js";
 import { detectProjectLanguage } from "../services/languageDetector.js";
@@ -29,7 +35,7 @@ import { extractDatabaseSchema } from "../rie/dbSchemaExtractor.js";
 import { executeRiePipeline } from "../rie/pipeline/analysisPipeline.js";
 import { isBinaryExtension } from "../rie/indexing/sourceIndexer.js";
 import { redactSecrets } from "../rie/security/secretRedactor.js";
-import { EXTRACTED_DIR, safeUnlink, safeRmDir } from "../config/storage.js";
+import { UPLOADS_DIR, EXTRACTED_DIR, safeUnlink, safeRmDir } from "../config/storage.js";
 
 /**
  * Robustly extracts the authenticated userId from Clerk or the auth middleware.
@@ -55,11 +61,23 @@ export function extractUserId(req) {
  * POST /api/projects/github
  *
  * Imports or refreshes a GitHub repository for the authenticated user.
- * Fetches metadata + recursive file tree from GitHub REST API,
- * applies unified RIE analysis pipeline, checks source cache version,
- * and upserts the Project document in MongoDB.
+ * Pipeline:
+ *   1. Validate & parse GitHub repository URL
+ *   2. Fetch metadata from GitHub REST API (with exponential backoff & rate-limit handling)
+ *   3. Enforce maximum repository size limits
+ *   4. Check cache invalidation & analysis versioning
+ *   5. Download repository archive (ZIP) safely to ephemeral workspace
+ *   6. Extract archive with Zip Slip defense & auto-unwrap GitHub root wrapper
+ *   7. Execute Unified RIE Analysis Pipeline 100% locally from disk (zero remote blob calls)
+ *   8. Upsert Project document in MongoDB with status: "completed"
+ *   9. Guaranteed ephemeral disk cleanup in finally block
  */
 export const importGithub = async (req, res) => {
+  const jobId = randomUUID();
+  const tGlobalStart = performance.now();
+  let zipFilePath = null;
+  let extractionPath = null;
+
   try {
     const userId = extractUserId(req);
     if (!userId) {
@@ -84,16 +102,34 @@ export const importGithub = async (req, res) => {
     }
 
     const { owner, repo } = parseResult;
+    console.log(`[GitHubImport] [Stage 1/7] URL Validated: ${owner}/${repo}`);
 
-    // 2. Fetch metadata from GitHub REST API
+    // 2. Fetch metadata from GitHub REST API (resilient with retries)
+    const tMetaStart = performance.now();
+    console.log(`[GitHubImport] [Stage 2/7] Fetching repository metadata for ${owner}/${repo}...`);
     const metadata = await fetchRepoMetadata(owner, repo);
+    const tMetaDuration = ((performance.now() - tMetaStart) / 1000).toFixed(2);
+    console.log(
+      `[GitHubImport] [Stage 2/7] Metadata retrieved in ${tMetaDuration}s. FullName: ${metadata.fullName}, Size: ${metadata.size} KB, DefaultBranch: ${metadata.defaultBranch}`
+    );
 
-    // 3. Fetch recursive tree from GitHub Git Trees API
-    const treeData = await fetchRepoTree(owner, repo, metadata.defaultBranch);
-    const sourceFingerprint = treeData.treeSha || `${metadata.pushedAt || metadata.updatedAt}`;
+    // 2.1 Early size limit enforcement (100 MB = 102400 KB)
+    const MAX_REPO_SIZE_KB = 100 * 1024;
+    if (metadata.size && metadata.size > MAX_REPO_SIZE_KB) {
+      return res.status(413).json({
+        success: false,
+        error: `Repository '${metadata.fullName}' (${Math.round(metadata.size / 1024)} MB) exceeds the maximum allowed size limit of 100 MB.`,
+        code: "PAYLOAD_TOO_LARGE",
+      });
+    }
 
-    // 3.1 Check Cache Invalidation & Analysis Versioning
+    const defaultBranch = metadata.defaultBranch || "main";
     const forceReanalyze = req.query.force === "true";
+    const sourceFingerprint = metadata.pushedAt
+      ? crypto.createHash("sha256").update(metadata.pushedAt).digest("hex")
+      : `${metadata.updatedAt || Date.now()}`;
+
+    // 3. Check existing project cache
     const existingProject = await Project.findOne({
       userId,
       "github.fullName": metadata.fullName,
@@ -107,6 +143,7 @@ export const importGithub = async (req, res) => {
       existingProject.blueprint?.version &&
       existingProject.status === "completed"
     ) {
+      console.log(`[GitHubImport] Returning cached analysis version ${existingProject.analysisVersion} for ${metadata.fullName}`);
       return res.status(200).json({
         success: true,
         message: `Repository '${metadata.fullName}' is up-to-date (using cached analysis version ${existingProject.analysisVersion}).`,
@@ -117,33 +154,66 @@ export const importGithub = async (req, res) => {
     const nextVersion = existingProject ? (existingProject.analysisVersion || 1) + 1 : 1;
     const targetProjectId = existingProject?._id || new mongoose.Types.ObjectId();
 
-    // 3.2 Populate contents for key model/schema/architecture files
-    await populateKeyFileContents(owner, repo, treeData.tree);
+    // 4. Download repository ZIP archive to ephemeral workspace
+    zipFilePath = path.resolve(UPLOADS_DIR, `github-${jobId}.zip`);
+    const tDownStart = performance.now();
+    console.log(`[GitHubImport] [Stage 3/7] Downloading archive from GitHub (${defaultBranch})...`);
+    const { downloadedBytes } = await downloadRepoArchive(owner, repo, defaultBranch, zipFilePath);
+    const tDownDuration = ((performance.now() - tDownStart) / 1000).toFixed(2);
+    console.log(
+      `[GitHubImport] [Stage 3/7] Archive downloaded in ${tDownDuration}s (${(downloadedBytes / (1024 * 1024)).toFixed(2)} MB)`
+    );
 
-    // 3.3 Execute Unified RIE Analysis Pipeline
+    // 5. Safe extraction with Zip Slip defense & smart noise filtering
+    const tExtractStart = performance.now();
+    console.log(`[GitHubImport] [Stage 4/7] Extracting archive safely to ephemeral workspace...`);
+    const { extractedPath, entryCount, extractedCount, skippedNoiseCount, contentHash } = await extractZip(
+      zipFilePath,
+      EXTRACTED_DIR,
+      jobId
+    );
+    extractionPath = extractedPath;
+    const tExtractDuration = ((performance.now() - tExtractStart) / 1000).toFixed(2);
+    console.log(
+      `[GitHubImport] [Stage 4/7] Extracted in ${tExtractDuration}s (${extractedCount || entryCount} extracted, ${skippedNoiseCount || 0} noise entries skipped from ${entryCount} total)`
+    );
+
+    // 6. Scan extracted codebase & auto-unwrap GitHub root wrapper
+    const tScanStart = performance.now();
+    console.log(`[GitHubImport] [Stage 5/7] Scanning repository files & detecting tech stack...`);
+    const { tree, stats, techStack, scanRoot } = scanRepository(extractionPath);
+    const codebasePath = scanRoot || extractionPath;
+    const tScanDuration = ((performance.now() - tScanStart) / 1000).toFixed(2);
+    console.log(
+      `[GitHubImport] [Stage 5/7] Scanned ${stats.totalFiles} files in ${tScanDuration}s. Primary: ${techStack?.languages?.[0] || "Unknown"}`
+    );
+
+    const effectiveFingerprint = contentHash || sourceFingerprint;
+
+    // 7. Execute Unified RIE Analysis Pipeline (100% on-disk local execution)
+    const tRieStart = performance.now();
+    console.log(`[GitHubImport] [Stage 6/7] Executing Unified RIE Analysis Pipeline locally...`);
     const rieOutput = await executeRiePipeline({
       name: metadata.name,
       source: "github",
       userId,
       projectId: targetProjectId,
-      tree: treeData.tree,
-      stats: {
-        totalFiles: treeData.stats.totalFiles,
-        totalDirs: treeData.stats.totalDirs,
-        totalBytes: treeData.stats.totalBytes,
-        isTruncated: treeData.isTruncated,
-        topExtensions: treeData.stats.topExtensions,
-      },
-      sourceFingerprint,
+      tree,
+      stats,
+      sourceFingerprint: effectiveFingerprint,
       analysisVersion: nextVersion,
-      fileFetcher: (p, sha) => fetchFileBlob(owner, repo, sha),
+      extractionPath: codebasePath,
       extraMetadata: {
         repositoryUrl: metadata.htmlUrl,
-        branch: metadata.defaultBranch,
+        branch: defaultBranch,
       },
     });
+    const tRieDuration = ((performance.now() - tRieStart) / 1000).toFixed(2);
+    console.log(`[GitHubImport] [Stage 6/7] Unified RIE Analysis Pipeline completed in ${tRieDuration}s`);
 
-    // 3.4 Purge outdated SourceFile records if version bumped
+    // 8. Purge outdated SourceFile records if version bumped
+    const tPersistStart = performance.now();
+    console.log(`[GitHubImport] [Stage 7/7] Persisting Project & intelligence to MongoDB...`);
     if (existingProject) {
       await SourceFile.deleteMany({
         projectId: existingProject._id,
@@ -151,7 +221,7 @@ export const importGithub = async (req, res) => {
       }).catch((e) => console.warn("[importGithub] SourceFile cleanup warning:", e.message));
     }
 
-    // 4. Atomic upsert into MongoDB
+    // 9. Atomic upsert into MongoDB
     const project = await Project.findOneAndUpdate(
       {
         userId,
@@ -163,8 +233,8 @@ export const importGithub = async (req, res) => {
           userId,
           name: metadata.name,
           source: "github",
-          status: "uploaded",
-          sourceFingerprint,
+          status: "completed",
+          sourceFingerprint: effectiveFingerprint,
           analysisVersion: nextVersion,
           lastAnalyzedAt: new Date(),
           github: {
@@ -214,8 +284,15 @@ export const importGithub = async (req, res) => {
       return res.status(500).json({
         success: false,
         error: "Failed to persist project record in database.",
+        code: "PERSISTENCE_ERROR",
       });
     }
+
+    const tPersistDuration = ((performance.now() - tPersistStart) / 1000).toFixed(2);
+    const tTotalDuration = ((performance.now() - tGlobalStart) / 1000).toFixed(2);
+    console.log(
+      `[GitHubImport] [Stage 7/7] Persisted in ${tPersistDuration}s. Total pipeline time: ${tTotalDuration}s for ${metadata.fullName}`
+    );
 
     return res.status(200).json({
       success: true,
@@ -225,24 +302,45 @@ export const importGithub = async (req, res) => {
   } catch (error) {
     console.error("[project.controller] importGithub error:", error);
 
-    // Handle known HTTP status codes from githubService
-    if (error.status && error.status >= 400 && error.status < 500) {
+    // Extraction-specific error codes
+    if (error.code === "INVALID_ZIP") {
+      return res.status(400).json({ success: false, error: error.message, code: "INVALID_ZIP" });
+    }
+    if (error.code === "EMPTY_ZIP") {
+      return res.status(400).json({ success: false, error: error.message, code: "EMPTY_ZIP" });
+    }
+    if (error.code === "SECURITY_ERROR") {
+      return res.status(422).json({ success: false, error: error.message, code: "SECURITY_ERROR" });
+    }
+    if (error.code === "PAYLOAD_TOO_LARGE") {
+      return res.status(413).json({ success: false, error: error.message, code: "PAYLOAD_TOO_LARGE" });
+    }
+
+    // Handle known HTTP status codes from githubService (including 502, 503, 504)
+    if (error.status && error.status >= 400 && error.status <= 504) {
       return res.status(error.status).json({
         success: false,
         error: error.message,
+        code: error.code || "GITHUB_API_ERROR",
+        retryable: Boolean(error.retryable),
       });
     }
 
     // Mongoose validation errors
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((e) => e.message);
-      return res.status(400).json({ success: false, error: messages.join(", ") });
+      return res.status(400).json({ success: false, error: messages.join(", "), code: "VALIDATION_ERROR" });
     }
 
     return res.status(500).json({
       success: false,
       error: error.message || "Failed to import GitHub repository. Please try again.",
+      code: "INTERNAL_SERVER_ERROR",
     });
+  } finally {
+    // Guaranteed ephemeral cleanup
+    safeUnlink(zipFilePath);
+    safeRmDir(extractionPath);
   }
 };
 
@@ -1195,6 +1293,9 @@ export const reanalyzeProject = async (req, res) => {
     let sourceFingerprint = project.sourceFingerprint;
     let extractionPath = project.extractionPath;
     let fileFetcher = null;
+    const reanalyzeJobId = randomUUID();
+    let zipFilePath = null;
+    let tempExtractionPath = null;
 
     if (project.source === "github") {
       const owner = project.github?.owner;
@@ -1210,21 +1311,25 @@ export const reanalyzeProject = async (req, res) => {
       }
 
       try {
+        console.log(`[reanalyzeProject] Downloading latest archive for ${owner}/${repo} (${branch})...`);
         const metadata = await fetchRepoMetadata(owner, repo);
-        const treeData = await fetchRepoTree(owner, repo, metadata.defaultBranch || branch);
-        freshTree = treeData.tree;
-        sourceFingerprint = treeData.treeSha || `${metadata.pushedAt || metadata.updatedAt}`;
-
-        await populateKeyFileContents(owner, repo, freshTree);
-
-        fileFetcher = async (filePath, sha) => {
-          return await fetchFileBlob(owner, repo, sha, filePath);
-        };
+        zipFilePath = path.resolve(UPLOADS_DIR, `github-reanalyze-${reanalyzeJobId}.zip`);
+        await downloadRepoArchive(owner, repo, metadata.defaultBranch || branch, zipFilePath);
+        const { extractedPath, contentHash } = await extractZip(zipFilePath, EXTRACTED_DIR, reanalyzeJobId);
+        tempExtractionPath = extractedPath;
+        const { tree, stats, scanRoot } = scanRepository(tempExtractionPath);
+        freshTree = tree;
+        extractionPath = scanRoot || tempExtractionPath;
+        sourceFingerprint = contentHash || metadata.pushedAt || `${metadata.updatedAt}`;
+        project.stats = stats;
       } catch (ghErr) {
-        return res.status(502).json({
+        safeUnlink(zipFilePath);
+        safeRmDir(tempExtractionPath);
+        return res.status(ghErr.status || 502).json({
           success: false,
           error: `Failed to fetch repository from GitHub: ${ghErr.message}`,
-          code: "SOURCE_UNAVAILABLE",
+          code: ghErr.code || "SOURCE_UNAVAILABLE",
+          retryable: Boolean(ghErr.retryable),
         });
       }
     } else if (project.source === "zip") {
@@ -1319,6 +1424,9 @@ export const reanalyzeProject = async (req, res) => {
         error: pipelineErr.message || "Reanalysis failed during RIE pipeline execution.",
         code: "ANALYSIS_FAILED",
       });
+    } finally {
+      safeUnlink(zipFilePath);
+      safeRmDir(tempExtractionPath);
     }
   } catch (error) {
     console.error("[project.controller] reanalyzeProject error:", error);

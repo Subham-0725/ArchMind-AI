@@ -15,6 +15,37 @@ import fs from "fs";
 import path from "path";
 import { safeRmDir } from "../config/storage.js";
 
+/** Noise directories skipped during extraction to prevent Windows disk lockups and zip-bomb exhaustion */
+const EXTRACTION_IGNORED_DIRECTORIES = new Set([
+  "node_modules",
+  ".git",
+  ".github",
+  "dist",
+  "build",
+  "out",
+  ".next",
+  ".nuxt",
+  ".svelte-kit",
+  "venv",
+  ".venv",
+  "env",
+  "__pycache__",
+  ".pytest_cache",
+  ".turbo",
+  "coverage",
+  ".nyc_output",
+  ".cache",
+  ".idea",
+  ".vscode",
+  ".husky",
+  "target",
+  "bin",
+  "obj",
+  "vendor",
+  "tmp",
+  "temp",
+]);
+
 /** Valid ZIP header signatures: PK\x03\x04 (file), PK\x05\x06 (empty/central), PK\x07\x08 (spanned) */
 const VALID_ZIP_SIGNATURES = [
   Buffer.from([0x50, 0x4b, 0x03, 0x04]),
@@ -57,7 +88,8 @@ const hasValidZipSignature = (filePath) => {
  * @throws {Error} code: SECURITY_ERROR — path traversal detected in ZIP entry (Zip Slip)
  * @throws {Error} code: EXTRACT_ERROR  — fs extraction failure
  */
-export const extractZip = async (zipFilePath, extractedDir, jobId) => {
+export const extractZip = async (zipFilePath, extractedDir, jobId, options = {}) => {
+  const { skipNoise = true } = options;
   // 1. Validate magic bytes
   if (!hasValidZipSignature(zipFilePath)) {
     const err = new Error(
@@ -100,7 +132,10 @@ export const extractZip = async (zipFilePath, extractedDir, jobId) => {
     throw err;
   }
 
-  // 5. Safe entry-by-entry extraction with Zip Slip defense
+  // 5. Safe entry-by-entry extraction with Zip Slip defense & smart noise filtering
+  let extractedCount = 0;
+  let skippedNoiseCount = 0;
+
   try {
     const resolvedBase = path.resolve(extractedPath);
 
@@ -118,6 +153,16 @@ export const extractZip = async (zipFilePath, extractedDir, jobId) => {
         throw err;
       }
 
+      // Smart Noise Filtering: Skip known noise directories (node_modules, .git, etc.)
+      if (skipNoise) {
+        const segments = entryName.split(/[/\\]+/);
+        const isNoise = segments.some((seg) => EXTRACTION_IGNORED_DIRECTORIES.has(seg.toLowerCase()));
+        if (isNoise) {
+          skippedNoiseCount++;
+          continue;
+        }
+      }
+
       if (entry.isDirectory) {
         fs.mkdirSync(targetPath, { recursive: true });
       } else {
@@ -126,6 +171,7 @@ export const extractZip = async (zipFilePath, extractedDir, jobId) => {
           fs.mkdirSync(parentDir, { recursive: true });
         }
         fs.writeFileSync(targetPath, entry.getData());
+        extractedCount++;
       }
     }
   } catch (extractErr) {
@@ -145,6 +191,8 @@ export const extractZip = async (zipFilePath, extractedDir, jobId) => {
   return {
     extractedPath,
     entryCount: entries.length,
+    extractedCount,
+    skippedNoiseCount,
     contentHash,
   };
 };

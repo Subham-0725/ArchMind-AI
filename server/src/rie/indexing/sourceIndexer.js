@@ -11,6 +11,7 @@
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
+import mongoose from "mongoose";
 import SourceFile from "../../models/SourceFile.js";
 import { redactSecrets } from "../security/secretRedactor.js";
 
@@ -196,7 +197,7 @@ export async function indexRepositorySources({
   }
 
   // Bulk upsert into MongoDB in batches to avoid buffer timeouts on large repositories
-  if (docsToUpsert.length > 0 && SourceFile.bulkWrite) {
+  if (docsToUpsert.length > 0 && SourceFile.bulkWrite && mongoose.connection?.readyState === 1) {
     try {
       const operations = docsToUpsert.map((doc) => ({
         updateOne: {

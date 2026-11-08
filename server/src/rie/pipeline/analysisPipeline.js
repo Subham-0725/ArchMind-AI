@@ -40,6 +40,7 @@
 //             ▼
 //   Versioned Analysis Persistence
 
+import mongoose from "mongoose";
 import { scanRepositorySecrets } from "../security/secretScanner.js";
 import { scanRepositoryAst } from "../security/astSecurityScanner.js";
 import SecurityFinding from "../../models/SecurityFinding.js";
@@ -84,6 +85,9 @@ export async function executeRiePipeline({
   fileFetcher = null,
   extraMetadata = {},
 }) {
+  const tPipelineStart = performance.now();
+  console.log(`[RIE Pipeline] Starting local static analysis for '${name}' (${source})...`);
+
   // 1. Repository Normalization: sanitize tree entries
   const normalizedTree = (Array.isArray(tree) ? tree : []).map((node) => ({
     path: (node.path || "").replace(/\\/g, "/"),
@@ -94,12 +98,18 @@ export async function executeRiePipeline({
   }));
 
   // 2. Secret Scanning (deterministic regex & entropy checks)
+  const tSecretStart = performance.now();
   const secretResults = await scanRepositorySecrets(normalizedTree, {
     extractionPath,
     fileFetcher,
   });
+  const tSecretDuration = ((performance.now() - tSecretStart) / 1000).toFixed(2);
+  console.log(
+    `[RIE Pipeline] [Stage: Secrets] Scanned in ${tSecretDuration}s. Found ${secretResults.findings?.length || 0} secrets across ${secretResults.scannedFilesCount || 0} files.`
+  );
 
   // 3. Static Language & Framework Detection
+  const tLangStart = performance.now();
   const langResult = detectProjectLanguage(normalizedTree, extractionPath);
 
   const techStack = {
@@ -121,8 +131,13 @@ export async function executeRiePipeline({
   if (capabilities?.details?.databases) {
     techStack.databases = Array.from(new Set([...techStack.databases, ...capabilities.details.databases]));
   }
+  const tLangDuration = ((performance.now() - tLangStart) / 1000).toFixed(2);
+  console.log(
+    `[RIE Pipeline] [Stage: Language/Stack] Completed in ${tLangDuration}s. Primary: ${langResult.primaryLanguage || "None"}, Frameworks: ${techStack.frameworks.join(", ") || "None"}`
+  );
 
   // 5. Tree-sitter AST & Symbol Parsing
+  const tAstStart = performance.now();
   const ast = await parseRepository(normalizedTree, { extractionPath });
 
   // 5.5 Tree-sitter AST Security Inspection
@@ -130,6 +145,10 @@ export async function executeRiePipeline({
     extractionPath,
     fileFetcher,
   });
+  const tAstDuration = ((performance.now() - tAstStart) / 1000).toFixed(2);
+  console.log(
+    `[RIE Pipeline] [Stage: AST & Security] Parsed in ${tAstDuration}s. AST Security Findings: ${astSecurityResults.findings?.length || 0}`
+  );
 
   // Combine secret findings & AST security findings
   const combinedSecurityFindings = [...secretResults.findings, ...astSecurityResults.findings];
@@ -140,7 +159,7 @@ export async function executeRiePipeline({
     Low: (secretResults.severityCounts.Low || 0) + (astSecurityResults.findings.filter((f) => f.severity === "Low").length),
   };
 
-  if (projectId) {
+  if (projectId && mongoose.connection?.readyState === 1) {
     try {
       await SecurityFinding.deleteMany({ projectId, analysisVersion });
       if (combinedSecurityFindings.length > 0) {
@@ -175,6 +194,7 @@ export async function executeRiePipeline({
   }
 
   // 6. Dedicated API Route Extraction (Express, Fastify, NestJS, FastAPI, Flask, Django)
+  const tApiStart = performance.now();
   const apiRouteResults = await extractApiRoutes(normalizedTree, {
     extractionPath,
     fileFetcher,
@@ -184,12 +204,21 @@ export async function executeRiePipeline({
   if (apiRouteResults.frameworks?.length > 0) {
     techStack.frameworks = Array.from(new Set([...techStack.frameworks, ...apiRouteResults.frameworks]));
   }
+  const tApiDuration = ((performance.now() - tApiStart) / 1000).toFixed(2);
+  console.log(
+    `[RIE Pipeline] [Stage: API Routes] Extracted in ${tApiDuration}s. Found ${apiRouteResults.routes?.length || 0} routes.`
+  );
 
   // 7. Database Schema Extraction (Prisma, Mongoose, SQLAlchemy, Django, TypeORM, etc.)
+  const tDbStart = performance.now();
   const database = extractDatabaseSchema(normalizedTree, capabilities, techStack, extractionPath);
   if (database?.type && database.type !== "Unknown") {
     techStack.databases = Array.from(new Set([...techStack.databases, database.type]));
   }
+  const tDbDuration = ((performance.now() - tDbStart) / 1000).toFixed(2);
+  console.log(
+    `[RIE Pipeline] [Stage: Database Schema] Extracted in ${tDbDuration}s. Type: ${database?.type || "Unknown"}, Models: ${database?.models?.length || 0}`
+  );
 
   // 7.5 Evidence-Grounded System Topology Construction
   const topology = buildTopology({
@@ -207,7 +236,8 @@ export async function executeRiePipeline({
 
   // 8. Source File Indexing (for line-level traceability & Monaco retrieval)
   if (projectId) {
-    await indexRepositorySources({
+    const tIndexStart = performance.now();
+    const { indexedCount } = await indexRepositorySources({
       projectId,
       userId,
       analysisVersion,
@@ -216,6 +246,10 @@ export async function executeRiePipeline({
       extractionPath,
       fileFetcher,
     });
+    const tIndexDuration = ((performance.now() - tIndexStart) / 1000).toFixed(2);
+    console.log(
+      `[RIE Pipeline] [Stage: Source Indexing] Indexed ${indexedCount} files in ${tIndexDuration}s.`
+    );
   }
 
   // 9. Repository Blueprint Assembly
@@ -248,6 +282,9 @@ export async function executeRiePipeline({
 
   // 10. Strict Blueprint Schema Validation
   validateBlueprint(blueprint);
+
+  const tPipelineDuration = ((performance.now() - tPipelineStart) / 1000).toFixed(2);
+  console.log(`[RIE Pipeline] Completed all static analysis stages in ${tPipelineDuration}s`);
 
   return {
     name,

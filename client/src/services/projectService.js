@@ -29,6 +29,7 @@ export const importGithubProject = async (token, repoUrl, options = {}) => {
     {
       params,
       headers: { Authorization: `Bearer ${token}` },
+      timeout: 120000, // 2 minutes - matches ZIP upload buffer for archive download & extraction
     }
   );
 

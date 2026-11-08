@@ -27,9 +27,10 @@ const startServer = async () => {
           console.log(`ArchMind server running on port ${PORT} (http://localhost:${PORT})`);
         });
 
-    // Ensure socket timeouts do not prematurely disconnect large upload streams
-    server.keepAliveTimeout = 65000;
-    server.headersTimeout = 66000;
+    // Ensure socket timeouts do not prematurely disconnect large upload streams or GitHub imports
+    server.keepAliveTimeout = 125000;
+    server.headersTimeout = 126000;
+    server.requestTimeout = 125000;
   } catch (error) {
     console.error("Server startup failed:", error);
     process.exit(1);

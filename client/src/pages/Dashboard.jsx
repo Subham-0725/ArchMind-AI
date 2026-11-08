@@ -650,6 +650,7 @@ export default function Dashboard() {
   const [analyzeStatus, setAnalyzeStatus] = useState("");
   const [analyzeError, setAnalyzeError] = useState(null);
   const [analyzeSuccess, setAnalyzeSuccess] = useState(null);
+  const [isErrorRetryable, setIsErrorRetryable] = useState(false);
 
   const handleDragEnter = useCallback((e) => {
     e.preventDefault();
@@ -710,6 +711,7 @@ export default function Dashboard() {
 
     setAnalyzeError(null);
     setAnalyzeSuccess(null);
+    setIsErrorRetryable(false);
 
     if (activeTab === "github") {
       const trimmedUrl = githubUrl.trim();
@@ -724,7 +726,7 @@ export default function Dashboard() {
           throw new Error("Authentication session expired. Please sign in again.");
         }
 
-        setAnalyzeStatus("Scanning repository & filtering tree...");
+        setAnalyzeStatus("Downloading repository archive & extracting files...");
         const result = await importGithubProject(token, trimmedUrl);
 
         if (result.isCached) {
@@ -751,7 +753,12 @@ export default function Dashboard() {
           err.response?.data?.error ||
           err.message ||
           "Failed to import GitHub repository. Please check the URL and try again.";
+        const retryable = Boolean(
+          err.response?.data?.retryable ||
+          [502, 503, 504].includes(err.response?.status)
+        );
         setAnalyzeError(errorMsg);
+        setIsErrorRetryable(retryable);
       } finally {
         setIsAnalyzing(false);
         setAnalyzeStatus("");
@@ -957,6 +964,7 @@ export default function Dashboard() {
                       setGithubUrl(val);
                       if (analyzeError) setAnalyzeError(null);
                       if (analyzeSuccess) setAnalyzeSuccess(null);
+                      if (isErrorRetryable) setIsErrorRetryable(false);
                     }}
                   />
                 )}
@@ -976,10 +984,22 @@ export default function Dashboard() {
                     <div className="flex-1">
                       <p className="font-semibold text-red-400">Import Failed</p>
                       <p className="text-[11px] text-red-300/80 mt-0.5 leading-relaxed">{analyzeError}</p>
+                      {isErrorRetryable && (
+                        <button
+                          type="button"
+                          onClick={handleAnalyze}
+                          className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-red-400 hover:text-white underline underline-offset-2 transition-colors"
+                        >
+                          Retry Import
+                        </button>
+                      )}
                     </div>
                     <button
                       type="button"
-                      onClick={() => setAnalyzeError(null)}
+                      onClick={() => {
+                        setAnalyzeError(null);
+                        setIsErrorRetryable(false);
+                      }}
                       className="text-red-400/60 hover:text-red-300 transition-colors shrink-0"
                     >
                       <IconX className="w-3.5 h-3.5" />

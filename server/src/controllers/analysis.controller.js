@@ -137,12 +137,20 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
     project.blueprint = blueprint;
 
     let resultPayload = null;
+    const tModStart = performance.now();
 
     if (moduleName === "architecture") {
+      console.log(`[Analysis] [Module: Architecture] Invoking Groq LLM architecture generator...`);
       resultPayload = await generateArchitecture(blueprint, options);
+      const tModDuration = ((performance.now() - tModStart) / 1000).toFixed(2);
+      console.log(`[Analysis] [Module: Architecture] Groq architecture generated in ${tModDuration}s (${resultPayload?.nodes?.length || 0} nodes, ${resultPayload?.edges?.length || 0} edges)`);
     } else if (moduleName === "erd") {
+      console.log(`[Analysis] [Module: ERD] Invoking Groq LLM ERD generator...`);
       resultPayload = await generateERD(blueprint, options);
+      const tModDuration = ((performance.now() - tModStart) / 1000).toFixed(2);
+      console.log(`[Analysis] [Module: ERD] Groq ERD generated in ${tModDuration}s (${resultPayload?.entities?.length || 0} entities)`);
     } else if (moduleName === "api") {
+      console.log(`[Analysis] [Module: API Routes] Extracting API routes & sequence flows...`);
       let routes = project.analysisResults?.apiRoutes;
       if (!Array.isArray(routes) || routes.length === 0) {
         let treeForRoutes = project.tree || [];
@@ -191,7 +199,10 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
         sequences,
         generatedAt: new Date().toISOString(),
       };
+      const tModDuration = ((performance.now() - tModStart) / 1000).toFixed(2);
+      console.log(`[Analysis] [Module: API Routes] Completed in ${tModDuration}s (${routes.length} routes)`);
     } else if (moduleName === "security") {
+      console.log(`[Analysis] [Module: Security] Running security audit...`);
       const scanRes = await defaultSecurityAuditService.runSecurityScan({ project });
       resultPayload = {
         totalFindings: scanRes.totalFindings,
@@ -200,7 +211,10 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
         status: "completed",
         generatedAt: new Date().toISOString(),
       };
+      const tModDuration = ((performance.now() - tModStart) / 1000).toFixed(2);
+      console.log(`[Analysis] [Module: Security] Completed in ${tModDuration}s (${scanRes.totalFindings} findings)`);
     } else if (moduleName === "devops") {
+      console.log(`[Analysis] [Module: DevOps] Generating DevOps artifacts...`);
       const artifacts = await defaultDevOpsService.generateArtifacts({
         project,
         userId: project.userId,
@@ -216,6 +230,8 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
         status: "completed",
         generatedAt: new Date().toISOString(),
       };
+      const tModDuration = ((performance.now() - tModStart) / 1000).toFixed(2);
+      console.log(`[Analysis] [Module: DevOps] Completed in ${tModDuration}s (${artifacts.length} artifacts)`);
     } else {
       // Future modules stub
       resultPayload = { status: "stub", module: moduleName };

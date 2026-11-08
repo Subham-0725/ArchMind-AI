@@ -27,6 +27,9 @@ export const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 export const GROQ_API_KEY = process.env.GROQ_API_KEY;
 export const GROQ_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 
+// GitHub API Configuration (Optional: higher 5,000 req/hr rate limits & private repos)
+export const GITHUB_TOKEN = process.env.GITHUB_TOKEN?.trim() || null;
+
 /**
  * Validates presence of Groq configuration without exposing credentials.
  * @throws {Error} If GROQ_API_KEY is missing or invalid.
