@@ -211,12 +211,32 @@ export async function generateArchitecture(blueprint, options = {}) {
 
   const provider = getActiveProvider();
 
+  // Create a high-density, token-efficient architectural context summary
+  // to prevent exceeding free-tier TPM limits (e.g. 8000 TPM limit on gpt-oss-120b)
+  const architecturalContext = {
+    name: blueprint?.metadata?.name || "Application",
+    primaryLanguage: blueprint?.metadata?.primaryLanguage || "Unknown",
+    techStack: blueprint?.metadata?.techStack || {},
+    capabilities: blueprint?.capabilities || {},
+    entryPoints: (blueprint?.entryPoints || []).slice(0, 5),
+    routes: (blueprint?.routes || []).slice(0, 20).map((r) => ({
+      method: r.method,
+      path: r.path,
+      file: r.file,
+    })),
+    models: (blueprint?.models || []).slice(0, 20).map((m) => ({
+      name: m.name,
+      file: m.file,
+    })),
+    externalDependencies: (blueprint?.dependencies?.external || []).slice(0, 25),
+  };
+
   const systemInstruction = "You are ArchMind AI Senior System Architect. Output STRICT JSON only.";
   const prompt = `
-Analyze the following Repository Blueprint and generate a system architecture diagram for React Flow.
+Analyze the following Repository Blueprint summary and generate a system architecture diagram for React Flow.
 
-Repository Blueprint:
-${JSON.stringify(blueprint, null, 2)}
+Repository Architectural Summary:
+${JSON.stringify(architecturalContext, null, 2)}
 
 Output STRICT JSON matching this schema:
 {
@@ -254,14 +274,29 @@ Rules:
   try {
     if (provider.type === "groq") {
       const groqModel = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
-      const completion = await provider.client.chat.completions.create({
-        messages: [
-          { role: "system", content: systemInstruction },
-          { role: "user", content: sanitizedPrompt },
-        ],
-        model: groqModel,
-        response_format: { type: "json_object" },
-      });
+      let completion;
+      try {
+        completion = await provider.client.chat.completions.create({
+          messages: [
+            { role: "system", content: systemInstruction },
+            { role: "user", content: sanitizedPrompt },
+          ],
+          model: groqModel,
+          response_format: { type: "json_object" },
+        });
+      } catch (primaryErr) {
+        // Fallback to high-throughput llama-3.3-70b-versatile if primary model hits TPM or rate limits
+        console.warn(`[llmService] Groq model ${groqModel} failed (${primaryErr.message}). Retrying with llama-3.3-70b-versatile fallback...`);
+        completion = await provider.client.chat.completions.create({
+          messages: [
+            { role: "system", content: systemInstruction },
+            { role: "user", content: sanitizedPrompt },
+          ],
+          model: "llama-3.3-70b-versatile",
+          response_format: { type: "json_object" },
+        });
+      }
+
       const text = completion.choices[0]?.message?.content;
       return parseAndValidateJson(text, "architecture");
     } else if (provider.type === "gemini") {
@@ -274,8 +309,14 @@ Rules:
       return mockArchitecture(blueprint);
     }
   } catch (err) {
-    console.error("[llmService] generateArchitecture error:", err.message);
-    throw new Error(`Architecture LLM Generation Failed: ${err.message}`);
+    console.warn(`[llmService] generateArchitecture LLM failed (${err.message}). Falling back to deterministic RIE topology.`);
+    if (options.existingTopology?.nodes?.length > 0) {
+      return options.existingTopology;
+    }
+    if (blueprint?.topology?.nodes?.length > 0) {
+      return blueprint.topology;
+    }
+    return mockArchitecture(blueprint);
   }
 }
 

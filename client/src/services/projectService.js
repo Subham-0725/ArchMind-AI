@@ -422,6 +422,33 @@ export const fetchAnalysisStatus = async (token, projectId) => {
 };
 
 /**
+ * Fetch the dynamically extracted ArchMind AI Platform Database ERD (Mongoose schemas).
+ *
+ * @param {string} token - Clerk JWT
+ * @returns {Promise<Object>} Platform ERD payload with entities, relationships, indexes, and stats
+ */
+export const fetchPlatformDatabaseErd = async (token) => {
+  const { data } = await api.get("/api/projects/platform-erd", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data.data;
+};
+
+/**
+ * Fetch the analyzed repository database ERD.
+ *
+ * @param {string} token     - Clerk JWT
+ * @param {string} projectId - MongoDB Project ObjectId
+ * @returns {Promise<Object>} Repository ERD payload
+ */
+export const fetchProjectDatabaseErd = async (token, projectId) => {
+  const { data } = await api.get(`/api/projects/${projectId}/erd`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data.data;
+};
+
+/**
  * Fetch project API routes with optional filtering.
  *
  * @param {string} token          - Clerk JWT

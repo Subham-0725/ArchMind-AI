@@ -4,10 +4,10 @@
 // Shows module status, detection details, and generate/retry actions.
 // Backend is the source of truth for all capability and analysis state.
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { isTabEnabled, getTabDetails } from "../../constants/workspaceTabs";
-import { runModuleAnalysis } from "../../services/projectService";
+import { runModuleAnalysis, fetchPlatformDatabaseErd } from "../../services/projectService";
 import ErdCanvas from "./erd/ErdCanvas";
 import SecurityAuditTab from "./security/SecurityAuditTab";
 import ApiExplorerTab from "./api/ApiExplorerTab";
@@ -28,11 +28,33 @@ export default function CapabilityTabPanel({ tab, project, onAnalysisUpdate }) {
   const { getToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [platformErd, setPlatformErd] = useState(null);
 
   const projectId = project?.id || project?._id;
   const capabilities = project?.capabilities || {};
   const analysis = project?.analysis || {};
   const analysisResults = project?.analysisResults || {};
+
+  // Fetch live Platform ERD when on ERD tab
+  useEffect(() => {
+    if (tab?.id === "erd" && !platformErd) {
+      let isSubscribed = true;
+      async function loadPlatformErd() {
+        try {
+          const token = await getToken();
+          if (!token) return;
+          const data = await fetchPlatformDatabaseErd(token);
+          if (isSubscribed) setPlatformErd(data);
+        } catch (err) {
+          console.warn("[CapabilityTabPanel] Failed to fetch platform ERD:", err);
+        }
+      }
+      loadPlatformErd();
+      return () => {
+        isSubscribed = false;
+      };
+    }
+  }, [tab?.id, platformErd, getToken]);
 
   // Get analysis module status
   const moduleName = tab?.analysisModule;
@@ -96,7 +118,7 @@ export default function CapabilityTabPanel({ tab, project, onAnalysisUpdate }) {
     );
   }
 
-  // If tab is ERD and analysis is completed (or database models exist in blueprint/database)
+  // If tab is ERD, render ERD Canvas with support for both Repository DB and ArchMind AI Platform DB
   if (tab?.id === "erd") {
     const rawErd = analysisResults?.erd;
     const hasLlmEntities = Array.isArray(rawErd?.entities) && rawErd.entities.length > 0;
@@ -108,21 +130,20 @@ export default function CapabilityTabPanel({ tab, project, onAnalysisUpdate }) {
       erdData = rawErd;
     } else if (hasStaticEntities) {
       erdData = {
-        database: dbSchema.type || "Database Schema",
+        database: `${project?.name || "Repository"} Database (${dbSchema.type || "Detected"})`,
         entities: dbSchema.entities,
         relationships: dbSchema.relationships || [],
       };
     }
 
-    if (moduleStatus === "completed" || hasStaticEntities) {
-      return (
-        <ErdCanvas
-          erdData={erdData}
-          onRegenerate={handleGenerate}
-          isRegenerating={isLoading}
-        />
-      );
-    }
+    return (
+      <ErdCanvas
+        erdData={erdData}
+        platformErdData={platformErd}
+        onRegenerate={handleGenerate}
+        isRegenerating={isLoading}
+      />
+    );
   }
 
   // ── Disabled State: Module Not Available ──────────────────────────────────

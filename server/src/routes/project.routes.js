@@ -36,6 +36,10 @@ import {
   triggerCodeReview,
   triggerTestGeneration,
 } from "../controllers/security.controller.js";
+import {
+  getPlatformDatabaseErd,
+  getProjectDatabaseErd,
+} from "../controllers/erd.controller.js";
 
 const router = Router();
 
@@ -119,6 +123,14 @@ router.get("/:id/blueprint", requireAuth, getProjectBlueprint);
 
 // GET /api/projects/:id/file?path=... — retrieve source file content
 router.get("/:id/file", requireAuth, getProjectFile);
+
+// ── Entity Relationship Diagram (ERD) endpoints ─────────────────────────────
+// GET /api/projects/platform-erd — get ArchMind AI's own Mongoose database ERD
+router.get("/platform-erd", requireAuth, getPlatformDatabaseErd);
+router.get("/platform/erd", requireAuth, getPlatformDatabaseErd);
+
+// GET /api/projects/:id/erd — get analyzed repository database ERD
+router.get("/:id/erd", requireAuth, getProjectDatabaseErd);
 
 // ── API Route Intelligence endpoints ─────────────────────────────────────────
 

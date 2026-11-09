@@ -141,7 +141,10 @@ export async function executeModuleAnalysis(projectId, moduleName, options = {})
 
     if (moduleName === "architecture") {
       console.log(`[Analysis] [Module: Architecture] Invoking Groq LLM architecture generator...`);
-      resultPayload = await generateArchitecture(blueprint, options);
+      resultPayload = await generateArchitecture(blueprint, {
+        ...options,
+        existingTopology: project.topology,
+      });
       const tModDuration = ((performance.now() - tModStart) / 1000).toFixed(2);
       console.log(`[Analysis] [Module: Architecture] Groq architecture generated in ${tModDuration}s (${resultPayload?.nodes?.length || 0} nodes, ${resultPayload?.edges?.length || 0} edges)`);
     } else if (moduleName === "erd") {

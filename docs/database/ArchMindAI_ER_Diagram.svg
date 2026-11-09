@@ -1,0 +1,2784 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4500 3000" width="4500" height="3000">
+<defs>
+
+        <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%" filterUnits="userSpaceOnUse">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
+            <feOffset dx="0" dy="8" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMergeNode>
+        </filter>
+        <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="glow"/>
+            <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMergeNode>
+        </filter>
+    
+
+        <marker id="crow-many-cyan" markerWidth="24" markerHeight="24" refX="22" refY="12" orient="auto">
+            <path d="M 2,2 L 22,12 L 2,22 M 22,2 L 22,22" fill="none" stroke="#38bdf8" stroke-width="2.5"/>
+        </marker>
+        <marker id="crow-many-amber" markerWidth="24" markerHeight="24" refX="22" refY="12" orient="auto">
+            <path d="M 2,2 L 22,12 L 2,22 M 22,2 L 22,22" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+        </marker>
+        <marker id="crow-many-green" markerWidth="24" markerHeight="24" refX="22" refY="12" orient="auto">
+            <path d="M 2,2 L 22,12 L 2,22 M 22,2 L 22,22" fill="none" stroke="#10b981" stroke-width="2.5"/>
+        </marker>
+        <marker id="crow-one-cyan" markerWidth="20" markerHeight="20" refX="10" refY="10" orient="auto">
+            <line x1="10" y1="2" x2="10" y2="18" stroke="#38bdf8" stroke-width="2.5"/>
+            <line x1="16" y1="2" x2="16" y2="18" stroke="#38bdf8" stroke-width="2.5"/>
+        </marker>
+        <marker id="circle-zero" markerWidth="16" markerHeight="16" refX="8" refY="8" orient="auto">
+            <circle cx="8" cy="8" r="5" fill="#111827" stroke="#38bdf8" stroke-width="2"/>
+        </marker>
+    
+</defs>
+<rect width="4500" height="3000" fill="#0b0f19"/>
+<line x1="0" y1="0" x2="0" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="80" y1="0" x2="80" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="160" y1="0" x2="160" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="240" y1="0" x2="240" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="320" y1="0" x2="320" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="400" y1="0" x2="400" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="480" y1="0" x2="480" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="560" y1="0" x2="560" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="640" y1="0" x2="640" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="720" y1="0" x2="720" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="800" y1="0" x2="800" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="880" y1="0" x2="880" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="960" y1="0" x2="960" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1040" y1="0" x2="1040" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1120" y1="0" x2="1120" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1200" y1="0" x2="1200" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1280" y1="0" x2="1280" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1360" y1="0" x2="1360" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1440" y1="0" x2="1440" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1520" y1="0" x2="1520" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1600" y1="0" x2="1600" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1680" y1="0" x2="1680" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1760" y1="0" x2="1760" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1840" y1="0" x2="1840" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="1920" y1="0" x2="1920" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2000" y1="0" x2="2000" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2080" y1="0" x2="2080" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2160" y1="0" x2="2160" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2240" y1="0" x2="2240" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2320" y1="0" x2="2320" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2400" y1="0" x2="2400" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2480" y1="0" x2="2480" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2560" y1="0" x2="2560" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2640" y1="0" x2="2640" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2720" y1="0" x2="2720" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2800" y1="0" x2="2800" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2880" y1="0" x2="2880" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="2960" y1="0" x2="2960" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3040" y1="0" x2="3040" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3120" y1="0" x2="3120" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3200" y1="0" x2="3200" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3280" y1="0" x2="3280" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3360" y1="0" x2="3360" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3440" y1="0" x2="3440" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3520" y1="0" x2="3520" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3600" y1="0" x2="3600" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3680" y1="0" x2="3680" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3760" y1="0" x2="3760" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3840" y1="0" x2="3840" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="3920" y1="0" x2="3920" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="4000" y1="0" x2="4000" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="4080" y1="0" x2="4080" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="4160" y1="0" x2="4160" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="4240" y1="0" x2="4240" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="4320" y1="0" x2="4320" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="4400" y1="0" x2="4400" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="4480" y1="0" x2="4480" y2="3000" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="0" x2="4500" y2="0" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="80" x2="4500" y2="80" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="160" x2="4500" y2="160" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="240" x2="4500" y2="240" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="320" x2="4500" y2="320" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="400" x2="4500" y2="400" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="480" x2="4500" y2="480" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="560" x2="4500" y2="560" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="640" x2="4500" y2="640" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="720" x2="4500" y2="720" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="800" x2="4500" y2="800" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="880" x2="4500" y2="880" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="960" x2="4500" y2="960" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1040" x2="4500" y2="1040" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1120" x2="4500" y2="1120" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1200" x2="4500" y2="1200" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1280" x2="4500" y2="1280" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1360" x2="4500" y2="1360" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1440" x2="4500" y2="1440" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1520" x2="4500" y2="1520" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1600" x2="4500" y2="1600" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1680" x2="4500" y2="1680" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1760" x2="4500" y2="1760" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1840" x2="4500" y2="1840" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="1920" x2="4500" y2="1920" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2000" x2="4500" y2="2000" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2080" x2="4500" y2="2080" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2160" x2="4500" y2="2160" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2240" x2="4500" y2="2240" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2320" x2="4500" y2="2320" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2400" x2="4500" y2="2400" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2480" x2="4500" y2="2480" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2560" x2="4500" y2="2560" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2640" x2="4500" y2="2640" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2720" x2="4500" y2="2720" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2800" x2="4500" y2="2800" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2880" x2="4500" y2="2880" stroke="#161f30" stroke-width="1"/>
+<line x1="0" y1="2960" x2="4500" y2="2960" stroke="#161f30" stroke-width="1"/>
+
+    <g id="header-banner">
+        <rect x="120" y="50" width="2200" height="190" rx="16" fill="#111827" stroke="#374151" stroke-width="2" filter="url(#shadow)"/>
+        <text x="160" y="115" font-family="'Segoe UI', Roboto, sans-serif" font-size="42" font-weight="bold" fill="#f9fafb" letter-spacing="1">
+            ArchMind AI — Platform Database Architecture
+        </text>
+        <text x="160" y="160" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="normal" fill="#38bdf8">
+            Complete Entity Relationship Diagram (ERD) • 7 MongoDB Collections • 6 Embedded Subdocuments
+        </text>
+        <text x="160" y="200" font-family="'Segoe UI', Roboto, sans-serif" font-size="16" fill="#9ca3af">
+            Engine: MongoDB Atlas + Mongoose ODM | Authentication: Clerk Multi-Tenant (User.clerkId Partitioning) | Crow's Foot Notation
+        </text>
+    </g>
+    
+
+    <g id="legend-box">
+        <rect x="2380" y="50" width="1780" height="190" rx="16" fill="#111827" stroke="#374151" stroke-width="2" filter="url(#shadow)"/>
+        <text x="2410" y="90" font-family="'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="bold" fill="#f9fafb">
+            ERD NOTATION &amp; RELATIONSHIP LEGEND
+        </text>
+        
+        <!-- Legend Items Row 1 -->
+        <rect x="2410" y="115" width="45" height="24" rx="6" fill="#b45309"/>
+        <text x="2422" y="132" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#fef3c7">PK</text>
+        <text x="2465" y="132" font-family="'Segoe UI', sans-serif" font-size="15" fill="#d1d5db">Primary Key (_id ObjectId)</text>
+
+        <rect x="2720" y="115" width="45" height="24" rx="6" fill="#0369a1"/>
+        <text x="2732" y="132" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#e0f2fe">FK</text>
+        <text x="2775" y="132" font-family="'Segoe UI', sans-serif" font-size="15" fill="#d1d5db">Foreign Key / ObjectId Ref</text>
+
+        <rect x="3060" y="115" width="45" height="24" rx="6" fill="#6d28d9"/>
+        <text x="3072" y="132" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#f5f3ff">UK</text>
+        <text x="3115" y="132" font-family="'Segoe UI', sans-serif" font-size="15" fill="#d1d5db">Unique Key Index</text>
+
+        <rect x="3330" y="115" width="52" height="24" rx="6" fill="#065f46"/>
+        <text x="3340" y="132" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#d1fae5">EMB</text>
+        <text x="3392" y="132" font-family="'Segoe UI', sans-serif" font-size="15" fill="#d1d5db">Embedded Subdocument</text>
+
+        <!-- Legend Items Row 2: Relationship Types -->
+        <line x1="2410" y1="180" x2="2490" y2="180" stroke="#38bdf8" stroke-width="3.5"/>
+        <text x="2505" y="185" font-family="'Segoe UI', sans-serif" font-size="15" fill="#38bdf8">Physical Mongoose Ref (1:N)</text>
+
+        <line x1="2790" y1="180" x2="2870" y2="180" stroke="#f59e0b" stroke-width="3" stroke-dasharray="7 5"/>
+        <text x="2885" y="185" font-family="'Segoe UI', sans-serif" font-size="15" fill="#f59e0b">Logical Clerk User Ref</text>
+
+        <line x1="3120" y1="180" x2="3200" y2="180" stroke="#10b981" stroke-width="3"/>
+        <text x="3215" y="185" font-family="'Segoe UI', sans-serif" font-size="15" fill="#10b981">Embedded Subdoc (1:N / 1:1)</text>
+
+        <line x1="3510" y1="180" x2="3590" y2="180" stroke="#a855f7" stroke-width="2.5" stroke-dasharray="4 4"/>
+        <text x="3605" y="185" font-family="'Segoe UI', sans-serif" font-size="15" fill="#a855f7">Logical Run Association</text>
+    </g>
+    
+<path d="M 840 500 L 940 500" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="8 6" marker-end="url(#crow-many-amber)" stroke-linejoin="round"/>
+
+            <text x="890.0" y="490.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#f59e0b" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 480 1000 L 480 1080" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="8 6" marker-end="url(#crow-many-amber)" stroke-linejoin="round"/>
+
+            <text x="480.0" y="1030.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#f59e0b" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 480 320 L 480 260 L 2200 260 L 2200 320" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="8 6" marker-end="url(#crow-many-amber)" stroke-linejoin="round"/>
+
+            <text x="1340.0" y="250.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#f59e0b" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 200 1000 L 200 2860 L 1920 2860" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="8 6" marker-end="url(#crow-many-amber)" stroke-linejoin="round"/>
+
+            <text x="200.0" y="1920.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#f59e0b" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 1820 480 L 1920 480" fill="none" stroke="#38bdf8" stroke-width="3.5"  marker-end="url(#crow-many-cyan)" stroke-linejoin="round"/>
+
+            <text x="1870.0" y="470.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#38bdf8" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 1820 1400 L 1880 1400 L 1880 2200 L 1920 2200" fill="none" stroke="#38bdf8" stroke-width="3.5"  marker-end="url(#crow-many-cyan)" stroke-linejoin="round"/>
+
+            <text x="1880.0" y="1790.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#38bdf8" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 1820 400 L 3300 400 L 3360 400" fill="none" stroke="#38bdf8" stroke-width="3.5"  marker-end="url(#crow-many-cyan)" stroke-linejoin="round"/>
+
+            <text x="2560.0" y="390.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#38bdf8" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 1820 1150 L 3300 1150 L 3300 1350 L 3360 1350" fill="none" stroke="#38bdf8" stroke-width="3.5"  marker-end="url(#crow-many-cyan)" stroke-linejoin="round"/>
+
+            <text x="3300.0" y="1240.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#38bdf8" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 940 1200 L 840 1200" fill="none" stroke="#38bdf8" stroke-width="3.5"  marker-end="url(#crow-many-cyan)" stroke-linejoin="round"/>
+
+            <text x="890.0" y="1190.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#38bdf8" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N
+            </text>
+        
+<path d="M 1150 1820 L 1150 1900" fill="none" stroke="#10b981" stroke-width="3.5"  marker-end="url(#crow-many-green)" stroke-linejoin="round"/>
+
+            <text x="1150.0" y="1850.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N (embedded)
+            </text>
+        
+<path d="M 1610 1820 L 1610 1900" fill="none" stroke="#10b981" stroke-width="3.5"  marker-end="url(#crow-many-green)" stroke-linejoin="round"/>
+
+            <text x="1610.0" y="1850.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N (embedded)
+            </text>
+        
+<path d="M 2310 880 L 2310 950" fill="none" stroke="#10b981" stroke-width="3.5"  marker-end="url(#crow-many-green)" stroke-linejoin="round"/>
+
+            <text x="2310.0" y="905.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N (embedded)
+            </text>
+        
+<path d="M 2310 1470 L 2310 1530" fill="none" stroke="#10b981" stroke-width="3.5"  marker-end="url(#crow-many-green)" stroke-linejoin="round"/>
+
+            <text x="2310.0" y="1490.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N (embedded)
+            </text>
+        
+<path d="M 2700 2450 L 2800 2450" fill="none" stroke="#10b981" stroke-width="3.5"  marker-end="url(#crow-many-green)" stroke-linejoin="round"/>
+
+            <text x="2750.0" y="2440.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N (embedded)
+            </text>
+        
+<path d="M 480 1880 L 480 1950" fill="none" stroke="#10b981" stroke-width="3.5"  marker-end="url(#crow-many-green)" stroke-linejoin="round"/>
+
+            <text x="480.0" y="1905.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 1 (embedded)
+            </text>
+        
+<path d="M 480 2390 L 480 2460" fill="none" stroke="#10b981" stroke-width="3.5"  marker-end="url(#crow-many-green)" stroke-linejoin="round"/>
+
+            <text x="480.0" y="2415.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N (embedded)
+            </text>
+        
+<path d="M 3760 1180 L 3760 1250" fill="none" stroke="#a855f7" stroke-width="3.5" stroke-dasharray="5 5"  stroke-linejoin="round"/>
+
+            <text x="3760.0" y="1205.0" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#a855f7" text-anchor="middle"
+                  style="paint-order: stroke; stroke: #0b0f19; stroke-width: 5px; stroke-linejoin: round;">
+                1 : 0..N (audit version)
+            </text>
+        
+<g id="entity-User">
+
+            <rect x="120" y="320" width="720" height="680" rx="14" fill="#111827"
+                  stroke="#8b5cf6" stroke-width="2.5"  filter="url(#shadow)"/>
+        
+
+            <path d="M 120 334 A 14 14 0 0 1 134 320 L 826 320 A 14 14 0 0 1 840 334 L 840 395 L 120 395 Z"
+                  fill="#8b5cf6" opacity="0.95"/>
+            <text x="144" y="356" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                User
+            </text>
+            <text x="144" y="380" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                Collection: users • Authentication & Identity
+            </text>
+        
+
+            <rect x="132" y="401" width="696" height="32" rx="6" fill="#182234"/>
+            <text x="144" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="210" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="280" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="560" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="770" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="132" y1="433" x2="828" y2="433" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                    <rect x="142" y="439" width="48" height="20" rx="4" fill="#b45309"/>
+                    <text x="166" y="453" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#fef3c7" text-anchor="middle">PK</text>
+                
+
+                <rect x="205" y="439" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="453" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="453" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">_id</text>
+            
+
+                <text x="560" y="453" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="770" y="453" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ObjectId()</text>
+            
+<rect x="132" y="469" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="142" y="475" width="48" height="20" rx="4" fill="#6d28d9"/>
+                    <text x="166" y="489" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#f5f3ff" text-anchor="middle">UK</text>
+                
+
+                <rect x="205" y="475" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="489" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="489" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">clerkId</text>
+            
+
+                <text x="560" y="489" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="489" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Clerk Authentication ID [Indexed]</text>
+            
+
+                    <rect x="142" y="511" width="48" height="20" rx="4" fill="#6d28d9"/>
+                    <text x="166" y="525" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#f5f3ff" text-anchor="middle">UK</text>
+                
+
+                <rect x="205" y="511" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="525" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="525" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">email</text>
+            
+
+                <text x="560" y="525" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="525" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Unique email address (lowercase, t…</text>
+            
+<rect x="132" y="541" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="547" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="561" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="561" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">firstName</text>
+            
+
+                <text x="560" y="561" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="561" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+
+                <rect x="205" y="583" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="597" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="597" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">lastName</text>
+            
+
+                <text x="560" y="597" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="597" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+<rect x="132" y="613" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="619" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="633" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="633" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">username</text>
+            
+
+                <text x="560" y="633" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="633" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+
+                <rect x="205" y="655" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="669" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="669" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">imageUrl</text>
+            
+
+                <text x="560" y="669" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="669" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+<rect x="132" y="685" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="691" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="705" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="705" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">lastLoginAt</text>
+            
+
+                <text x="560" y="705" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="770" y="705" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: Date.now()</text>
+            
+
+                <rect x="205" y="727" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="741" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="741" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="560" y="741" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="770" y="741" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+<rect x="132" y="757" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="763" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="777" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="777" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">updatedAt</text>
+            
+
+                <text x="560" y="777" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="770" y="777" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+
+                <rect x="205" y="799" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="813" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="813" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">__v</text>
+            
+
+                <text x="560" y="813" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="770" y="813" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+</g>
+<g id="entity-Project">
+
+            <rect x="940" y="320" width="880" height="1500" rx="14" fill="#111827"
+                  stroke="#3b82f6" stroke-width="2.5"  filter="url(#shadow)"/>
+        
+
+            <path d="M 940 334 A 14 14 0 0 1 954 320 L 1806 320 A 14 14 0 0 1 1820 334 L 1820 395 L 940 395 Z"
+                  fill="#3b82f6" opacity="0.95"/>
+            <text x="964" y="356" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                Project
+            </text>
+            <text x="964" y="380" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                Collection: projects • Core Repository Intelligence
+            </text>
+        
+
+            <rect x="952" y="401" width="856" height="32" rx="6" fill="#182234"/>
+            <text x="964" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="1030" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="1100" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="1380" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="1590" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="952" y1="433" x2="1808" y2="433" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                    <rect x="962" y="439" width="48" height="20" rx="4" fill="#b45309"/>
+                    <text x="986" y="453" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#fef3c7" text-anchor="middle">PK</text>
+                
+
+                <rect x="1025" y="439" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="453" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="453" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">_id</text>
+            
+
+                <text x="1380" y="453" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="1590" y="453" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ObjectId()</text>
+            
+<rect x="952" y="469" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="962" y="475" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="986" y="489" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="1025" y="475" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="489" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="489" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">userId</text>
+            
+
+                <text x="1380" y="489" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="489" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Clerk User ID [Logical ref User.cl…</text>
+            
+
+                <rect x="1025" y="511" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="525" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="525" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">name</text>
+            
+
+                <text x="1380" y="525" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="525" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Repository display / archive name</text>
+            
+<rect x="952" y="541" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="547" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="561" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="561" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">source</text>
+            
+
+                <text x="1380" y="561" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="561" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'github'</text>
+            
+
+                <rect x="1025" y="583" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="597" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="597" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">status</text>
+            
+
+                <text x="1380" y="597" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="597" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'uploaded'</text>
+            
+<rect x="952" y="613" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="619" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="633" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="633" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">github</text>
+            
+
+                <text x="1380" y="633" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="633" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="1025" y="655" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="669" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="669" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">zip</text>
+            
+
+                <text x="1380" y="669" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="669" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+<rect x="952" y="685" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="962" y="691" width="48" height="20" rx="4" fill="#065f46"/>
+                    <text x="986" y="705" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1fae5" text-anchor="middle">EMB</text>
+                
+
+                <rect x="1025" y="691" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="705" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="705" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">tree</text>
+            
+
+                <text x="1380" y="705" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<TreeNode></text>
+            
+
+                <text x="1590" y="705" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="1025" y="727" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="741" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="741" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">stats</text>
+            
+
+                <text x="1380" y="741" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="741" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+<rect x="952" y="757" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="763" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="777" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="777" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">techStack</text>
+            
+
+                <text x="1380" y="777" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="777" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="1025" y="799" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="813" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="813" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">primaryLanguage</text>
+            
+
+                <text x="1380" y="813" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="813" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+<rect x="952" y="829" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="835" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="849" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="849" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">secondaryLanguages</text>
+            
+
+                <text x="1380" y="849" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<String></text>
+            
+
+                <text x="1590" y="849" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="1025" y="871" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="885" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="885" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">languageDetectionConfidence</text>
+            
+
+                <text x="1380" y="885" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="1590" y="885" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+<rect x="952" y="901" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="907" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="921" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="921" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">topology</text>
+            
+
+                <text x="1380" y="921" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="921" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="1025" y="943" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="957" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="957" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">capabilities</text>
+            
+
+                <text x="1380" y="957" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="957" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+<rect x="952" y="973" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="979" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="993" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="993" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">ast</text>
+            
+
+                <text x="1380" y="993" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="993" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="1025" y="1015" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1029" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1029" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">blueprint</text>
+            
+
+                <text x="1380" y="1029" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="1029" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+<rect x="952" y="1045" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="1051" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1065" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1065" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">database</text>
+            
+
+                <text x="1380" y="1065" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="1065" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="1025" y="1087" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1101" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1101" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">extractionPath</text>
+            
+
+                <text x="1380" y="1101" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="1101" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+<rect x="952" y="1117" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="1123" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1137" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1137" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">errorDetails</text>
+            
+
+                <text x="1380" y="1137" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="1137" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+
+                <rect x="1025" y="1159" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1173" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1173" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">analysis</text>
+            
+
+                <text x="1380" y="1173" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="1173" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+<rect x="952" y="1189" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="1195" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1209" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1209" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">analysisResults</text>
+            
+
+                <text x="1380" y="1209" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Mixed</text>
+            
+
+                <text x="1590" y="1209" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+
+                    <rect x="962" y="1231" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="986" y="1245" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="1025" y="1231" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1245" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1245" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">sourceFingerprint</text>
+            
+
+                <text x="1380" y="1245" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="1245" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+<rect x="952" y="1261" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="1267" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="1281" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="1281" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">analysisVersion</text>
+            
+
+                <text x="1380" y="1281" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="1590" y="1281" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+
+                <rect x="1025" y="1303" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1317" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1317" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">lastAnalyzedAt</text>
+            
+
+                <text x="1380" y="1317" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="1590" y="1317" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+<rect x="952" y="1333" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="1339" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1353" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1353" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">securityFindings</text>
+            
+
+                <text x="1380" y="1353" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<Object></text>
+            
+
+                <text x="1590" y="1353" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="1025" y="1375" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="1389" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="1389" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">securitySummary</text>
+            
+
+                <text x="1380" y="1389" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="1590" y="1389" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+<rect x="952" y="1405" width="856" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="1411" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="1425" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="1425" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="1380" y="1425" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="1590" y="1425" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+
+                <rect x="1025" y="1447" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="1461" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="1461" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">updatedAt</text>
+            
+
+                <text x="1380" y="1461" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="1590" y="1461" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+</g>
+<g id="entity-TreeNode">
+
+            <rect x="940" y="1900" width="420" height="360" rx="14" fill="#111827"
+                  stroke="#4b5563" stroke-width="2" stroke-dasharray="7 5" filter="url(#shadow)"/>
+        
+
+            <path d="M 940 1914 A 14 14 0 0 1 954 1900 L 1346 1900 A 14 14 0 0 1 1360 1914 L 1360 1975 L 940 1975 Z"
+                  fill="#64748b" opacity="0.95"/>
+            <text x="964" y="1936" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                TreeNode
+            </text>
+            <text x="964" y="1960" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                [Embedded Subdocument] • Embedded Subdocument
+            </text>
+        
+
+            <rect x="952" y="1981" width="396" height="32" rx="6" fill="#182234"/>
+            <text x="964" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="1030" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="1100" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="1380" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="1590" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="952" y1="2013" x2="1348" y2="2013" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                <rect x="1025" y="2019" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="2033" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="2033" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">path</text>
+            
+
+                <text x="1380" y="2033" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="2033" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Relative file path from repository…</text>
+            
+<rect x="952" y="2049" width="396" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="2055" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1047" y="2069" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1100" y="2069" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">type</text>
+            
+
+                <text x="1380" y="2069" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="2069" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Node category enum: ['file', 'dir']</text>
+            
+
+                <rect x="1025" y="2091" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="2105" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="2105" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">size</text>
+            
+
+                <text x="1380" y="2105" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="1590" y="2105" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+<rect x="952" y="2121" width="396" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1025" y="2127" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="1047" y="2141" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="1100" y="2141" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">sha</text>
+            
+
+                <text x="1380" y="2141" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="1590" y="2141" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+</g>
+<g id="entity-TopExtension">
+
+            <rect x="1400" y="1900" width="420" height="300" rx="14" fill="#111827"
+                  stroke="#4b5563" stroke-width="2" stroke-dasharray="7 5" filter="url(#shadow)"/>
+        
+
+            <path d="M 1400 1914 A 14 14 0 0 1 1414 1900 L 1806 1900 A 14 14 0 0 1 1820 1914 L 1820 1975 L 1400 1975 Z"
+                  fill="#64748b" opacity="0.95"/>
+            <text x="1424" y="1936" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                TopExtension
+            </text>
+            <text x="1424" y="1960" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                [Embedded Subdocument] • Embedded Subdocument
+            </text>
+        
+
+            <rect x="1412" y="1981" width="396" height="32" rx="6" fill="#182234"/>
+            <text x="1424" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="1490" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="1560" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="1840" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="2050" y="1997" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="1412" y1="2013" x2="1808" y2="2013" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                <rect x="1485" y="2019" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1507" y="2033" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1560" y="2033" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">extension</text>
+            
+
+                <text x="1840" y="2033" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2050" y="2033" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">File extension identifier (e.g. '.…</text>
+            
+<rect x="1412" y="2049" width="396" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="1485" y="2055" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="1507" y="2069" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="1560" y="2069" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">count</text>
+            
+
+                <text x="1840" y="2069" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="2050" y="2069" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+</g>
+<g id="entity-Conversation">
+
+            <rect x="1920" y="320" width="780" height="560" rx="14" fill="#111827"
+                  stroke="#10b981" stroke-width="2.5"  filter="url(#shadow)"/>
+        
+
+            <path d="M 1920 334 A 14 14 0 0 1 1934 320 L 2686 320 A 14 14 0 0 1 2700 334 L 2700 395 L 1920 395 Z"
+                  fill="#10b981" opacity="0.95"/>
+            <text x="1944" y="356" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                Conversation
+            </text>
+            <text x="1944" y="380" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                Collection: conversations • AI Chat & Context
+            </text>
+        
+
+            <rect x="1932" y="401" width="756" height="32" rx="6" fill="#182234"/>
+            <text x="1944" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="2010" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="2080" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="2360" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="2570" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="1932" y1="433" x2="2688" y2="433" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                    <rect x="1942" y="439" width="48" height="20" rx="4" fill="#b45309"/>
+                    <text x="1966" y="453" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#fef3c7" text-anchor="middle">PK</text>
+                
+
+                <rect x="2005" y="439" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="453" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="453" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">_id</text>
+            
+
+                <text x="2360" y="453" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="2570" y="453" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ObjectId()</text>
+            
+<rect x="1932" y="469" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="1942" y="475" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="1966" y="489" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="2005" y="475" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="489" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="489" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">userId</text>
+            
+
+                <text x="2360" y="489" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="489" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Clerk User ID [Logical ref User.cl…</text>
+            
+
+                    <rect x="1942" y="511" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="1966" y="525" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="2005" y="511" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="525" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="525" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">projectId</text>
+            
+
+                <text x="2360" y="525" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="2570" y="525" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">References Project._id [Physical r…</text>
+            
+<rect x="1932" y="541" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="547" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="561" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="561" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">title</text>
+            
+
+                <text x="2360" y="561" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="561" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'New Conversation'</text>
+            
+
+                    <rect x="1942" y="583" width="48" height="20" rx="4" fill="#065f46"/>
+                    <text x="1966" y="597" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1fae5" text-anchor="middle">EMB</text>
+                
+
+                <rect x="2005" y="583" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="597" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="597" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">messages</text>
+            
+
+                <text x="2360" y="597" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<Message></text>
+            
+
+                <text x="2570" y="597" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+<rect x="1932" y="613" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="1942" y="619" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="1966" y="633" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="2005" y="619" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="633" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="633" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">lastMessageAt</text>
+            
+
+                <text x="2360" y="633" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="2570" y="633" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: Date.now()</text>
+            
+
+                <rect x="2005" y="655" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="669" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="669" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="2360" y="669" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="2570" y="669" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+<rect x="1932" y="685" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="691" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="705" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="705" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">updatedAt</text>
+            
+
+                <text x="2360" y="705" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="2570" y="705" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+</g>
+<g id="entity-Message">
+
+            <rect x="1920" y="950" width="780" height="520" rx="14" fill="#111827"
+                  stroke="#4b5563" stroke-width="2" stroke-dasharray="7 5" filter="url(#shadow)"/>
+        
+
+            <path d="M 1920 964 A 14 14 0 0 1 1934 950 L 2686 950 A 14 14 0 0 1 2700 964 L 2700 1025 L 1920 1025 Z"
+                  fill="#10b981" opacity="0.95"/>
+            <text x="1944" y="986" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                Message
+            </text>
+            <text x="1944" y="1010" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                [Embedded Subdocument] • Embedded Subdocument
+            </text>
+        
+
+            <rect x="1932" y="1031" width="756" height="32" rx="6" fill="#182234"/>
+            <text x="1944" y="1047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="2010" y="1047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="2080" y="1047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="2360" y="1047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="2570" y="1047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="1932" y1="1063" x2="2688" y2="1063" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                <rect x="2005" y="1069" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="1083" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="1083" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">messageId</text>
+            
+
+                <text x="2360" y="1083" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="1083" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Unique message UUID</text>
+            
+<rect x="1932" y="1099" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="1105" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="1119" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="1119" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">role</text>
+            
+
+                <text x="2360" y="1119" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="1119" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Sender role enum: ['user', 'assist…</text>
+            
+
+                <rect x="2005" y="1141" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="1155" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="1155" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">content</text>
+            
+
+                <text x="2360" y="1155" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="1155" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Chat markdown prompt or LLM respon…</text>
+            
+<rect x="1932" y="1171" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="1942" y="1177" width="48" height="20" rx="4" fill="#065f46"/>
+                    <text x="1966" y="1191" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1fae5" text-anchor="middle">EMB</text>
+                
+
+                <rect x="2005" y="1177" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="1191" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="1191" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">citations</text>
+            
+
+                <text x="2360" y="1191" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<Citation></text>
+            
+
+                <text x="2570" y="1191" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="2005" y="1213" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="1227" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="1227" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">metadata</text>
+            
+
+                <text x="2360" y="1227" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Mixed</text>
+            
+
+                <text x="2570" y="1227" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+<rect x="1932" y="1243" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="1249" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="1263" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="1263" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="2360" y="1263" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="2570" y="1263" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: Date.now()</text>
+            
+</g>
+<g id="entity-Citation">
+
+            <rect x="1920" y="1530" width="780" height="460" rx="14" fill="#111827"
+                  stroke="#4b5563" stroke-width="2" stroke-dasharray="7 5" filter="url(#shadow)"/>
+        
+
+            <path d="M 1920 1544 A 14 14 0 0 1 1934 1530 L 2686 1530 A 14 14 0 0 1 2700 1544 L 2700 1605 L 1920 1605 Z"
+                  fill="#10b981" opacity="0.95"/>
+            <text x="1944" y="1566" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                Citation
+            </text>
+            <text x="1944" y="1590" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                [Embedded Subdocument] • Embedded Subdocument
+            </text>
+        
+
+            <rect x="1932" y="1611" width="756" height="32" rx="6" fill="#182234"/>
+            <text x="1944" y="1627" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="2010" y="1627" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="2080" y="1627" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="2360" y="1627" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="2570" y="1627" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="1932" y1="1643" x2="2688" y2="1643" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                <rect x="2005" y="1649" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="1663" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="1663" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">filePath</text>
+            
+
+                <text x="2360" y="1663" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="1663" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Referenced repository source file …</text>
+            
+<rect x="1932" y="1679" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="1685" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="1699" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="1699" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">startLine</text>
+            
+
+                <text x="2360" y="1699" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="2570" y="1699" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+
+                <rect x="2005" y="1721" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="1735" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="1735" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">endLine</text>
+            
+
+                <text x="2360" y="1735" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="2570" y="1735" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+<rect x="1932" y="1751" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="1757" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="1771" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="1771" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">sourceType</text>
+            
+
+                <text x="2360" y="1771" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="1771" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'source_file'</text>
+            
+
+                <rect x="2005" y="1793" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="1807" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="1807" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">snippet</text>
+            
+
+                <text x="2360" y="1807" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="1807" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+</g>
+<g id="entity-SourceFile">
+
+            <rect x="1920" y="2060" width="780" height="840" rx="14" fill="#111827"
+                  stroke="#06b6d4" stroke-width="2.5"  filter="url(#shadow)"/>
+        
+
+            <path d="M 1920 2074 A 14 14 0 0 1 1934 2060 L 2686 2060 A 14 14 0 0 1 2700 2074 L 2700 2135 L 1920 2135 Z"
+                  fill="#06b6d4" opacity="0.95"/>
+            <text x="1944" y="2096" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                SourceFile
+            </text>
+            <text x="1944" y="2120" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                Collection: sourcefiles • Code Indexing & Retrieval
+            </text>
+        
+
+            <rect x="1932" y="2141" width="756" height="32" rx="6" fill="#182234"/>
+            <text x="1944" y="2157" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="2010" y="2157" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="2080" y="2157" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="2360" y="2157" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="2570" y="2157" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="1932" y1="2173" x2="2688" y2="2173" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                    <rect x="1942" y="2179" width="48" height="20" rx="4" fill="#b45309"/>
+                    <text x="1966" y="2193" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#fef3c7" text-anchor="middle">PK</text>
+                
+
+                <rect x="2005" y="2179" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2193" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2193" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">_id</text>
+            
+
+                <text x="2360" y="2193" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="2570" y="2193" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ObjectId()</text>
+            
+<rect x="1932" y="2209" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="1942" y="2215" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="1966" y="2229" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="2005" y="2215" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2229" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2229" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">projectId</text>
+            
+
+                <text x="2360" y="2229" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="2570" y="2229" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">References Project._id [Physical r…</text>
+            
+
+                    <rect x="1942" y="2251" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="1966" y="2265" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="2005" y="2251" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2265" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2265" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">userId</text>
+            
+
+                <text x="2360" y="2265" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="2265" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Clerk User ID [Logical ref User.cl…</text>
+            
+<rect x="1932" y="2281" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="1942" y="2287" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="1966" y="2301" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="2005" y="2287" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2301" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2301" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">analysisVersion</text>
+            
+
+                <text x="2360" y="2301" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="2570" y="2301" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+
+                    <rect x="1942" y="2323" width="48" height="20" rx="4" fill="#6d28d9"/>
+                    <text x="1966" y="2337" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#f5f3ff" text-anchor="middle">UK*</text>
+                
+
+                <rect x="2005" y="2323" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2337" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2337" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">filePath</text>
+            
+
+                <text x="2360" y="2337" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="2337" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Compound unique: { projectId, file…</text>
+            
+<rect x="1932" y="2353" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="2359" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2373" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2373" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">fileName</text>
+            
+
+                <text x="2360" y="2373" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="2373" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">File basename with extension</text>
+            
+
+                <rect x="2005" y="2395" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2409" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2409" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">extension</text>
+            
+
+                <text x="2360" y="2409" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="2409" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+<rect x="1932" y="2425" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="2431" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2445" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2445" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">language</text>
+            
+
+                <text x="2360" y="2445" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="2445" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'text'</text>
+            
+
+                <rect x="2005" y="2467" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2481" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2481" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">size</text>
+            
+
+                <text x="2360" y="2481" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="2570" y="2481" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+<rect x="1932" y="2497" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="2503" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2517" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2517" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">lineCount</text>
+            
+
+                <text x="2360" y="2517" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="2570" y="2517" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+
+                <rect x="2005" y="2539" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2553" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2553" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">contentHash</text>
+            
+
+                <text x="2360" y="2553" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="2553" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+<rect x="1932" y="2569" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="2575" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2589" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2589" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">content</text>
+            
+
+                <text x="2360" y="2589" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="2570" y="2589" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+
+                <rect x="2005" y="2611" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2625" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2625" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">isBinary</text>
+            
+
+                <text x="2360" y="2625" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Boolean</text>
+            
+
+                <text x="2570" y="2625" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: false</text>
+            
+<rect x="1932" y="2641" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="2647" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2661" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2661" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">symbols</text>
+            
+
+                <text x="2360" y="2661" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<String></text>
+            
+
+                <text x="2570" y="2661" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                    <rect x="1942" y="2683" width="48" height="20" rx="4" fill="#065f46"/>
+                    <text x="1966" y="2697" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1fae5" text-anchor="middle">EMB</text>
+                
+
+                <rect x="2005" y="2683" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="2027" y="2697" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="2080" y="2697" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">sourceLocations</text>
+            
+
+                <text x="2360" y="2697" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<SourceLocation></text>
+            
+
+                <text x="2570" y="2697" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+<rect x="1932" y="2713" width="756" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2005" y="2719" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2733" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2733" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="2360" y="2733" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="2570" y="2733" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+
+                <rect x="2005" y="2755" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2027" y="2769" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2080" y="2769" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">updatedAt</text>
+            
+
+                <text x="2360" y="2769" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="2570" y="2769" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+</g>
+<g id="entity-SourceLocation">
+
+            <rect x="2800" y="2300" width="460" height="380" rx="14" fill="#111827"
+                  stroke="#4b5563" stroke-width="2" stroke-dasharray="7 5" filter="url(#shadow)"/>
+        
+
+            <path d="M 2800 2314 A 14 14 0 0 1 2814 2300 L 3246 2300 A 14 14 0 0 1 3260 2314 L 3260 2375 L 2800 2375 Z"
+                  fill="#64748b" opacity="0.95"/>
+            <text x="2824" y="2336" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                SourceLocation
+            </text>
+            <text x="2824" y="2360" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                [Embedded Subdocument] • Embedded Subdocument
+            </text>
+        
+
+            <rect x="2812" y="2381" width="436" height="32" rx="6" fill="#182234"/>
+            <text x="2824" y="2397" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="2890" y="2397" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="2960" y="2397" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="3240" y="2397" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="3450" y="2397" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="2812" y1="2413" x2="3248" y2="2413" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                <rect x="2885" y="2419" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2907" y="2433" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2960" y="2433" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">name</text>
+            
+
+                <text x="3240" y="2433" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="3450" y="2433" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Symbol identifier name</text>
+            
+<rect x="2812" y="2449" width="436" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2885" y="2455" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2907" y="2469" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2960" y="2469" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">kind</text>
+            
+
+                <text x="3240" y="2469" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="3450" y="2469" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">enum: ['function','class','route',…</text>
+            
+
+                <rect x="2885" y="2491" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2907" y="2505" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2960" y="2505" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">lineStart</text>
+            
+
+                <text x="3240" y="2505" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="3450" y="2505" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">1-based starting line number</text>
+            
+<rect x="2812" y="2521" width="436" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="2885" y="2527" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="2907" y="2541" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="2960" y="2541" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">lineEnd</text>
+            
+
+                <text x="3240" y="2541" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="3450" y="2541" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">1-based ending line number</text>
+            
+</g>
+<g id="entity-SecurityAudit">
+
+            <rect x="3360" y="320" width="800" height="860" rx="14" fill="#111827"
+                  stroke="#f43f5e" stroke-width="2.5"  filter="url(#shadow)"/>
+        
+
+            <path d="M 3360 334 A 14 14 0 0 1 3374 320 L 4146 320 A 14 14 0 0 1 4160 334 L 4160 395 L 3360 395 Z"
+                  fill="#f43f5e" opacity="0.95"/>
+            <text x="3384" y="356" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                SecurityAudit
+            </text>
+            <text x="3384" y="380" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                Collection: securityaudits • Security & Compliance
+            </text>
+        
+
+            <rect x="3372" y="401" width="776" height="32" rx="6" fill="#182234"/>
+            <text x="3384" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="3450" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="3520" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="3800" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="4010" y="417" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="3372" y1="433" x2="4148" y2="433" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                    <rect x="3382" y="439" width="48" height="20" rx="4" fill="#b45309"/>
+                    <text x="3406" y="453" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#fef3c7" text-anchor="middle">PK</text>
+                
+
+                <rect x="3445" y="439" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="453" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="453" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">_id</text>
+            
+
+                <text x="3800" y="453" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="4010" y="453" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ObjectId()</text>
+            
+<rect x="3372" y="469" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="3382" y="475" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="3406" y="489" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="3445" y="475" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="489" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="489" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">projectId</text>
+            
+
+                <text x="3800" y="489" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="4010" y="489" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">References Project._id [Physical r…</text>
+            
+
+                    <rect x="3382" y="511" width="48" height="20" rx="4" fill="#6d28d9"/>
+                    <text x="3406" y="525" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#f5f3ff" text-anchor="middle">UK*</text>
+                
+
+                <rect x="3445" y="511" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="525" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="525" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">analysisVersion</text>
+            
+
+                <text x="3800" y="525" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="525" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+<rect x="3372" y="541" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="547" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="561" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="561" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">status</text>
+            
+
+                <text x="3800" y="561" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="561" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'pending'</text>
+            
+
+                <rect x="3445" y="583" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="597" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="597" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">startedAt</text>
+            
+
+                <text x="3800" y="597" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="4010" y="597" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: Date.now()</text>
+            
+<rect x="3372" y="613" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="619" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="633" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="633" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">completedAt</text>
+            
+
+                <text x="3800" y="633" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="4010" y="633" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+
+                <rect x="3445" y="655" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="669" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="669" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">totalFindings</text>
+            
+
+                <text x="3800" y="669" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="669" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+<rect x="3372" y="685" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="691" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="705" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="705" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">severityCounts</text>
+            
+
+                <text x="3800" y="705" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="4010" y="705" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="3445" y="727" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="741" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="741" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">filesScanned</text>
+            
+
+                <text x="3800" y="741" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="741" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+<rect x="3372" y="757" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="763" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="777" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="777" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">filesSkipped</text>
+            
+
+                <text x="3800" y="777" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="777" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+
+                <rect x="3445" y="799" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="813" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="813" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">unsupportedFilesCount</text>
+            
+
+                <text x="3800" y="813" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="813" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 0</text>
+            
+<rect x="3372" y="829" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="835" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="849" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="849" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">unsupportedFiles</text>
+            
+
+                <text x="3800" y="849" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<String></text>
+            
+
+                <text x="4010" y="849" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="3445" y="871" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="885" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="885" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">scanErrors</text>
+            
+
+                <text x="3800" y="885" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<Object></text>
+            
+
+                <text x="4010" y="885" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+<rect x="3372" y="901" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="907" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="921" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="921" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">errors</text>
+            
+
+                <text x="3800" y="921" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<String></text>
+            
+
+                <text x="4010" y="921" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="3445" y="943" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="957" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="957" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">scannerVersion</text>
+            
+
+                <text x="3800" y="957" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="957" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: '1.0.0'</text>
+            
+<rect x="3372" y="973" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="979" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="993" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="993" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="3800" y="993" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="4010" y="993" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+
+                <rect x="3445" y="1015" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1029" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1029" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">updatedAt</text>
+            
+
+                <text x="3800" y="1029" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="4010" y="1029" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+</g>
+<g id="entity-SecurityFinding">
+
+            <rect x="3360" y="1250" width="800" height="1020" rx="14" fill="#111827"
+                  stroke="#f43f5e" stroke-width="2.5"  filter="url(#shadow)"/>
+        
+
+            <path d="M 3360 1264 A 14 14 0 0 1 3374 1250 L 4146 1250 A 14 14 0 0 1 4160 1264 L 4160 1325 L 3360 1325 Z"
+                  fill="#f43f5e" opacity="0.95"/>
+            <text x="3384" y="1286" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                SecurityFinding
+            </text>
+            <text x="3384" y="1310" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                Collection: securityfindings • Security & Compliance
+            </text>
+        
+
+            <rect x="3372" y="1331" width="776" height="32" rx="6" fill="#182234"/>
+            <text x="3384" y="1347" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="3450" y="1347" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="3520" y="1347" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="3800" y="1347" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="4010" y="1347" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="3372" y1="1363" x2="4148" y2="1363" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                    <rect x="3382" y="1369" width="48" height="20" rx="4" fill="#b45309"/>
+                    <text x="3406" y="1383" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#fef3c7" text-anchor="middle">PK</text>
+                
+
+                <rect x="3445" y="1369" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1383" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1383" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">_id</text>
+            
+
+                <text x="3800" y="1383" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="4010" y="1383" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ObjectId()</text>
+            
+<rect x="3372" y="1399" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="3382" y="1405" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="3406" y="1419" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="3445" y="1405" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1419" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1419" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">projectId</text>
+            
+
+                <text x="3800" y="1419" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="4010" y="1419" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">References Project._id [Physical r…</text>
+            
+
+                    <rect x="3382" y="1441" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="3406" y="1455" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="3445" y="1441" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1455" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1455" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">analysisVersion</text>
+            
+
+                <text x="3800" y="1455" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="1455" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+<rect x="3372" y="1471" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="3382" y="1477" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="3406" y="1491" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="3445" y="1477" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1491" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1491" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">ruleId</text>
+            
+
+                <text x="3800" y="1491" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1491" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Security detection rule identifier…</text>
+            
+
+                    <rect x="3382" y="1513" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="3406" y="1527" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="3445" y="1513" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1527" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1527" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">category</text>
+            
+
+                <text x="3800" y="1527" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1527" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Taxonomy: 'hardcoded_secret', 'sql…</text>
+            
+<rect x="3372" y="1543" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="1549" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1563" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1563" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">title</text>
+            
+
+                <text x="3800" y="1563" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1563" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Concise finding title</text>
+            
+
+                <rect x="3445" y="1585" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1599" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1599" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">description</text>
+            
+
+                <text x="3800" y="1599" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1599" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Detailed vulnerability explanation…</text>
+            
+<rect x="3372" y="1615" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="3382" y="1621" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="3406" y="1635" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="3445" y="1621" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1635" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1635" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">severity</text>
+            
+
+                <text x="3800" y="1635" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1635" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">enum: ['Critical', 'High', 'Medium…</text>
+            
+
+                <rect x="3445" y="1657" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1671" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1671" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">confidence</text>
+            
+
+                <text x="3800" y="1671" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1671" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'High'</text>
+            
+<rect x="3372" y="1687" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="3382" y="1693" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="3406" y="1707" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="3445" y="1693" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1707" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1707" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">status</text>
+            
+
+                <text x="3800" y="1707" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1707" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'open'</text>
+            
+
+                    <rect x="3382" y="1729" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="3406" y="1743" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="3445" y="1729" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1743" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1743" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">filePath</text>
+            
+
+                <text x="3800" y="1743" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1743" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Repository path where vulnerabilit…</text>
+            
+<rect x="3372" y="1759" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="1765" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1779" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1779" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">startLine</text>
+            
+
+                <text x="3800" y="1779" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="1779" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+
+                <rect x="3445" y="1801" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1815" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1815" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">endLine</text>
+            
+
+                <text x="3800" y="1815" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="4010" y="1815" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+<rect x="3372" y="1831" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="1837" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="1851" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="1851" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">redactedEvidence</text>
+            
+
+                <text x="3800" y="1851" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1851" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+
+                <rect x="3445" y="1873" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="1887" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="1887" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">maskedValue</text>
+            
+
+                <text x="3800" y="1887" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1887" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: null</text>
+            
+<rect x="3372" y="1903" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="1909" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="1923" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="1923" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">recommendation</text>
+            
+
+                <text x="3800" y="1923" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1923" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+
+                    <rect x="3382" y="1945" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="3406" y="1959" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="3445" y="1945" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="1959" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="1959" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">source</text>
+            
+
+                <text x="3800" y="1959" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="4010" y="1959" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">enum: ['secret_scanner', 'ast_anal…</text>
+            
+<rect x="3372" y="1975" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="1981" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="1995" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="1995" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">references</text>
+            
+
+                <text x="3800" y="1995" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<String></text>
+            
+
+                <text x="4010" y="1995" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="3445" y="2017" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="2031" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="2031" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">confirmed</text>
+            
+
+                <text x="3800" y="2031" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Boolean</text>
+            
+
+                <text x="4010" y="2031" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: true</text>
+            
+<rect x="3372" y="2047" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="2053" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="3467" y="2067" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="3520" y="2067" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">metadata</text>
+            
+
+                <text x="3800" y="2067" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Mixed</text>
+            
+
+                <text x="4010" y="2067" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="3445" y="2089" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="2103" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="2103" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="3800" y="2103" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="4010" y="2103" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+<rect x="3372" y="2119" width="776" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="3445" y="2125" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="3467" y="2139" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="3520" y="2139" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">updatedAt</text>
+            
+
+                <text x="3800" y="2139" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="4010" y="2139" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+</g>
+<g id="entity-DevOpsArtifact">
+
+            <rect x="120" y="1080" width="720" height="800" rx="14" fill="#111827"
+                  stroke="#f59e0b" stroke-width="2.5"  filter="url(#shadow)"/>
+        
+
+            <path d="M 120 1094 A 14 14 0 0 1 134 1080 L 826 1080 A 14 14 0 0 1 840 1094 L 840 1155 L 120 1155 Z"
+                  fill="#f59e0b" opacity="0.95"/>
+            <text x="144" y="1116" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                DevOpsArtifact
+            </text>
+            <text x="144" y="1140" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                Collection: devopsartifacts • DevOps & Infrastructure
+            </text>
+        
+
+            <rect x="132" y="1161" width="696" height="32" rx="6" fill="#182234"/>
+            <text x="144" y="1177" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="210" y="1177" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="280" y="1177" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="560" y="1177" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="770" y="1177" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="132" y1="1193" x2="828" y2="1193" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                    <rect x="142" y="1199" width="48" height="20" rx="4" fill="#b45309"/>
+                    <text x="166" y="1213" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#fef3c7" text-anchor="middle">PK</text>
+                
+
+                <rect x="205" y="1199" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1213" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1213" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">_id</text>
+            
+
+                <text x="560" y="1213" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="770" y="1213" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ObjectId()</text>
+            
+<rect x="132" y="1229" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="142" y="1235" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="166" y="1249" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="205" y="1235" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1249" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1249" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">projectId</text>
+            
+
+                <text x="560" y="1249" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">ObjectId</text>
+            
+
+                <text x="770" y="1249" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">References Project._id [Physical r…</text>
+            
+
+                    <rect x="142" y="1271" width="48" height="20" rx="4" fill="#0369a1"/>
+                    <text x="166" y="1285" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#e0f2fe" text-anchor="middle">FK</text>
+                
+
+                <rect x="205" y="1271" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1285" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1285" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">userId</text>
+            
+
+                <text x="560" y="1285" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="1285" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Clerk User ID [Logical ref User.cl…</text>
+            
+<rect x="132" y="1301" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="142" y="1307" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="166" y="1321" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="205" y="1307" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1321" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1321" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">artifactType</text>
+            
+
+                <text x="560" y="1321" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="1321" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">enum: ['dockerfile', 'cicd', 'kube…</text>
+            
+
+                <rect x="205" y="1343" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1357" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1357" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">filePath</text>
+            
+
+                <text x="560" y="1357" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="1357" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Suggested path (e.g. 'Dockerfile',…</text>
+            
+<rect x="132" y="1373" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="1379" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1393" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1393" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">content</text>
+            
+
+                <text x="560" y="1393" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="1393" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Full text content of generated man…</text>
+            
+
+                    <rect x="142" y="1415" width="48" height="20" rx="4" fill="#065f46"/>
+                    <text x="166" y="1429" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1fae5" text-anchor="middle">EMB</text>
+                
+
+                <rect x="205" y="1415" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1429" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1429" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">validation</text>
+            
+
+                <text x="560" y="1429" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="770" y="1429" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {...}</text>
+            
+<rect x="132" y="1445" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="142" y="1451" width="48" height="20" rx="4" fill="#374151"/>
+                    <text x="166" y="1465" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1d5db" text-anchor="middle">IDX</text>
+                
+
+                <rect x="205" y="1451" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1465" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1465" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">generationStatus</text>
+            
+
+                <text x="560" y="1465" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="1465" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'completed'</text>
+            
+
+                <rect x="205" y="1487" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1501" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1501" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">sourceAnalysisVersion</text>
+            
+
+                <text x="560" y="1501" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="770" y="1501" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+<rect x="132" y="1517" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="1523" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1537" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1537" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">version</text>
+            
+
+                <text x="560" y="1537" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Number</text>
+            
+
+                <text x="770" y="1537" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 1</text>
+            
+
+                <rect x="205" y="1559" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1573" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1573" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">superseded</text>
+            
+
+                <text x="560" y="1573" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Boolean</text>
+            
+
+                <text x="770" y="1573" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: false</text>
+            
+<rect x="132" y="1589" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="1595" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="1609" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="1609" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">metadata</text>
+            
+
+                <text x="560" y="1609" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Subdocument</text>
+            
+
+                <text x="770" y="1609" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: {}</text>
+            
+
+                <rect x="205" y="1631" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1645" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1645" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">createdAt</text>
+            
+
+                <text x="560" y="1645" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="770" y="1645" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+<rect x="132" y="1661" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="1667" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="1681" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="1681" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">updatedAt</text>
+            
+
+                <text x="560" y="1681" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Date</text>
+            
+
+                <text x="770" y="1681" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: now</text>
+            
+</g>
+<g id="entity-Validation">
+
+            <rect x="120" y="1950" width="720" height="440" rx="14" fill="#111827"
+                  stroke="#4b5563" stroke-width="2" stroke-dasharray="7 5" filter="url(#shadow)"/>
+        
+
+            <path d="M 120 1964 A 14 14 0 0 1 134 1950 L 826 1950 A 14 14 0 0 1 840 1964 L 840 2025 L 120 2025 Z"
+                  fill="#f59e0b" opacity="0.95"/>
+            <text x="144" y="1986" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                Validation
+            </text>
+            <text x="144" y="2010" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                [Embedded Subdocument] • Embedded Subdocument
+            </text>
+        
+
+            <rect x="132" y="2031" width="696" height="32" rx="6" fill="#182234"/>
+            <text x="144" y="2047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="210" y="2047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="280" y="2047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="560" y="2047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="770" y="2047" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="132" y1="2063" x2="828" y2="2063" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                <rect x="205" y="2069" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="2083" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="2083" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">valid</text>
+            
+
+                <text x="560" y="2083" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Boolean</text>
+            
+
+                <text x="770" y="2083" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: true</text>
+            
+<rect x="132" y="2099" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="2105" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="2119" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="2119" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">errors</text>
+            
+
+                <text x="560" y="2119" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<String></text>
+            
+
+                <text x="770" y="2119" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="205" y="2141" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="2155" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="2155" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">warnings</text>
+            
+
+                <text x="560" y="2155" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<String></text>
+            
+
+                <text x="770" y="2155" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+<rect x="132" y="2171" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                    <rect x="142" y="2177" width="48" height="20" rx="4" fill="#065f46"/>
+                    <text x="166" y="2191" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#d1fae5" text-anchor="middle">EMB</text>
+                
+
+                <rect x="205" y="2177" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="2191" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="2191" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">checks</text>
+            
+
+                <text x="560" y="2191" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Array<ValidationCheck></text>
+            
+
+                <text x="770" y="2191" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: []</text>
+            
+
+                <rect x="205" y="2213" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="2227" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="2227" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">validationLevel</text>
+            
+
+                <text x="560" y="2227" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="2227" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: 'structural'</text>
+            
+</g>
+<g id="entity-ValidationCheck">
+
+            <rect x="120" y="2460" width="720" height="320" rx="14" fill="#111827"
+                  stroke="#4b5563" stroke-width="2" stroke-dasharray="7 5" filter="url(#shadow)"/>
+        
+
+            <path d="M 120 2474 A 14 14 0 0 1 134 2460 L 826 2460 A 14 14 0 0 1 840 2474 L 840 2535 L 120 2535 Z"
+                  fill="#64748b" opacity="0.95"/>
+            <text x="144" y="2496" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+                ValidationCheck
+            </text>
+            <text x="144" y="2520" font-family="'Segoe UI', sans-serif" font-size="14" fill="#f1f5f9" opacity="0.9">
+                [Embedded Subdocument] • Embedded Subdocument
+            </text>
+        
+
+            <rect x="132" y="2541" width="696" height="32" rx="6" fill="#182234"/>
+            <text x="144" y="2557" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">KEY</text>
+            <text x="210" y="2557" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">NULL</text>
+            <text x="280" y="2557" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">ATTRIBUTE / FIELD</text>
+            <text x="560" y="2557" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">TYPE</text>
+            <text x="770" y="2557" font-family="Consolas, monospace" font-size="12" font-weight="bold" fill="#9ca3af">DEFAULT / NOTES</text>
+            <line x1="132" y1="2573" x2="828" y2="2573" stroke="#2d3748" stroke-width="1.5"/>
+        
+
+                <rect x="205" y="2579" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="2593" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="2593" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">name</text>
+            
+
+                <text x="560" y="2593" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="2593" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Rule assertion name (e.g. 'non-roo…</text>
+            
+<rect x="132" y="2609" width="696" height="36" rx="4" fill="#141c2c" opacity="0.6"/>
+
+                <rect x="205" y="2615" width="44" height="20" rx="4" fill="#991b1b"/>
+                <text x="227" y="2629" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#fee2e2" text-anchor="middle">REQ</text>
+            
+
+                <text x="280" y="2629" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="bold" fill="#e5e7eb">passed</text>
+            
+
+                <text x="560" y="2629" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">Boolean</text>
+            
+
+                <text x="770" y="2629" font-family="'Segoe UI', sans-serif" font-size="12" fill="#9ca3af">Check execution outcome</text>
+            
+
+                <rect x="205" y="2651" width="44" height="20" rx="4" fill="#1f2937"/>
+                <text x="227" y="2665" font-family="Consolas, monospace" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">OPT</text>
+            
+
+                <text x="280" y="2665" font-family="'Segoe UI', Consolas, sans-serif" font-size="14" font-weight="normal" fill="#e5e7eb">message</text>
+            
+
+                <text x="560" y="2665" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#93c5fd">String</text>
+            
+
+                <text x="770" y="2665" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6ee7b7">def: ""</text>
+            
+</g>
+</svg>
