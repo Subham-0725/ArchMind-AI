@@ -4,7 +4,7 @@
 //
 // Constraints:
 //   - Accepts valid .zip files (MIME type + file extension double-check)
-//   - 50 MB hard ceiling
+//   - 80 MB hard ceiling
 //   - Ephemeral disk storage targeting server/src/storage/uploads/
 //   - Unique namespacing with timestamp and random UUID to prevent collisions
 
@@ -13,8 +13,8 @@ import path from "path";
 import { randomUUID } from "crypto";
 import { UPLOADS_DIR } from "./storage.js";
 
-/** 50 MB — hard ceiling for ZIP uploads */
-export const MAX_ZIP_SIZE = 50 * 1024 * 1024;
+/** 80 MB — hard ceiling for ZIP uploads */
+export const MAX_ZIP_SIZE = 80 * 1024 * 1024;
 
 /** Accepted MIME types for ZIP archives across various OS and browser combinations */
 const ACCEPTED_MIME_TYPES = new Set([

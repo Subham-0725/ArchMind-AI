@@ -622,7 +622,7 @@ export const populateKeyFileContents = async (owner, repo, tree = []) => {
  * @param {string} [branch="main"] - Target branch or ref
  * @param {string} destinationPath - Absolute local path to write the .zip archive
  * @param {Object} [options={}] - Configurable download options
- * @param {number} [options.maxArchiveBytes=104857600] - Max allowed archive size (default 100 MB)
+ * @param {number} [options.maxArchiveBytes=83886080] - Max allowed archive size (default 80 MB)
  * @param {number} [options.timeoutMs=60000] - Download timeout (default 60s)
  * @returns {Promise<{ downloadedBytes: number }>}
  */
@@ -634,7 +634,7 @@ export const downloadRepoArchive = async (
   options = {}
 ) => {
   const {
-    maxArchiveBytes = 100 * 1024 * 1024, // 100 MB limit
+    maxArchiveBytes = 80 * 1024 * 1024, // 80 MB limit
     headerTimeoutMs = 25000,
     streamTimeoutMs = 60000,
   } = options;

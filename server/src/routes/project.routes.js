@@ -53,7 +53,7 @@ const handleMulterErrors = (multerMiddleware) => (req, res, next) => {
     if (err.code === "LIMIT_FILE_SIZE") {
       return res.status(413).json({
         success: false,
-        error: "ZIP file exceeds the 50 MB size limit. Please upload a smaller archive.",
+        error: "ZIP file exceeds the 80 MB size limit. Please upload a smaller archive.",
         code: "LIMIT_FILE_SIZE",
       });
     }

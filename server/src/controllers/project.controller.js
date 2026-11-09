@@ -113,12 +113,12 @@ export const importGithub = async (req, res) => {
       `[GitHubImport] [Stage 2/7] Metadata retrieved in ${tMetaDuration}s. FullName: ${metadata.fullName}, Size: ${metadata.size} KB, DefaultBranch: ${metadata.defaultBranch}`
     );
 
-    // 2.1 Early size limit enforcement (100 MB = 102400 KB)
-    const MAX_REPO_SIZE_KB = 100 * 1024;
+    // 2.1 Early size limit enforcement (80 MB = 81920 KB)
+    const MAX_REPO_SIZE_KB = 80 * 1024;
     if (metadata.size && metadata.size > MAX_REPO_SIZE_KB) {
       return res.status(413).json({
         success: false,
-        error: `Repository '${metadata.fullName}' (${Math.round(metadata.size / 1024)} MB) exceeds the maximum allowed size limit of 100 MB.`,
+        error: `Repository '${metadata.fullName}' (${Math.round(metadata.size / 1024)} MB) exceeds the maximum allowed size limit of 80 MB.`,
         code: "PAYLOAD_TOO_LARGE",
       });
     }

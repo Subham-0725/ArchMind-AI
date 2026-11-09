@@ -396,7 +396,7 @@ function ZipUploadPanel({ file, onFileSelect, onFileClear, isDragging, onDragEnt
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/[0.06] bg-white/[0.02]">
                 <span className="text-[10px] text-slate-600 font-mono">.zip</span>
                 <div className="w-px h-3 bg-white/10" />
-                <span className="text-[10px] text-slate-600">up to 50 MB</span>
+                <span className="text-[10px] text-slate-600">up to 80 MB</span>
               </div>
             </motion.div>
           )}
@@ -678,6 +678,11 @@ export default function Dashboard() {
       dropped.name.toLowerCase().endsWith(".zip");
 
     if (isZip) {
+      const MAX_ZIP_BYTES = 80 * 1024 * 1024; // 80 MB
+      if (dropped.size > MAX_ZIP_BYTES) {
+        setAnalyzeError("ZIP file exceeds the maximum allowed size limit of 80 MB.");
+        return;
+      }
       setZipFile(dropped);
       setActiveTab("zip");
       setAnalyzeError(null);
@@ -949,7 +954,16 @@ export default function Dashboard() {
                   <ZipUploadPanel
                     key="zip"
                     file={zipFile}
-                    onFileSelect={setZipFile}
+                    onFileSelect={(selected) => {
+                      const MAX_ZIP_BYTES = 80 * 1024 * 1024; // 80 MB
+                      if (selected && selected.size > MAX_ZIP_BYTES) {
+                        setAnalyzeError("ZIP file exceeds the maximum allowed size limit of 80 MB.");
+                        return;
+                      }
+                      setZipFile(selected);
+                      setAnalyzeError(null);
+                      setAnalyzeSuccess(null);
+                    }}
                     onFileClear={clearZipFile}
                     isDragging={isDragging}
                     onDragEnter={handleDragEnter}
